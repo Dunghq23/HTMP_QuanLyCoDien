@@ -1,0 +1,34 @@
+.project-manager-container {
+  padding: 40px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 28px;
+  margin-bottom: 32px;
+  font-weight: bold;
+  color: #001529;
+  text-align: center;
+}
+
+.project-card {
+  text-align: center;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+.project-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.card-icon {
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
