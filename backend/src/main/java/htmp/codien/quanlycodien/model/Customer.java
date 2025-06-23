@@ -1,6 +1,5 @@
 package htmp.codien.quanlycodien.model;
 
-import java.time.LocalDate;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,9 +17,9 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "code")
+    @Column(name = "code", length = 50, unique = true, nullable = false)
     String code;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 255, nullable = false)
     String name;
 }

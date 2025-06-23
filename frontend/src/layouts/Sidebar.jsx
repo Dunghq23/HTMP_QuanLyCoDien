@@ -1,23 +1,21 @@
 // src/components/layouts/Sidebar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu } from 'antd';
 import {
   HomeOutlined,
-  UserOutlined,
-  TeamOutlined,
-  ApartmentOutlined,
   ToolOutlined,
-  TagsOutlined,
-  ShopOutlined,
-  DownloadOutlined,
-  UploadOutlined,
-  RetweetOutlined,
 } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear(); // Xóa token và thông tin đăng nhập
+    navigate('/login'); // Chuyển hướng về trang login
+  };
   return (
     <div style={{ width: 250, height: '100vh', background: '#fff', borderRight: '1px solid #f0f0f0' }}>
       <div style={{ textAlign: 'center', padding: '16px 0' }}>
@@ -47,7 +45,7 @@ const Sidebar = () => {
             <Link to="/co-dien/quan-ly-du-an">Quản lý dự án</Link>
           </Menu.Item>
           <Menu.Item key="/tasks">
-            <Link to="/co-dien/quan-ly-cong-viec">Quản lý công việc</Link>
+            <Link to="/co-dien/quan-ly-cong-viec-hang-ngay">Quản lý công việc hàng ngày</Link>
           </Menu.Item>
           <Menu.Item key="/devices">
             <Link to="/co-dien/quan-ly-thiet-bi">Quản lý thiết bị</Link>
@@ -55,7 +53,12 @@ const Sidebar = () => {
           <Menu.Item key="/device-groups">
             <Link to="/co-dien/quan-ly-nhom-thiet-bi">Quản lý nhóm thiết bị</Link>
           </Menu.Item>
+
         </SubMenu>
+
+        <Menu.Item key="/logout" danger onClick={handleLogout}>
+          Đăng xuất
+        </Menu.Item>
       </Menu>
     </div>
   );

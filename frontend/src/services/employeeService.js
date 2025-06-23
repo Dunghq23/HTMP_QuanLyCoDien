@@ -1,79 +1,20 @@
-import axiosClient from './axiosClient';
-import { toast } from 'react-toastify';
+import axiosClient from "~/utils/axiosClient";
 
-export const getEmployees = async () => {
-  try {
-    const response = await axiosClient.get('/users');
-    return response.data.data;
-  } catch (error) {
-    toast.error(error.response.data.message);
-    throw error;
-  }
+const API_URL = '/employees';
+
+export const getAllEmployees = async () => {
+  const res = await axiosClient.get(API_URL);
+  console.log(res);
+  
+  return res.data.data;
 };
 
-export const getEmployeeById = async (id) => {
-  try {
-    const response = await axiosClient.get(`/users/${id}`);
-    return response.data.data;
-  } catch (error) {
-    toast.error(error.response.data.message);
-    throw error;
-  }
+export const createEmployee = async (employeeData) => {
+  const res = await axiosClient.post(API_URL, employeeData);
+  return res.data.data;
 };
 
-export const addEmployee = async (employeeData, avatarFile) => {
-  try {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(employeeData));
-
-    if (avatarFile) {
-      formData.append('image', avatarFile);
-    }
-
-    const response = await axiosClient.post('/users', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    toast.success('Thêm nhân viên thành công!');
-    return response.data.data;
-  } catch (error) {
-    toast.error(error.response.data.message);
-    throw error;
-  }
-};
-
-export const updateEmployee = async (id, updatedData, avatarFile) => {
-  try {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(updatedData)); // 👈 phần JSON - đã sửa từ employeeData sang updatedData
-
-    if (avatarFile) {
-      formData.append('image', avatarFile); // 👈 phần file
-    }
-    const response = await axiosClient.put(`/users/${id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    toast.success(response.data.message);
-    return response.data.data;
-  } catch (error) {
-    toast.error(error.response.data.message);
-    throw error;
-  }
-};
-
-// Gán vai trò cho nhân viên
-export const assignRole = async (id, roleId) => {
-  try {
-  const response = await axiosClient.post(`/users/${id}/assign-role?roleId=${roleId}`);
-    toast.success(response.data.message);
-    return response.data.data;
-  } catch (error) {
-    toast.error(error.response?.data?.message || 'Lỗi khi phân quyền cho nhân viên');
-    throw error;
-  }
+export const updateEmployee = async (id, employeeData) => {
+  const res = await axiosClient.put(`${API_URL}/${id}`, employeeData);
+  return res.data.data;
 };

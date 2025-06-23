@@ -1,12 +1,56 @@
+/* DefaultLayout.css */
 .layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 }
 
-.main {
-  flex: 1;
+.sidebar {
+  width: 240px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #001529;
+  color: white;
+  z-index: 1000;
+
+  /* Chặn thanh cuộn nếu không cần */
+  overflow-y: hidden;
+
+  /* Nếu nội dung dài và bạn muốn cuộn trong sidebar, dùng max-height và overflow-y: auto */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+}
+
+.main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  height: 64px;
+  background: #fff;
+  box-shadow: 0 2px 8px #f0f1f2;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  z-index: 999;
+}
+
+.content {
+  margin-top: 64px;
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  background: #f5f5f5;
+  height: calc(100vh - 64px);
 }

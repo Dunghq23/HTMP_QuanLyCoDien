@@ -26,8 +26,9 @@ public class PhaseStock {
     @Column(name = "report_date", nullable = false)
     LocalDate reportDate;
 
-    @Column(name = "phase_name", nullable = false, length = 100)
-    String phaseName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phase_id", nullable = false)
+    Phase phase;
 
     @Column(name = "quantity")
     Integer quantity = 0;
