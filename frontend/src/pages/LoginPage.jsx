@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Typography, Alert, Card, Space } from "antd";
-import axiosClient from "~/utils/axiosClient";
+import { Form, Input, Button, Typography, Alert, Card } from "antd";
+import authService from "~/services/authService";
 
 const { Title, Text } = Typography;
 
@@ -19,17 +19,14 @@ export default function LoginPage() {
     const handleSubmit = async (values) => {
         setError("");
         try {
-            const response = await axiosClient.post("/auth/login", {
-                code: values.code,
-                password: values.password,
-            });
-
-            const token = response.data.token;
-            localStorage.setItem("accessToken", token);
+            const response = await authService.login(values.code, values.password);
+            console.log(response);
             navigate("/", { replace: true });
+            console.log(localStorage.getItem("userInfo"));
+            
         } catch (err) {
             console.error("Login error", err);
-            setError("Mã nhân viên hoặc mật khẩu không đúng!");
+            setError(err.message); // lấy message đã throw ở trên
         }
     };
 

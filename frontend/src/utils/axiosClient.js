@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authService from '~/services/authService';
 
 // Base config
 const axiosClient = axios.create({
@@ -30,11 +31,11 @@ axiosClient.interceptors.response.use(
       const { status } = error.response;
       if (status === 401) {
         console.warn('Chưa đăng nhập hoặc token hết hạn');
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login"; // hoặc điều hướng về login
+        authService.logout(); // Đăng xuất nếu cần
       } else if (status === 403) {
         console.warn('Không có quyền truy cập');
         alert('Bạn không có quyền truy cập chức năng này!');
+        authService.logout(); // Đăng xuất nếu cần
       }
     }
     return Promise.reject(error);

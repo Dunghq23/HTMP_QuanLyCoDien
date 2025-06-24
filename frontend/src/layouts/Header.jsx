@@ -4,14 +4,17 @@ import '~/styles/Layouts/Header.css';
 
 const breadcrumbMap = {
   '/': 'Trang chủ',
+  '/quan-ly-nhan-vien': 'Quản lý nhân viên',
   '/co-dien': 'Phòng cơ điện',
   '/co-dien/quan-ly-du-an': 'Quản lý dự án',
   '/co-dien/quan-ly-du-an/san-pham-moi': 'Sản phẩm mới',
+  '/co-dien/quan-ly-cong-viec-hang-ngay': 'Quản lý công việc hàng ngày',
   '/tay-ga-cat-gate': 'Tay gá, cắt gate',
   '/san-pham-moi': 'Sản phẩm mới',
   '/may-tu-dong': 'Máy tự động',
   '/phat-sinh': 'Phát sinh',
 };
+
 
 const Header = () => {
   const location = useLocation();
@@ -27,8 +30,8 @@ const Header = () => {
         {breadcrumbs.length > 0 ? breadcrumbs.join(' / ') : 'Trang chủ'}
       </div>
       <div className="right">
-        <span>Hạ Quang Dũng</span>
-        <span className="role">admin</span>
+        <span>{localStorage.getItem("employeeName") || "Chưa đăng nhập"}</span>
+        <span className="role">{localStorage.getItem("role").replace("ROLE_", "")}</span>
       </div>
     </header>
   );
