@@ -11,4 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AuthResponseDTO {
     private String token;
+    private EmployeeDTO employee;
 }
