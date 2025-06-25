@@ -4,9 +4,9 @@ import authService from '~/services/authService';
 // Base config
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // headers: {
+  //   'Content-Type': 'application/json',
+  // },
   withCredentials: true, // nếu dùng cookie cho auth
 });
 

@@ -26,7 +26,6 @@ class AuthService {
   // Đăng xuất
   logout() {
     localStorage.clear();
-    window.location.href = "/login";
   }
 
   // Kiểm tra xem đã đăng nhập chưa

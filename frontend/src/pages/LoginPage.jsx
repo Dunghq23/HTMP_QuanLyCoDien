@@ -20,10 +20,7 @@ export default function LoginPage() {
         setError("");
         try {
             const response = await authService.login(values.code, values.password);
-            console.log(response);
             navigate("/", { replace: true });
-            console.log(localStorage.getItem("userInfo"));
-            
         } catch (err) {
             console.error("Login error", err);
             setError(err.message); // lấy message đã throw ở trên
