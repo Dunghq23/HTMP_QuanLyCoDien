@@ -81,39 +81,74 @@ function EmployeeManagerPage() {
             title: 'STT',
             key: 'index',
             render: (_, __, index) => index + 1,
+            // Giữ lại trên mọi kích thước màn hình
+            responsive: ['xs', 'sm', 'md', 'lg', 'xl']
         },
         {
-            title: 'Mã nhân viên',
+            title: 'Mã NV', // Rút gọn tiêu đề cho mobile
             dataIndex: 'code',
             key: 'code',
             sorter: (a, b) => a.code.localeCompare(b.code),
+            // Luôn hiển thị mã nhân viên
+            responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+            ellipsis: true, // Thêm dấu ba chấm nếu quá dài
         },
         {
-            title: 'Tên',
+            title: 'Tên nhân viên',
             dataIndex: 'name',
             key: 'name',
             sorter: (a, b) => a.name.localeCompare(b.name),
+            // Ẩn trên màn hình nhỏ nhất nếu cần thiết, hoặc điều chỉnh responsive
+            responsive: ['xs', 'md', 'lg', 'xl'], // Hiển thị từ sm trở lên
+            ellipsis: true,
         },
         {
             title: 'Chức vụ',
             dataIndex: 'position',
             key: 'position',
+            // Ẩn trên màn hình nhỏ nhất
+            responsive: ['md', 'lg', 'xl'], // Hiển thị từ md trở lên
+            ellipsis: true,
+        },
+        {
+            title: 'SĐT', // Rút gọn tiêu đề cho mobile
+            dataIndex: 'phone',
+            key: 'phone',
+            // Ẩn trên màn hình nhỏ nhất, chỉ hiện từ sm trở lên
+            responsive: ['sm', 'md', 'lg', 'xl'],
+            ellipsis: true,
+        },
+        {
+            title: 'Vai trò',
+            dataIndex: 'role',
+            key: 'role',
+            // Chỉ hiển thị trên màn hình lớn hơn
+            responsive: ['lg', 'xl'], // Hiển thị từ lg trở lên
+            render: (role) => role.replace('ROLE_', ''), // Hiển thị vai trò đẹp hơn
+            ellipsis: true,
         },
         {
             title: 'Hành động',
             key: 'action',
             render: (_, record) => (
                 <Space>
-                    <Button type="link" onClick={() => handleEdit(record)}>
+                    <Button type="link" onClick={() => handleEdit(record)} size="small"> {/* Dùng size="small" cho nút */}
                         Sửa
                     </Button>
                 </Space>
             ),
+            // Luôn hiển thị nút hành động
+            responsive: ['xs', 'sm', 'md', 'lg', 'xl']
         },
     ];
 
     return (
-        <div>
+        <div
+            style={{
+                maxWidth: 1200,
+                margin: '0 auto',
+            }}
+        >
             <Button
                 type="primary"
                 style={{ marginBottom: 16 }}
@@ -128,6 +163,8 @@ function EmployeeManagerPage() {
                 dataSource={employees}
                 loading={loading}
                 bordered
+                scroll={{ x: 'max-content' }} // ✅ Rất quan trọng để bảng có thể cuộn ngang trên mobile
+                pagination={{ pageSize: 10 }} // Thêm phân trang mặc định
             />
 
             <Modal
@@ -141,6 +178,13 @@ function EmployeeManagerPage() {
                 onOk={handleSave}
                 okText="Lưu"
                 cancelText="Hủy"
+                // Ant Design Modal đã có responsive mặc định tốt,
+                // nhưng nếu muốn kiểm soát thêm, bạn có thể dùng `width` linh hoạt.
+                // Đối với mobile, width="calc(100% - 32px)" sẽ tạo khoảng cách 16px mỗi bên.
+                // Trên desktop, maxWidth sẽ giới hạn chiều rộng.
+                width={window.innerWidth < 768 ? 'calc(100% - 32px)' : 520} // Thay đổi width dựa trên kích thước màn hình
+                style={{ top: 20 }} // Đảm bảo modal không quá sát đỉnh màn hình
+                maskClosable={false} // Không cho phép đóng modal khi click ra ngoài
             >
                 <Form form={form} layout="vertical">
                     <Form.Item
@@ -191,7 +235,6 @@ function EmployeeManagerPage() {
                     </Form.Item>
                 </Form>
             </Modal>
-
         </div>
     );
 }

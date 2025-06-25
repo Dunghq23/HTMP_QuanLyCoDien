@@ -23,7 +23,7 @@ export default function LoginPage() {
             navigate("/", { replace: true });
         } catch (err) {
             console.error("Login error", err);
-            setError(err.message); // lấy message đã throw ở trên
+            setError(err.message);
         }
     };
 
@@ -35,23 +35,38 @@ export default function LoginPage() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                padding: "0 16px", // để tránh bị sát viền ở mobile
             }}
         >
             <Card
-                style={{ width: 600 }}
+                style={{
+                    width: "100%",
+                    maxWidth: 480, // dùng maxWidth thay cho fixed width
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                }}
                 cover={
                     <img
                         src="/image/banner_bread_page.webp"
                         alt="HTMP"
-                        style={{ width: "100%", height: "auto", objectFit: "cover" }}
+                        style={{
+                            width: "100%",
+                            height: "auto",
+                            objectFit: "cover",
+                            display: "block",
+                        }}
                     />
                 }
+                bodyStyle={{
+                    padding: 24,
+                }}
             >
                 <div style={{ textAlign: "center", marginBottom: 24 }}>
                     <Title level={4} style={{ marginBottom: 4 }}>
                         Hệ thống quản lý phòng Cơ điện
                     </Title>
-                    <Text type="secondary">Đăng nhập dành cho nhân viên quản lý và nhân viên phòng cơ điện</Text>
+                    <Text type="secondary">
+                        Đăng nhập dành cho nhân viên quản lý và nhân viên phòng cơ điện
+                    </Text>
                 </div>
 
                 {error && (
@@ -87,7 +102,6 @@ export default function LoginPage() {
                     </Form.Item>
                 </Form>
             </Card>
-
         </div>
     );
 }
