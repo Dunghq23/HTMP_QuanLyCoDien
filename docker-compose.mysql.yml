@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8
+    container_name: codien_mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: codien
+    volumes:
+      - ./db/codien_dump.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - codien_net
+
+networks:
+  codien_net:
+    driver: bridge
