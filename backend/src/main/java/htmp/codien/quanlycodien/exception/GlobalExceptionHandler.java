@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     // fallback cho các Exception chưa được xử lý riêng
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unpected error" + ex.getMessage());
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "" + ex.getMessage());
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
