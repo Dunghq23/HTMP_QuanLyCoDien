@@ -17,6 +17,8 @@ public class EmployeeDTO {
     String code;
     String name;
     String position;
+    String phone;
+    String role;
     LocalDateTime createdAt;
     List<TaskAssignment> assignments;
 }

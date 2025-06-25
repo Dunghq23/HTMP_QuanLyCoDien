@@ -4,8 +4,6 @@ const API_URL = '/employees';
 
 export const getAllEmployees = async () => {
   const res = await axiosClient.get(API_URL);
-  console.log(res);
-  
   return res.data.data;
 };
 

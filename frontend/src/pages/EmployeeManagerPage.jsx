@@ -8,6 +8,7 @@ import {
     Modal,
     Form,
     Input,
+    Select,
 } from 'antd';
 import {
     getAllEmployees,
@@ -112,9 +113,7 @@ function EmployeeManagerPage() {
     ];
 
     return (
-        <div style={{ padding: 24 }}>
-            <Title level={2}>Quản lý nhân viên</Title>
-
+        <div>
             <Button
                 type="primary"
                 style={{ marginBottom: 16 }}
@@ -151,6 +150,7 @@ function EmployeeManagerPage() {
                     >
                         <Input />
                     </Form.Item>
+
                     <Form.Item
                         label="Tên"
                         name="name"
@@ -158,6 +158,7 @@ function EmployeeManagerPage() {
                     >
                         <Input />
                     </Form.Item>
+
                     <Form.Item
                         label="Chức vụ"
                         name="position"
@@ -165,8 +166,32 @@ function EmployeeManagerPage() {
                     >
                         <Input />
                     </Form.Item>
+
+                    <Form.Item
+                        label="Số điện thoại"
+                        name="phone"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại' },
+                            { pattern: /^\d{9,11}$/, message: 'Số điện thoại không hợp lệ' },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Vai trò"
+                        name="role"
+                        rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
+                    >
+                        <Select placeholder="Chọn vai trò">
+                            <Select.Option value="ROLE_ADMIN">Quản trị viên</Select.Option>
+                            <Select.Option value="ROLE_MANAGER">Quản lý</Select.Option>
+                            <Select.Option value="ROLE_EMPLOYEE">Nhân viên</Select.Option>
+                        </Select>
+                    </Form.Item>
                 </Form>
             </Modal>
+
         </div>
     );
 }
