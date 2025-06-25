@@ -43,6 +43,8 @@ public class SecurityConfig {
 
                 // Cấu hình quyền truy cập các đường dẫn API
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/uploads/**").permitAll()
+
                         // Cho phép không cần login khi gọi các API public (tùy sửa đổi theo nhu cầu)
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
