@@ -7,6 +7,7 @@ import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-
+    private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
 
@@ -42,7 +43,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
-        Employee saved = employeeRepository.save(toEntity(employeeDTO));
+        Employee employee = toEntity(employeeDTO);
+
+        // Nếu là nhân viên mới (chưa có ID), gán mật khẩu mặc định đã mã hóa
+        if (employee.getId() == null) {
+            employee.setPassword(passwordEncoder.encode("Htmp1234"));
+        }
+
+        Employee saved = employeeRepository.save(employee);
         return toDTO(saved);
     }
 }
