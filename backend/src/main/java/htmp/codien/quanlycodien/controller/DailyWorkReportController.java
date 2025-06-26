@@ -78,4 +78,14 @@ public class DailyWorkReportController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteReport(@PathVariable Long id) {
+        try {
+            reportService.deleteReport(id);
+            return ResponseUtil.success(null, "Xóa báo cáo thành công");
+        } catch (Exception e) {
+            return ResponseUtil.badRequest("Xóa thất bại: " + e.getMessage());
+        }
+    }
+
 }

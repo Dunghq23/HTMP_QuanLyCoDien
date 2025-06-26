@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import {
     Table, Typography, message, Space, Button, DatePicker,
     Form, Modal, TimePicker, Input, Row, Col,
-    Popconfirm, Select, Upload
+    Popconfirm, Select, Upload,
+    Image
 } from 'antd';
 import dayjs from 'dayjs';
 import { DeleteOutlined, EditOutlined, UploadOutlined } from '@ant-design/icons';
@@ -13,10 +14,16 @@ import { getAllEmployees } from '~/services/employeeService';
 
 // Import CSS cho Gantt, nếu chưa có
 import "gantt-task-react/dist/index.css";
+import { useTheme } from '~/contexts/ThemeContext';
+import WorkReportFormModal from '~/components/WorkReportFormModal';
+import { render } from '@testing-library/react';
 
 const { Title } = Typography;
 
+
 const CoDienQuanLyCongViecHangNgayPage = () => {
+    const { isDarkMode } = useTheme();
+
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -79,7 +86,9 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
     }, [selectedDate, role, employeeId]); // Thêm role và employeeId vào dependency array
 
     useEffect(() => {
-        fetchEmployees();
+        if (role === 'ROLE_ADMIN') {
+            fetchEmployees();
+        }
     }, []);
 
     useEffect(() => {
@@ -131,6 +140,8 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
         };
     });
 
+
+
     const columns = [
         { title: 'Tên nhân viên', dataIndex: 'employeeName' },
         { title: 'Mã nhân viên', dataIndex: 'employeeCode', align: 'center' },
@@ -142,14 +153,42 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
         {
             title: 'Tên nhân viên',
             dataIndex: 'employeeName',
-            filters: Array.from(new Set(reports.map(item => item.employeeName)))
+            filters: Array.from(new Set(reports.map(r => r.employeeName))) // tạo filter duy nhất từ danh sách
                 .map(name => ({ text: name, value: name })),
             onFilter: (value, record) => record.employeeName === value,
+            sorter: (a, b) => a.employeeName.localeCompare(b.employeeName),
+            sortDirections: ['ascend', 'descend'],
+            render: (text) => ({
+                children: text,
+            }),
         },
-        { title: 'Mã nhân viên', dataIndex: 'employeeCode', align: 'center' },
+        {
+            title: 'Mã nhân viên',
+            dataIndex: 'employeeCode',
+            align: 'center',
+            render: (text, row) => ({
+                children: text,
+            }),
+        },
         { title: 'Nội dung công việc', dataIndex: 'taskDescription', align: 'center' },
         { title: 'Thời gian bắt đầu', dataIndex: 'startTime', align: 'center' },
         { title: 'Thời gian kết thúc', dataIndex: 'endTime', align: 'center' },
+        {
+            title: 'Hình ảnh', dataIndex: 'filePath', align: 'center',
+            render: (text, record) => {
+                if (!text) return '-';
+                return (
+
+                    <Image.PreviewGroup
+                        preview={{
+                            onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+                        }}
+                    >
+                        <Image width={100} src={`${process.env.REACT_APP_UPLOAD_URL}/${record.filePath}`} />
+                    </Image.PreviewGroup>
+                );
+            }
+        },
         {
             title: 'Hành động',
             dataIndex: 'action',
@@ -179,6 +218,7 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
         },
     ];
 
+
     const handleEdit = (record) => {
         setEditingRecord(record);
         setIsModalVisible(true);
@@ -192,7 +232,7 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
                     uid: "-1",
                     name: record.filePath.split("/").pop(),
                     status: "done",
-                    url: record.filePath,
+                    url: `${process.env.REACT_APP_UPLOAD_URL}/${record.filePath}`,
                 }]
                 : [],
         });
@@ -200,8 +240,8 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
 
     const handleDelete = async (id) => {
         try {
-            await dailyWorkReportService.delete(id);
-            message.success("Xóa thành công");
+            const responseMessage = await dailyWorkReportService.delete(id);
+            message.success(responseMessage);
             fetchReports();
         } catch (err) {
             message.error("Xóa thất bại: " + (err?.response?.data?.message || err.message || "Lỗi không xác định"));
@@ -210,7 +250,7 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
 
     return (
         <div>
-            <Space style={{ marginBottom: 16 }}>
+            <Space style>
                 <DatePicker
                     value={selectedDate}
                     format="DD/MM/YYYY"
@@ -262,10 +302,18 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
 
             {role === 'ROLE_ADMIN' && (
                 <Table
+                    style={{ marginTop: 16 }}
                     dataSource={reports}
                     columns={columnsAdmin}
                     loading={loading} // Thêm loading cho table admin
                     rowKey="id" // Đảm bảo có rowKey
+                    pagination={{
+                        showSizeChanger: true,  // cho phép chọn số dòng/trang
+                        pageSizeOptions: ['5', '10', '20', '50'], // các lựa chọn
+                        showQuickJumper: true,  // cho phép nhập số trang
+                        showTotal: (total, range) =>
+                            `${range[0]} - ${range[1]} trong ${total} công việc`,
+                    }}
                 />
             )}
 
@@ -276,6 +324,7 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
                         groupedData.find(e => e.employeeId === selectedEmployeeId)?.employeeName
                     }</Title>
                     <Gantt
+                        theme={isDarkMode ? "dark" : "default"}
                         tasks={reports
                             .filter(r => r.employeeId === selectedEmployeeId && r.startTime && r.endTime)
                             .map(mapToTask)}
@@ -295,6 +344,7 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
                 <div style={{ minHeight: 400, marginTop: 16 }}>
                     <Title level={5}>Gantt công việc của bạn</Title>
                     <Gantt
+                        theme={isDarkMode ? "dark" : "default"}
                         tasks={reports
                             .filter(r => r.startTime && r.endTime)
                             .map(mapToTask)}
@@ -310,37 +360,52 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
             )}
 
 
-            <Modal
-                title={editingRecord ? "Cập nhật công việc" : "Thêm công việc"}
-                confirmLoading={submitting}
-                open={isModalVisible}
-                onOk={() => {
+            <WorkReportFormModal
+                visible={isModalVisible}
+                submitting={submitting}
+                onCancel={() => {
+                    setIsModalVisible(false);
+                    setEditingRecord(null);
+                    form.resetFields();
+                }}
+                onSubmit={() => {
                     form.validateFields().then(async (values) => {
                         setSubmitting(true);
                         try {
-                            const fileList = values.upload;
-                            // Kiểm tra nếu là file mới được chọn, không phải file từ URL cũ
-                            const file = fileList?.length > 0 && fileList[0].originFileObj ? fileList[0].originFileObj : null;
-                            const existingFilePath = fileList?.length > 0 && fileList[0].url ? fileList[0].url : null;
+                            const fileList = values.upload || [];
+                            const firstFile = fileList[0];
+
+                            const file = firstFile?.originFileObj || null;
+                            let existingFilePath = null;
+
+                            if (!file && firstFile?.url) {
+                                const urlParts = firstFile.url.split('/');
+                                existingFilePath = urlParts[urlParts.length - 1]; // chỉ lấy tên file
+                            }
+
+                            console.log(fileList);
+                            console.log(file);
+                            console.log(existingFilePath);
+
 
                             const payload = {
-                                employeeId: role === 'ROLE_ADMIN' ? values.employeeId : employeeId, // Lấy employeeId từ form nếu là admin, ngược lại lấy từ localStorage
+                                employeeId: role === 'ROLE_ADMIN' ? values.employeeId : employeeId,
                                 reportDate: selectedDate.format("YYYY-MM-DD"),
                                 startTime: values.startTime.format("HH:mm:ss"),
                                 endTime: values.endTime.format("HH:mm:ss"),
                                 taskDescription: values.taskDescription,
                                 file,
-                                // Nếu là cập nhật và không có file mới được chọn, truyền lại đường dẫn file cũ
                                 ...(editingRecord && !file && existingFilePath ? { filePath: existingFilePath } : {})
                             };
 
                             if (editingRecord) {
-                                // SỬA
-                                await dailyWorkReportService.update(editingRecord.id, payload);
-                                message.success("Cập nhật công việc thành công");
+                                try {
+                                    const messageResponse = await dailyWorkReportService.update(editingRecord.id, payload);
+                                    message.success(messageResponse);
+                                } catch (err) {
+                                    message.error(err.message);
+                                }
                             } else {
-                                // THÊM MỚI
-                                // Đảm bảo employeeId được gửi đi khi thêm mới
                                 if (!payload.employeeId) {
                                     message.error("Vui lòng chọn nhân viên cho công việc mới.");
                                     setSubmitting(false);
@@ -366,99 +431,14 @@ const CoDienQuanLyCongViecHangNgayPage = () => {
                         }
                     });
                 }}
-                onCancel={() => {
-                    setIsModalVisible(false);
-                    setEditingRecord(null);
-                    form.resetFields();
-                }}
-                okText="Lưu"
-                cancelText="Hủy"
-            >
-                <Form layout="vertical" form={form}>
-                    {/* Trường chọn nhân viên chỉ hiển thị cho ROLE_ADMIN hoặc khi chỉnh sửa một bản ghi của người khác */}
-                    {(role === 'ROLE_ADMIN' || (editingRecord && role !== 'ROLE_EMPLOYEE')) && (
-                        <Form.Item
-                            label="Nhân viên"
-                            name="employeeId"
-                            rules={[{ required: true, message: 'Vui lòng chọn nhân viên!' }]}
-                        >
-                            <Select
-                                showSearch
-                                placeholder="Chọn nhân viên"
-                                optionFilterProp="children"
-                                filterOption={(input, option) =>
-                                    option?.children?.toLowerCase().includes(input.toLowerCase())
-                                }
-                                disabled={role === 'ROLE_EMPLOYEE'} // Không cho phép employee chọn người khác
-                            >
-                                {employees.map((emp) => (
-                                    <Select.Option key={emp.id} value={emp.id}>
-                                        {emp.name} ({emp.code})
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-                    )}
+                form={form}
+                editingRecord={editingRecord}
+                selectedDate={selectedDate}
+                employees={employees}
+                role={role}
+                employeeId={employeeId}
+            />
 
-
-                    <Form.Item label="Ngày làm việc">
-                        <DatePicker value={selectedDate} disabled format="DD/MM/YYYY" style={{ width: '100%' }} />
-                    </Form.Item>
-
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Giờ bắt đầu"
-                                name="startTime"
-                                rules={[{ required: true, message: 'Chọn giờ bắt đầu' }]}
-                            >
-                                <TimePicker format="HH:mm" placeholder="Giờ bắt đầu" style={{ width: '100%' }} />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Giờ kết thúc"
-                                name="endTime"
-                                rules={[{ required: true, message: 'Chọn giờ kết thúc' }]}
-                            >
-                                <TimePicker format="HH:mm" placeholder="Giờ kết thúc" style={{ width: '100%' }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
-                    <Form.Item
-                        name="taskDescription"
-                        label="Mô tả công việc"
-                        rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
-                    >
-                        <Input.TextArea rows={3} />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="upload"
-                        label="Tải lên ảnh (tùy chọn)"
-                        valuePropName="fileList"
-                        // normalize: Chuyển đổi dữ liệu trước khi lưu vào form
-                        normalize={(value) => {
-                            if (Array.isArray(value)) {
-                                return value;
-                            }
-                            // Khi chọn file mới, e.fileList là một mảng
-                            // Khi clear hoặc xóa file, e.fileList có thể là mảng rỗng
-                            return value && value.fileList;
-                        }}
-                    >
-                        <Upload
-                            beforeUpload={() => false} // Ngăn Ant Design tự động upload
-                            maxCount={1}
-                            listType="picture"
-                            accept=".png,.jpg,.jpeg"
-                        >
-                            <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-                        </Upload>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </div>
     );
 };

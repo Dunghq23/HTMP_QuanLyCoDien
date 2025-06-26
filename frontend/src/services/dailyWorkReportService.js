@@ -62,30 +62,52 @@ const dailyWorkReportService = {
 
     // Ví dụ thêm: cập nhật báo cáo
     update: async (id, payload) => {
-        const formData = new FormData();
-        if (payload.file) {
-            formData.append("file", payload.file);
+        try {
+            const formData = new FormData();
+
+            if (payload.file) {
+                formData.append("file", payload.file);
+            }
+
+            formData.append("employeeId", payload.employeeId);
+            formData.append("reportDate", payload.reportDate);
+            formData.append("startTime", payload.startTime);
+            formData.append("endTime", payload.endTime);
+            formData.append("taskDescription", payload.taskDescription);
+
+            const response = await axiosClient.put(`${API_URL}/${id}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            return response.data.message;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message ||
+                error?.response?.data ||
+                error.message ||
+                "Lỗi không xác định khi cập nhật báo cáo";
+            throw new Error(errorMessage);
         }
-
-        formData.append("employeeId", payload.employeeId);
-        formData.append("reportDate", payload.reportDate);
-        formData.append("startTime", payload.startTime);
-        formData.append("endTime", payload.endTime);
-        formData.append("taskDescription", payload.taskDescription);
-
-        const response = await axiosClient.put(`${API_URL}/${id}`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-
-        return response.data.message;
     },
 
+
     // Ví dụ thêm: xóa báo cáo
-    remove: (id) => {
-        return axiosClient.delete(`${API_URL}/${id}`);
+    delete: async (id) => {
+        try {
+            const response = await axiosClient.delete(`${API_URL}/${id}`);
+            return response.data.message;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message ||
+                error?.response?.data ||
+                error.message ||
+                "Lỗi không xác định khi xóa báo cáo";
+            throw new Error(errorMessage);
+        }
     }
+
 };
 
 export default dailyWorkReportService;

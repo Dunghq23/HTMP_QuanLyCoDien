@@ -119,13 +119,22 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
                 newFilePath = fileStorageService.storeFile(file);
                 report.setFilePath(newFilePath);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         }
 
         reportRepository.save(report);
+    }
+
+    @Override
+    public void deleteReport(Long id) {
+        DailyWorkReport report = reportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy báo cáo với id: " + id));
+        if (report.getFilePath() != null && !report.getFilePath().isBlank()) {
+            fileStorageService.deleteFile(report.getFilePath());
+        }
+        reportRepository.delete(report);
     }
 
 }
