@@ -4,17 +4,25 @@ import {
     ToolOutlined,
     FileOutlined,
     LogoutOutlined,
+    ShoppingCartOutlined,
+    ProjectOutlined,
+    OrderedListOutlined,
+    WalletOutlined,
 } from '@ant-design/icons';
 import authService from '~/services/authService';
 
 export const breadcrumbMap = {
     '/': 'Trang chủ',
-    '/quan-ly-nhan-vien': 'Quản lý nhân viên',
-    '/co-dien': 'Phòng cơ điện',
-    '/co-dien/quan-ly-du-an': 'Quản lý dự án',
-    '/co-dien/quan-ly-cong-viec-hang-ngay': 'Công việc hàng ngày',
-    '/co-dien/quan-ly-thiet-bi': 'Thiết bị',
-    '/co-dien/quan-ly-nhom-thiet-bi': 'Nhóm thiết bị',
+    '/employees': 'Quản lý nhân viên',
+    '/electrical': 'Phòng cơ điện',
+    '/electrical/projects': 'Quản lý dự án',
+    '/electrical/tasks-daily': 'Công việc hàng ngày',
+    '/electrical/devices': 'Thiết bị',
+    '/electrical/device-groups': 'Nhóm thiết bị',
+    '/other': 'Tài liệu khác',
+    '/logout': 'Đăng xuất',
+    '/electrical/projects/new-product': 'Sản phẩm mới',
+    '/electrical/orders': 'Đơn đặt hàng',
 };
 
 export const getMenuItems = (navigate) => {
@@ -29,36 +37,40 @@ export const getMenuItems = (navigate) => {
         },
         ...(role !== 'ROLE_EMPLOYEE'
             ? [{
-                key: '/quan-ly-nhan-vien',
+                key: '/employees',
                 icon: <UserOutlined />,
                 label: 'Quản lý nhân viên',
-                onClick: () => navigate('/quan-ly-nhan-vien'),
+                onClick: () => navigate('/employees'),
             }]
             : []),
         {
-            key: '/co-dien',
+            key: '/electrical',
             icon: <ToolOutlined />,
             label: 'Phòng Cơ điện',
             children: [
                 {
-                    key: '/co-dien/quan-ly-du-an',
+                    key: '/electrical/projects',
                     label: 'Quản lý dự án',
-                    onClick: () => navigate('/co-dien/quan-ly-du-an'),
+                    icon: <ProjectOutlined />,
+                    onClick: () => navigate('/electrical/projects'),
                 },
                 {
-                    key: '/co-dien/quan-ly-cong-viec-hang-ngay',
+                    key: '/electrical/tasks-daily',
                     label: 'Công việc hàng ngày',
-                    onClick: () => navigate('/co-dien/quan-ly-cong-viec-hang-ngay'),
+                    icon: <OrderedListOutlined />,
+                    onClick: () => navigate('/electrical/tasks-daily'),
                 },
                 {
-                    key: '/co-dien/quan-ly-thiet-bi',
+                    key: '/electrical/devices',
                     label: 'Thiết bị',
-                    onClick: () => navigate('/co-dien/quan-ly-thiet-bi'),
+                    icon: <WalletOutlined />,
+                    onClick: () => navigate('/electrical/devices'),
                 },
                 {
-                    key: '/co-dien/quan-ly-don-dat-hang',
+                    key: '/electrical/orders',
                     label: 'Đơn đặt hàng',
-                    onClick: () => navigate('/co-dien/quan-ly-nhom-thiet-bi'),
+                    icon: <ShoppingCartOutlined />,
+                    onClick: () => navigate('/electrical/orders'),
                 },
             ],
         },

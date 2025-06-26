@@ -4,9 +4,6 @@ import authService from '~/services/authService';
 // Base config
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
-  // headers: {
-  //   'Content-Type': 'application/json',
-  // },
   withCredentials: true, // nếu dùng cookie cho auth
 });
 
@@ -32,13 +29,16 @@ axiosClient.interceptors.response.use(
       if (status === 401) {
         console.warn('Chưa đăng nhập hoặc token hết hạn');
         authService.logout();
-        window.location.href = '/login';
-
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
       } else if (status === 403) {
         console.warn('Không có quyền truy cập');
         alert('Bạn không có quyền truy cập chức năng này!');
         authService.logout(); // Đăng xuất nếu cần
-        window.location.href = '/login';
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(error);
