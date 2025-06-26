@@ -73,7 +73,7 @@ const CoDienPage = () => {
   ];
 
   return (
-    <div style={{ padding: 24, background: '#fff', borderRadius: 8 }}>
+    <div style={{  borderRadius: 8 }}>
       <Title level={3} style={{ color: '#531dab', marginBottom: 20 }}>
         🛠️ SỬA CHỮA MÁY, THIẾT BỊ
       </Title>

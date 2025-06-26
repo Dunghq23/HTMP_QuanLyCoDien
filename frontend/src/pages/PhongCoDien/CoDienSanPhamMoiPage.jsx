@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Table,
   Modal,
@@ -14,8 +14,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
+import { useTheme } from '~/contexts/ThemeContext';
+
+
 
 function CoDienSanPhamMoiPage() {
+  const { isDarkMode } = useTheme();
+
   const [form] = Form.useForm();
   const [data, setData] = useState([
     {
@@ -105,7 +110,7 @@ function CoDienSanPhamMoiPage() {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div >
       <h1>Sản phẩm mới</h1>
       <Button type="primary" onClick={() => setIsModalVisible(true)}>
         Thêm mới
@@ -163,8 +168,9 @@ function CoDienSanPhamMoiPage() {
       </Modal>
 
       <h2 style={{ marginTop: 48 }}>Biểu đồ Gantt</h2>
-      <div style={{ background: '#fff', border: '1px solid #ccc', padding: 16 }}>
+      <div style={{ border: '1px solid #ccc', padding: 16 }}>
         <Gantt
+          theme={isDarkMode ? "dark" : "default"} 
           tasks={convertToGanttTasks(data)}
           viewMode={ViewMode.Day}
           listCellWidth="155px"

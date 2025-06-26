@@ -39,7 +39,9 @@ function EmployeeManagerPage() {
     };
 
     useEffect(() => {
-        fetchEmployees();
+        if (localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') {
+            fetchEmployees();
+        }
     }, []);
 
     const handleSave = async () => {
@@ -80,75 +82,51 @@ function EmployeeManagerPage() {
         {
             title: 'STT',
             key: 'index',
+            align: 'center',
+            width: '5%',
             render: (_, __, index) => index + 1,
-            // Giữ lại trên mọi kích thước màn hình
-            responsive: ['xs', 'sm', 'md', 'lg', 'xl']
         },
         {
-            title: 'Mã NV', // Rút gọn tiêu đề cho mobile
+            title: 'Mã nhân viên',
             dataIndex: 'code',
             key: 'code',
+            width: '20%',
+            align: 'center',
             sorter: (a, b) => a.code.localeCompare(b.code),
-            // Luôn hiển thị mã nhân viên
-            responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
-            ellipsis: true, // Thêm dấu ba chấm nếu quá dài
         },
         {
-            title: 'Tên nhân viên',
+            title: 'Tên',
             dataIndex: 'name',
             key: 'name',
+            width: '40%',
+            align: 'center',
             sorter: (a, b) => a.name.localeCompare(b.name),
-            // Ẩn trên màn hình nhỏ nhất nếu cần thiết, hoặc điều chỉnh responsive
-            responsive: ['xs', 'md', 'lg', 'xl'], // Hiển thị từ sm trở lên
-            ellipsis: true,
         },
         {
             title: 'Chức vụ',
             dataIndex: 'position',
+            align: 'center',
             key: 'position',
-            // Ẩn trên màn hình nhỏ nhất
-            responsive: ['md', 'lg', 'xl'], // Hiển thị từ md trở lên
-            ellipsis: true,
-        },
-        {
-            title: 'SĐT', // Rút gọn tiêu đề cho mobile
-            dataIndex: 'phone',
-            key: 'phone',
-            // Ẩn trên màn hình nhỏ nhất, chỉ hiện từ sm trở lên
-            responsive: ['sm', 'md', 'lg', 'xl'],
-            ellipsis: true,
-        },
-        {
-            title: 'Vai trò',
-            dataIndex: 'role',
-            key: 'role',
-            // Chỉ hiển thị trên màn hình lớn hơn
-            responsive: ['lg', 'xl'], // Hiển thị từ lg trở lên
-            render: (role) => role.replace('ROLE_', ''), // Hiển thị vai trò đẹp hơn
-            ellipsis: true,
+            width: '20%',
+
         },
         {
             title: 'Hành động',
             key: 'action',
+            align: 'center',
             render: (_, record) => (
                 <Space>
-                    <Button type="link" onClick={() => handleEdit(record)} size="small"> {/* Dùng size="small" cho nút */}
+                    <Button type="link" onClick={() => handleEdit(record)}>
                         Sửa
                     </Button>
                 </Space>
             ),
-            // Luôn hiển thị nút hành động
-            responsive: ['xs', 'sm', 'md', 'lg', 'xl']
+            width: '15%',
         },
     ];
 
     return (
-        <div
-            style={{
-                maxWidth: 1200,
-                margin: '0 auto',
-            }}
-        >
+        <div>
             <Button
                 type="primary"
                 style={{ marginBottom: 16 }}
@@ -158,13 +136,13 @@ function EmployeeManagerPage() {
             </Button>
 
             <Table
+                width="100%"
                 rowKey="id"
                 columns={columns}
                 dataSource={employees}
                 loading={loading}
                 bordered
-                scroll={{ x: 'max-content' }} // ✅ Rất quan trọng để bảng có thể cuộn ngang trên mobile
-                pagination={{ pageSize: 10 }} // Thêm phân trang mặc định
+                scroll={{ x: 'max-content' }} // ✅ Cho phép kéo ngang trên mobile
             />
 
             <Modal
@@ -178,13 +156,8 @@ function EmployeeManagerPage() {
                 onOk={handleSave}
                 okText="Lưu"
                 cancelText="Hủy"
-                // Ant Design Modal đã có responsive mặc định tốt,
-                // nhưng nếu muốn kiểm soát thêm, bạn có thể dùng `width` linh hoạt.
-                // Đối với mobile, width="calc(100% - 32px)" sẽ tạo khoảng cách 16px mỗi bên.
-                // Trên desktop, maxWidth sẽ giới hạn chiều rộng.
-                width={window.innerWidth < 768 ? 'calc(100% - 32px)' : 520} // Thay đổi width dựa trên kích thước màn hình
-                style={{ top: 20 }} // Đảm bảo modal không quá sát đỉnh màn hình
-                maskClosable={false} // Không cho phép đóng modal khi click ra ngoài
+                width="100%" // ✅ Tối đa chiều rộng
+                style={{ top: 20, maxWidth: 480, margin: '0 auto' }} // ✅ Responsive modal
             >
                 <Form form={form} layout="vertical">
                     <Form.Item

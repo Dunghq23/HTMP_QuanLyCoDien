@@ -1,70 +1,10 @@
-// import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { Card, Row, Col } from 'antd';
-// import {
-//   AppstoreOutlined,
-//   ScissorOutlined,
-//   RobotOutlined,
-//   ExclamationCircleOutlined,
-// } from '@ant-design/icons';
-// import '~/styles/CoDienQuanLyDuAn.css';
-
-// const CoDienQuanLyDuAnPage = () => {
-//   const navigate = useNavigate();
-
-//   const cards = [
-//     {
-//       title: 'Sản phẩm mới',
-//       icon: <AppstoreOutlined style={{ fontSize: 32, color: '#1890ff' }} />,
-//       path: '/co-dien/quan-ly-du-an/san-pham-moi',
-//     },
-//     {
-//       title: 'Tay gá, cắt gate',
-//       icon: <ScissorOutlined style={{ fontSize: 32, color: '#52c41a' }} />,
-//       path: '/co-dien/quan-ly-du-an/tay-ga-cat-gate',
-//     },
-//     {
-//       title: 'Máy tự động',
-//       icon: <RobotOutlined style={{ fontSize: 32, color: '#faad14' }} />,
-//       path: '/co-dien/quan-ly-du-an/may-tu-dong',
-//     },
-//     {
-//       title: 'Phát sinh',
-//       icon: (
-//         <ExclamationCircleOutlined style={{ fontSize: 32, color: '#f5222d' }} />
-//       ),
-//       path: '/co-dien/quan-ly-du-an/phat-sinh',
-//     },
-//   ];
-
-//   return (
-//     <div className="project-manager-container">
-//       <Row gutter={[16, 16]}>
-//         {cards.map((item) => (
-//           <Col key={item.title} xs={24} sm={12} md={12} lg={6}>
-//             <Card
-//               hoverable
-//               className="project-card"
-//               onClick={() => navigate(item.path)}
-//             >
-//               <div className="card-icon">{item.icon}</div>
-//               <div className="card-title">{item.title}</div>
-//             </Card>
-//           </Col>
-//         ))}
-//       </Row>
-//     </div>
-//   );
-// };
-
-// export default CoDienQuanLyDuAnPage;
-
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Table, Input, Select, DatePicker, Progress, Tag, Row, Col, Typography } from 'antd';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
+import { useTheme } from '~/contexts/ThemeContext';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -103,6 +43,7 @@ const statusColor = {
 };
 
 const convertToGanttTasks = (data) => {
+
   const today = new Date();
 
   const taskData = data.map((item) => ({
@@ -119,10 +60,12 @@ const convertToGanttTasks = (data) => {
 };
 
 const CoDienQuanLyDuAnPage = () => {
+  const { isDarkMode } = useTheme();
+
   const [data, setData] = useState(initialData);
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{}}>
       <Title level={3}>QUẢN LÝ DỰ ÁN TỔNG THỂ</Title>
       <div style={{ marginBottom: 16 }}>
         <Row gutter={16}>
@@ -212,7 +155,7 @@ const CoDienQuanLyDuAnPage = () => {
             dataIndex: 'progress',
             key: 'progress',
             width: '10%',
-            render: (value) => <Progress percent={value} size="small" status="active" />, 
+            render: (value) => <Progress percent={value} size="small" status="active" />,
           },
         ]}
         dataSource={data}
@@ -226,6 +169,7 @@ const CoDienQuanLyDuAnPage = () => {
       <div style={{ marginTop: 48 }}>
         <Title level={4}>Biểu đồ Gantt</Title>
         <Gantt
+          theme={isDarkMode ? "dark" : "default"}
           tasks={convertToGanttTasks(data)}
           viewMode={ViewMode.Week}
           listCellWidth="200px"

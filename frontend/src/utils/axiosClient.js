@@ -31,11 +31,14 @@ axiosClient.interceptors.response.use(
       const { status } = error.response;
       if (status === 401) {
         console.warn('Chưa đăng nhập hoặc token hết hạn');
-        authService.logout(); // Đăng xuất nếu cần
+        authService.logout();
+        window.location.href = '/login';
+
       } else if (status === 403) {
         console.warn('Không có quyền truy cập');
         alert('Bạn không có quyền truy cập chức năng này!');
         authService.logout(); // Đăng xuất nếu cần
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);

@@ -14,7 +14,7 @@ const CustomTooltip = ({ task }) => {
 
             {task.filePath && (
                 <img
-                    src={`${process.env.REACT_APP_UPLOAD_URL}/uploads/${task.filePath}`}
+                    src={`${process.env.REACT_APP_UPLOAD_URL}/${task.filePath}`}
                     alt="Ảnh công việc"
                     style={{ marginTop: 8, maxHeight: 300, width: '100%', objectFit: 'contain', borderRadius: 4 }}
                 />

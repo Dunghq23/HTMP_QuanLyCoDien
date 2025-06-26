@@ -25,7 +25,11 @@ class AuthService {
 
   // Đăng xuất
   logout() {
-    localStorage.clear();
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("employeeId");
+    localStorage.removeItem("employeeName");
+    localStorage.removeItem("role");
+    
   }
 
   // Kiểm tra xem đã đăng nhập chưa
