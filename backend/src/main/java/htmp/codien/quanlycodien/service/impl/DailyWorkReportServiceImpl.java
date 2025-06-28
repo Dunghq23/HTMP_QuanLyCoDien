@@ -123,7 +123,6 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
             }
 
         }
-
         reportRepository.save(report);
     }
 
@@ -136,5 +135,4 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
         }
         reportRepository.delete(report);
     }
-
 }

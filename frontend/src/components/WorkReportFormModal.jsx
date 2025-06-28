@@ -1,7 +1,6 @@
 import React from 'react';
-import { Modal, Form, DatePicker, Row, Col, TimePicker, Input, Upload, Select, Button } from 'antd';
+import { Modal, Form, DatePicker, Row, Col, TimePicker, Input, Upload, Select, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 
 const WorkReportFormModal = ({
     visible,
@@ -15,6 +14,24 @@ const WorkReportFormModal = ({
     role,
     employeeId,
 }) => {
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
+
+    const handleBeforeUpload = (file) => {
+        const isAllowedType = allowedTypes.includes(file.type);
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isAllowedType) {
+            message.error('Chỉ cho phép định dạng PDF, PNG, hoặc JPG!');
+        }
+
+        if (!isLt2M) {
+            message.error('Dung lượng file không được vượt quá 2MB!');
+        }
+
+        return isAllowedType || Upload.LIST_IGNORE; // Ngăn AntD hiển thị file nếu sai định dạng
+    };
+
     return (
         <Modal
             title={editingRecord ? "Cập nhật công việc" : "Thêm công việc"}
@@ -35,18 +52,16 @@ const WorkReportFormModal = ({
                         <Select
                             showSearch
                             placeholder="Chọn nhân viên"
-                            optionFilterProp="children"
+                            optionFilterProp="label"
                             filterOption={(input, option) =>
-                                option?.children?.toLowerCase().includes(input.toLowerCase())
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
                             disabled={role === 'ROLE_EMPLOYEE'}
-                        >
-                            {employees.map((emp) => (
-                                <Select.Option key={emp.id} value={emp.id}>
-                                    {emp.name} ({emp.code})
-                                </Select.Option>
-                            ))}
-                        </Select>
+                            options={employees.map(emp => ({
+                                label: `${emp.name} (${emp.code})`,
+                                value: emp.id,
+                            }))}
+                        />
                     </Form.Item>
                 )}
 
@@ -68,7 +83,20 @@ const WorkReportFormModal = ({
                         <Form.Item
                             label="Giờ kết thúc"
                             name="endTime"
-                            rules={[{ required: true, message: 'Chọn giờ kết thúc' }]}
+                            dependencies={['startTime']}
+                            rules={[
+                                { required: true, message: 'Chọn giờ kết thúc' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        const start = getFieldValue('startTime');
+                                        if (!start || !value) return Promise.resolve();
+                                        if (value.isAfter(start)) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('Giờ kết thúc phải sau giờ bắt đầu'));
+                                    },
+                                }),
+                            ]}
                         >
                             <TimePicker format="HH:mm" placeholder="Giờ kết thúc" style={{ width: '100%' }} />
                         </Form.Item>
@@ -91,13 +119,20 @@ const WorkReportFormModal = ({
                 >
 
                     <Upload
-                        beforeUpload={() => false}
+                        beforeUpload={handleBeforeUpload}
                         maxCount={1}
                         listType="picture"
                         accept=".png,.jpg,.jpeg"
+                        customRequest={({ onSuccess }) => {
+                            // Ngăn Upload tự gửi file lên server
+                            setTimeout(() => {
+                                onSuccess("ok");
+                            }, 0);
+                        }}
                     >
                         <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
+
                 </Form.Item>
             </Form>
         </Modal>
