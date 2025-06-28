@@ -26,6 +26,7 @@ const routes = [
       { path: 'electrical/projects/new-product', element: <ElectricalNewProductPage /> },
       { path: 'electrical/tasks-daily', element: <ElectricalDailyTasksPage /> },
       { path: 'electrical/orders', element: <ElectricalOrderPage /> },
+      { path: 'electrical/materials-equipment', element: <ElectricalOrderPage /> },
       { path: 'about', element: <AboutPage /> },
     ],
   },

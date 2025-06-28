@@ -170,7 +170,7 @@ const DefaultLayout = () => {
           <SidebarMenu
             collapsed={collapsed}
             isDarkMode={isDarkMode}
-            toggleTheme={toggleTheme}
+
           />
         </Layout.Sider>
 
@@ -181,6 +181,9 @@ const DefaultLayout = () => {
             backgroundColor={backgroundColor}
             textColor={textColor}
             subTextColor={subTextColor}
+            isDarkMode={isDarkMode}
+            toggleTheme={toggleTheme}
+
           />
 
           <Content style={{ marginTop: 64, padding: 24 }}>

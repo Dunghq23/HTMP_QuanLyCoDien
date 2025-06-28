@@ -34,7 +34,6 @@ axiosClient.interceptors.response.use(
         }
       } else if (status === 403) {
         console.warn('Không có quyền truy cập');
-        alert('Bạn không có quyền truy cập chức năng này!');
         authService.logout(); // Đăng xuất nếu cần
         if (window.location.pathname !== '/login') {
           window.location.href = '/login';

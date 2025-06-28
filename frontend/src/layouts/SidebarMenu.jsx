@@ -34,11 +34,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, isDarkMode, toggleTheme }) => {
                 selectedKeys={[location.pathname]}
                 items={getMenuItems(navigate)}
             />
-
-            <div style={{ padding: 16, textAlign: 'center' }}>
-                <Switch checked={isDarkMode} onChange={toggleTheme} />
-                <Text style={{ marginLeft: 8, color: subTextColor }}>Dark Mode</Text>
-            </div>
         </div>
     );
 };

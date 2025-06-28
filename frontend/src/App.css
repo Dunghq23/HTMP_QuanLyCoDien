@@ -1,0 +1,11 @@
+/* Ẩn scrollbar trên Chrome, Edge */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ẩn trên Firefox */
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* IE 10+ */
+}

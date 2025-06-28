@@ -17,8 +17,7 @@ export const breadcrumbMap = {
     '/electrical': 'Phòng cơ điện',
     '/electrical/projects': 'Quản lý dự án',
     '/electrical/tasks-daily': 'Công việc hàng ngày',
-    '/electrical/devices': 'Thiết bị',
-    '/electrical/device-groups': 'Nhóm thiết bị',
+    '/electrical/materials-equipment': 'Vật tư & Thiết bị',
     '/other': 'Tài liệu khác',
     '/logout': 'Đăng xuất',
     '/electrical/projects/new-product': 'Sản phẩm mới',
@@ -61,10 +60,10 @@ export const getMenuItems = (navigate) => {
                     onClick: () => navigate('/electrical/tasks-daily'),
                 },
                 {
-                    key: '/electrical/devices',
-                    label: 'Thiết bị',
+                    key: '/electrical/materials-equipment',
+                    label: 'Vật tư & Thiết bị',
                     icon: <WalletOutlined />,
-                    onClick: () => navigate('/electrical/devices'),
+                    onClick: () => navigate('/electrical/materials-equipment'),
                 },
                 {
                     key: '/electrical/orders',
@@ -78,15 +77,6 @@ export const getMenuItems = (navigate) => {
             key: '/other',
             icon: <FileOutlined />,
             label: 'Tài liệu khác',
-        },
-        {
-            key: '/logout',
-            icon: <LogoutOutlined />,
-            label: 'Đăng xuất',
-            onClick: () => {
-                authService.logout();
-                window.location.href = '/login';
-            },
         },
     ];
 };
