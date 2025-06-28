@@ -84,7 +84,7 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of("*"));
 
         // Cho phép các method HTTP gọi đến server
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
         // Cho phép tất cả các header
         config.setAllowedHeaders(List.of("*"));
