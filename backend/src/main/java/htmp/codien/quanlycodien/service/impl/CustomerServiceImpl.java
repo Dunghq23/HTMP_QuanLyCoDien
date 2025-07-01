@@ -47,7 +47,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Cập nhật các thuộc tính cần thiết
         existingCustomer.setName(dto.getName());
-        existingCustomer.setCode(dto.getCode());
 
         customerRepository.save(existingCustomer);
         return modelMapper.map(existingCustomer, CustomerDTO.class);
