@@ -24,6 +24,7 @@ public class DailyWorkReport {
 
     private LocalDate reportDate;
 
+    @Column(name = "task_description", columnDefinition = "TEXT")
     private String taskDescription;
 
     private LocalTime startTime;
