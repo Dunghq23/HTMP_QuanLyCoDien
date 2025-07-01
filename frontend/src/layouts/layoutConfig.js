@@ -3,17 +3,17 @@ import {
     UserOutlined,
     ToolOutlined,
     FileOutlined,
-    LogoutOutlined,
     ShoppingCartOutlined,
     ProjectOutlined,
     OrderedListOutlined,
     WalletOutlined,
+    UsergroupAddOutlined,
 } from '@ant-design/icons';
-import authService from '~/services/authService';
 
 export const breadcrumbMap = {
     '/': 'Trang chủ',
     '/employees': 'Quản lý nhân viên',
+    '/customers': 'Quản lý khách hàng',
     '/electrical': 'Phòng cơ điện',
     '/electrical/projects': 'Quản lý dự án',
     '/electrical/tasks-daily': 'Công việc hàng ngày',
@@ -42,6 +42,24 @@ export const getMenuItems = (navigate) => {
                 onClick: () => navigate('/employees'),
             }]
             : []),
+
+
+        // ...(role !== 'ROLE_EMPLOYEE'
+        //     ? [{
+        //         key: '/employees',
+        //         icon: <UserOutlined />,
+        //         label: 'Quản lý nhân viên',
+        //         onClick: () => navigate('/employees'),
+        //     }]
+        //     : []),
+
+        {
+            key: '/customers',
+            icon: <UsergroupAddOutlined />,
+            label: 'Quản lý khách hàng',
+            onClick: () => navigate('/customers'),
+        },
+
         {
             key: '/electrical',
             icon: <ToolOutlined />,

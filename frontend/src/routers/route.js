@@ -10,6 +10,7 @@ import ElectricalDailyTasksPage from '~/pages/PhongCoDien/ElectricalDailyTasksPa
 import LoginPage from '~/pages/LoginPage';
 import PrivateRoute from '~/components/PrivateRoute';
 import ElectricalOrderPage from '~/pages/PhongCoDien/ElectricalOrdersPage';
+import CustomerManagerPage from '~/pages/CustomerManagerPage';
 
 const routes = [
   {
@@ -21,6 +22,7 @@ const routes = [
     children: [
       { path: '', element: <HomePage /> },
       { path: 'employees', element: <EmployeeManagerPage /> },
+      { path: 'customers', element: <CustomerManagerPage /> },
       { path: 'electrical', element: <ElectricalPage /> },
       { path: 'electrical/projects', element: <ElectricalProjectManagementPage /> },
       { path: 'electrical/projects/new-product', element: <ElectricalNewProductPage /> },
