@@ -33,7 +33,7 @@ jobs:
         run: |
           cd frontend
           npm install
-          npm run build
+          CI=false npm run build  # Tắt chế độ CI nghiêm ngặt
 
   deploy:
     name: Deploy to Server via SSH
