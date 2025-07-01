@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js (v20.x)
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Đã nâng từ 18 lên 20
+          node-version: '20'
           cache: 'npm'
 
       - name: Build Backend
@@ -33,7 +33,11 @@ jobs:
       - name: Build Frontend
         run: |
           cd frontend
-          npm ci --legacy-peer-deps  # Thay npm install để đảm bảo consistency
+          # Kiểm tra và tạo package-lock.json nếu chưa có
+          if [ ! -f package-lock.json ]; then
+            npm install --package-lock-only --legacy-peer-deps
+          fi
+          npm ci --legacy-peer-deps || npm install --legacy-peer-deps
           npm run build
 
   deploy:
@@ -49,10 +53,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Cập nhật Node.js lên v20.x
             curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
             sudo apt-get install -y nodejs
-            node -v # Verify version
+            node -v
 
       - name: Deploy Application
         uses: appleboy/ssh-action@v1.0.3
@@ -82,7 +85,10 @@ jobs:
 
             echo "⚙️ Build frontend..."
             cd ../frontend
-            npm ci --legacy-peer-deps
+            if [ ! -f package-lock.json ]; then
+              npm install --package-lock-only --legacy-peer-deps
+            fi
+            npm ci --legacy-peer-deps || npm install --legacy-peer-deps
             npm run build
 
             echo "🧹 Stop old frontend (serve)..."
