@@ -19,11 +19,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Node.js (v20.x)
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18'
 
       - name: Build Backend
         run: |
@@ -33,17 +32,7 @@ jobs:
       - name: Build Frontend
         run: |
           cd frontend
-          # Tạo package-lock.json nếu chưa tồn tại
-          if [ ! -f package-lock.json ]; then
-            npm install --package-lock-only --legacy-peer-deps
-          fi
-          
-          # Clean install với fallback an toàn
-          npm ci --legacy-peer-deps || {
-            echo "Fallback to npm install..."
-            npm install --legacy-peer-deps
-          }
-          
+          npm install
           npm run build
 
   deploy:
@@ -52,29 +41,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Node.js 20.x on Server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-            node -v
-
-      - name: Deploy Application
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "🚀 System Info..."
-            node -v
-            npm -v
-            java -version
-
             echo "🚀 Pulling latest code..."
             cd ~/quanlycodien
             git pull origin main
@@ -91,10 +64,7 @@ jobs:
 
             echo "⚙️ Build frontend..."
             cd ../frontend
-            if [ ! -f package-lock.json ]; then
-              npm install --package-lock-only --legacy-peer-deps
-            fi
-            npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+            npm install
             npm run build
 
             echo "🧹 Stop old frontend (serve)..."
