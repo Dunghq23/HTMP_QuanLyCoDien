@@ -1,7 +1,6 @@
 package htmp.codien.quanlycodien.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,7 +39,4 @@ public class Employee {
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "employee")
-    List<TaskAssignment> assignments;
 }

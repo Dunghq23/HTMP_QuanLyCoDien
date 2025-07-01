@@ -1,9 +1,7 @@
 package htmp.codien.quanlycodien.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import htmp.codien.quanlycodien.model.TaskAssignment;
 import lombok.*;
 
 @Data
@@ -20,5 +18,4 @@ public class EmployeeDTO {
     String phone;
     String role;
     LocalDateTime createdAt;
-    List<TaskAssignment> assignments;
 }
