@@ -40,7 +40,7 @@ jobs:
           npm install
 
           echo "⚙️ Building frontend..."
-          npm run build
+          CI='' npm run build
           
       - name: Restart Backend and Frontend
         run: |
