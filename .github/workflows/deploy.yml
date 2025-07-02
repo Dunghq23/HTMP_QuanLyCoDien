@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install serve globally
+        run: npm install -g serve
+
       - name: Build Backend
         run: |
           cd backend
@@ -41,7 +44,7 @@ jobs:
 
           echo "⚙️ Building frontend..."
           CI='' npm run build
-          
+
       - name: Restart Backend and Frontend
         run: |
           echo "🧹 Stop old backend..."
@@ -57,3 +60,5 @@ jobs:
           echo "🚀 Serve frontend on port 3001..."
           cd ../frontend
           nohup serve -s build -l 3001 > ~/frontend.log 2>&1 &
+
+          echo "✅ CI/CD completed. FE should be available at http://apps.htmp.vn:3001"
