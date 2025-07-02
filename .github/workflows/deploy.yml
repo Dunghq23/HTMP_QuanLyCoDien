@@ -9,12 +9,6 @@ jobs:
     name: Deploy on Self-hosted Server
     runs-on: self-hosted
 
-    env:  # ✅ Áp dụng cho toàn job
-      SPRING_DATASOURCE_URL: jdbc:mysql://apps.htmp.vn:3306/codien
-      SERVER_PORT: 8081
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -28,11 +22,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Build Backend
         run: |
           cd backend
+          cp .env.production .env
           ./mvnw clean package -DskipTests || mvn clean package -DskipTests
 
       - name: Build Frontend
@@ -46,13 +41,13 @@ jobs:
           echo "🧹 Stop old backend..."
           pkill -f 'java.*QuanlycodienApplication' || true
 
-          echo "🚀 Start backend at port 8081..."
-          nohup java -jar backend/target/*.jar --server.port=8081 > ~/backend.log 2>&1 &
+          echo "🚀 Start backend using .env.production..."
+          cd backend
+          nohup java -jar target/*.jar > ~/backend.log 2>&1 &
 
           echo "🧹 Stop old frontend (serve)..."
           pkill -f "serve.*3001" || true
 
           echo "🚀 Serve frontend on port 3001..."
-          cd frontend
+          cd ../frontend
           nohup serve -s build -l 3001 > ~/frontend.log 2>&1 &
-
