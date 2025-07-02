@@ -33,12 +33,15 @@ jobs:
       - name: Build Frontend
         run: |
           cd frontend
+          echo "📋 Copying .env.production..."
+          cp .env.production .env
+
           echo "📦 Installing dependencies..."
-          npm install || { echo "❌ npm install failed"; exit 1; }
+          npm install
 
           echo "⚙️ Building frontend..."
-          npm run build || { echo "❌ npm run build failed"; exit 1; }
-
+          npm run build
+          
       - name: Restart Backend and Frontend
         run: |
           echo "🧹 Stop old backend..."
