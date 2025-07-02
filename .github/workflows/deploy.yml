@@ -45,6 +45,10 @@ jobs:
           echo "⚙️ Building frontend..."
           CI='' npm run build
 
+          echo "🧹 Cleaning up .env to avoid git conflict..."
+          rm .env
+
+
       - name: Restart Backend and Frontend
         run: |
           echo "🧹 Stop old backend..."
