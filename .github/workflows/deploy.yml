@@ -33,8 +33,11 @@ jobs:
       - name: Build Frontend
         run: |
           cd frontend
-          npm install
-          npm run build
+          echo "📦 Installing dependencies..."
+          npm install || { echo "❌ npm install failed"; exit 1; }
+
+          echo "⚙️ Building frontend..."
+          npm run build || { echo "❌ npm run build failed"; exit 1; }
 
       - name: Restart Backend and Frontend
         run: |
