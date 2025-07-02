@@ -10,8 +10,10 @@ jobs:
     runs-on: self-hosted
 
     env:  # ✅ Áp dụng cho toàn job
-      MYSQL_USER: ${{ secrets.MYSQL_USER }}
-      MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      SPRING_DATASOURCE_URL: jdbc:mysql://apps.htmp.vn:3306/codien
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
     steps:
       - name: Checkout source code
