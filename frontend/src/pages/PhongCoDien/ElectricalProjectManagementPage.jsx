@@ -5,7 +5,6 @@ import 'dayjs/locale/vi';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 import { useTheme } from '~/contexts/ThemeContext';
-import projectService from '~/services/projectService';
 import customerService from '~/services/customerService';
 import CustomCard from '~/components/CustomCard';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -79,19 +78,8 @@ const ElectricalProjectManagementPage = () => {
       console.error("Lỗi khi lấy danh sách dự án:", err);
     }
   }
-  const fetchProjects = async () => {
-    try {
-      const result = await projectService.getAllProject();
-      setProject(result);
-      console.log(result);
-    } catch (err) {
-      console.error("Lỗi khi lấy danh sách dự án:", err);
-    }
-  };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+
 
   const columns = [
     {
@@ -306,93 +294,6 @@ const ElectricalProjectManagementPage = () => {
         dataSource={project}
         pagination={{ pageSize: 5 }}
       />
-
-
-      <Modal
-        title="Thêm dự án mới"
-        open={modalVisible}
-        onCancel={() => {
-          setModalVisible(false);
-          form.resetFields();
-        }}
-        okText="Lưu"
-        cancelTextText="Hủy"
-        onOk={async () => {
-          try {
-            const values = await form.validateFields();
-            console.log(values);
-
-            const responseMessage = await projectService.createProject(values);
-            message.success(responseMessage);
-
-            setModalVisible(false);
-            form.resetFields();
-            fetchProjects();
-          } catch (err) {
-            console.error(err);
-            message.error(err);
-          }
-
-        }}
-      >
-        <Form form={form} layout='vertical'>
-          <Form.Item
-            label="Mã dự án"
-            name="code"
-            rules={[{ required: true, message: 'Vui lòng nhập mã dự án' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Tên dự án"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên dự án" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Khách hàng"
-            name="customerId"
-            rules={[{ required: true, message: "Vui lòng nhập tên dự án" }]}
-          >
-            <Select placeholder="Chọn khách hàng">
-              {customers.map((item) => (<Option key={item.id} value={item.id}>
-                {item.name}
-              </Option>))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Loại dự án" name="type" rules={[{ required: true }]}>
-            <Select placeholder="Chọn loại">
-              <Option value="TAY_GA">Tay gá</Option>
-              <Option value="SAN_PHAM_MOI">Sản phẩm mới</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Số lượng" name="quantity" rules={[{ required: true }]}>
-            <Input type="number" min={1} />
-          </Form.Item>
-
-          <Form.Item label="Ngày bắt đầu" name="startDate" rules={[{ required: true }]}>
-            <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
-          </Form.Item>
-
-
-          {/* 
-            {
-              "code": "TG-AMA-06",
-              "name": "Tay gá AMA tháng 6",
-              "customerId": 1,
-              "type": "TAY_GA",
-              "quantity": 10,
-              "startDate": "2025-06-10"
-            }
-          */}
-
-        </Form>
-      </Modal>
     </>
   );
 };
