@@ -21,7 +21,6 @@ public class EmployeeController {
 
     // GET all employees
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<ApiResponse<List<EmployeeDTO>>> getAll() {
         List<EmployeeDTO> employees = employeeService.findAll();
         return ResponseUtil.success(employees, "Lấy danh sách nhân viên thành công");
