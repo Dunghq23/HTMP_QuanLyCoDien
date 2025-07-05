@@ -62,7 +62,7 @@ function EmployeeManagerPage() {
             fetchEmployees();
         } catch (err) {
             console.error(err);
-            message.error('Lỗi khi lưu nhân viên');
+            message.error(err);
         }
     };
 
