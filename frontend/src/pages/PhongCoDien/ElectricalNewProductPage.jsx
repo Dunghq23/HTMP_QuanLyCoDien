@@ -1,183 +1,269 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
-  Modal,
+  Tag,
   Button,
-  Form,
-  DatePicker,
-  InputNumber,
   Row,
   Col,
+  Space,
   message,
+  Spin,
+  Image,
+  Popconfirm,
 } from 'antd';
-import dayjs from 'dayjs';
-import 'dayjs/locale/vi';
-import { Gantt, ViewMode } from 'gantt-task-react';
-import 'gantt-task-react/dist/index.css';
-import { useTheme } from '~/contexts/ThemeContext';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  FileExcelOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import modelService from '~/services/modelService';
+import CreateNewModelModal from '~/components/CreateNewModelModal';
+import CreateNewProcessModal from '~/components/CreateNewProcessModal';
+import ProcessTabs from '~/components/ProcessTabs';
+import Search from 'antd/es/transfer/search';
 
+const useExpandable = () => {
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [expandedData, setExpandedData] = useState({});
+  const [loadingExpandedRow, setLoadingExpandedRow] = useState({});
+  const [productId, setModelId] = useState(null);
 
+  const loadProducts = async (id) => {
+    setLoadingExpandedRow((prev) => ({ ...prev, [id]: true }));
+    try {
+      const items = await modelService.getProductByModelId(id);
+      setExpandedData((prev) => ({ ...prev, [id]: items }));
+    } catch {
+      message.error('Không thể tải danh sách sản phẩm');
+    } finally {
+      setLoadingExpandedRow((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
+  return {
+    expandedRowKeys,
+    setExpandedRowKeys,
+    expandedData,
+    loadingExpandedRow,
+    loadProducts,
+    setModelId,
+    productId,
+  };
+};
 
 function ElectricalNewProductPage() {
-  const { isDarkMode } = useTheme();
+  const [selectedModelId, setSelectedModelId] = useState(null);
+  const [isCreateNewModelModalOpen, setIsCreateNewModelModalOpen] = useState(false);
+  const [isCreateNewProcessModalOpen, setIsCreateNewProcessModalOpen] = useState(false);
+  const [models, setModels] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
-  const [form] = Form.useForm();
-  const [data, setData] = useState([
-    {
-      key: 1,
-      thang: 'Tháng 6',
-      ngay: '16/06/2025',
-      nhanSP: 0,
-      thietKe: 0,
-      coPhoiVatTu: 0,
-      giaCong: 0,
-      lapRap: 0,
-      thuNghiem: 0,
-      banGiao: 0,
-      chuaThietKe: 0,
-      chuaPhoiVat: 4,
-      chuaGiaCong: 32,
-      chuaLapRap: 0,
-      chuaTest: 0,
-      chuaBanGiao: 0,
-      ton: 36,
-    },
-    {
-      key: 2,
-      thang: 'Tháng 6',
-      ngay: '17/06/2025',
-      nhanSP: 2,
-      thietKe: 0,
-      coPhoiVatTu: 0,
-      giaCong: 0,
-      lapRap: 0,
-      thuNghiem: 0,
-      banGiao: 0,
-      chuaThietKe: 2,
-      chuaPhoiVat: 4,
-      chuaGiaCong: 32,
-      chuaLapRap: 0,
-      chuaTest: 0,
-      chuaBanGiao: 0,
-      ton: 38,
-    },
-  ]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const {
+    expandedRowKeys,
+    setExpandedRowKeys,
+    expandedData,
+    loadingExpandedRow,
+    loadProducts,
+    setModelId,
+  } = useExpandable();
 
-  const handleAdd = (values) => {
-    const formatted = {
-      ...values,
-      key: data.length + 1,
-      thang: 'Tháng ' + (dayjs(values.ngay).month() + 1),
-      ngay: values.ngay.format('DD/MM/YYYY'),
-    };
-    setData([...data, formatted]);
-    message.success('Đã thêm dữ liệu');
-    setIsModalVisible(false);
-    form.resetFields();
+  const fetchModel = async () => {
+    try {
+      const data = await modelService.getAllModel();
+      setModels(data);
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
-  const columns = [
-    { title: 'Tháng', dataIndex: 'thang', key: 'thang' },
-    { title: 'Ngày', dataIndex: 'ngay', key: 'ngay' },
-    { title: 'Nhận SP', dataIndex: 'nhanSP', key: 'nhanSP' },
-    { title: 'Thiết kế', dataIndex: 'thietKe', key: 'thietKe' },
-    { title: 'Đã có phôi và vật tư', dataIndex: 'coPhoiVatTu', key: 'coPhoiVatTu' },
-    { title: 'Gia công', dataIndex: 'giaCong', key: 'giaCong' },
-    { title: 'Lắp ráp (Cơ khí & Điện)', dataIndex: 'lapRap', key: 'lapRap' },
-    { title: 'Thử nghiệm', dataIndex: 'thuNghiem', key: 'thuNghiem' },
-    { title: 'Bàn giao', dataIndex: 'banGiao', key: 'banGiao' },
-    { title: 'Chưa thiết kế', dataIndex: 'chuaThietKe', key: 'chuaThietKe' },
-    { title: 'Chưa có phôi và vật', dataIndex: 'chuaPhoiVat', key: 'chuaPhoiVat' },
-    { title: 'Chưa gia công', dataIndex: 'chuaGiaCong', key: 'chuaGiaCong' },
-    { title: 'Chưa lắp ráp', dataIndex: 'chuaLapRap', key: 'chuaLapRap' },
-    { title: 'Chưa Test', dataIndex: 'chuaTest', key: 'chuaTest' },
-    { title: 'Chưa bàn giao', dataIndex: 'chuaBanGiao', key: 'chuaBanGiao' },
-    { title: 'TỒN', dataIndex: 'ton', key: 'ton', className: 'orange-column' },
+  useEffect(() => {
+    fetchModel();
+  }, []);
+
+  const handleDownloadTemplate = async () => {
+    try {
+      await modelService.downloadTemplate();
+      message.success('Tải file mẫu thành công');
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const handleSearch = async (keyword) => {
+    if (keyword === '') {
+      fetchModel();
+    }
+  };
+
+  const modelColumns = [
+    { title: 'ID', dataIndex: 'id', width: '10%' },
+    { title: 'Mã model', dataIndex: 'code', width: '20%' },
+    { title: 'Tên Model', dataIndex: 'name', width: '25%' },
+    { title: 'Khách hàng', dataIndex: 'customerName', width: '35%' },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      width: '10%',
+      render: (status) => <Tag color="blue">{status}</Tag>,
+    },
+    {
+      title: 'Hành động',
+      width: '10%',
+      render: (_, record) => (
+        <Space>
+          {localStorage.getItem('role') === 'ROLE_ADMIN' && (
+            <Popconfirm
+              title="Bạn có chắc chắn muốn xóa model này không?"
+              description="Hành động này không thể hoàn tác."
+              okText="Xóa"
+              cancelText="Hủy"
+              onConfirm={() => {
+                modelService.deleteModel(record.id)
+                  .then(() => {
+                    message.success('Xóa model thành công');
+                    fetchModel();
+                  })
+                  .catch((error) => {
+                    message.error(error.message);
+                  });
+              }}
+            >
+              <Button danger icon={<DeleteOutlined />}>
+                Xóa
+              </Button>
+            </Popconfirm>
+          )}
+        </Space>
+      ),
+    }
+
   ];
 
-  const convertToGanttTasks = (data) => {
-    return data.map((item, index) => ({
-      id: `${item.key}`,
-      name: `Ngày ${item.ngay}`,
-      start: dayjs(item.ngay, 'DD/MM/YYYY').toDate(),
-      end: dayjs(item.ngay, 'DD/MM/YYYY').add(1, 'day').toDate(),
-      type: 'task',
-      progress: Math.min(item.thietKe * 10, 100),
-      isDisabled: false,
-      dependencies: index > 0 ? [`${data[index - 1].key}`] : [],
-    }));
-  };
+  const productColumns = [
+    { title: 'Mã sản phẩm', dataIndex: 'code' },
+    { title: 'Tên sản phẩm', dataIndex: 'name' },
+    { title: 'Mã khuôn', dataIndex: 'moldCode' },
+    { title: 'Loại gate', dataIndex: 'gateType' },
+    {
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      align: 'center',
+      render: (text, record) =>
+        text ? (
+          <Image.PreviewGroup>
+            <Image width={100} src={`${process.env.REACT_APP_UPLOAD_URL}/${record.image}`} />
+          </Image.PreviewGroup>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      title: 'Hành động',
+      align: 'center',
+      render: (_, record) => (
+        <Space>
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setSelectedProductId(record.id);
+              setIsCreateNewProcessModalOpen(true);
+            }}
+          />
+          <Button icon={<EditOutlined />} />
+        </Space>
+      ),
+    },
+  ];
 
   return (
-    <div >
-      <h1>Sản phẩm mới</h1>
-      <Button type="primary" onClick={() => setIsModalVisible(true)}>
-        Thêm mới
-      </Button>
+    <>
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+        <Col>
+          <Space>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsCreateNewModelModalOpen(true)}
+            >
+              Thêm New Model
+            </Button>
+            <Button
+              icon={<FileExcelOutlined />}
+              style={{ backgroundColor: '#52c41a', color: '#fff' }}
+              onClick={handleDownloadTemplate}
+            >
+              Tải mẫu new model
+            </Button>
+          </Space>
+        </Col>
+        <Col>
+          <Search
+            placeholder="Tìm kiếm..."
+            allowClear
+            enterButton={<SearchOutlined />}
+            onSearch={handleSearch}
+            style={{ width: 300 }}
+            onChange={(e) => e.target.value === '' && fetchModel()}
+          />
+        </Col>
+      </Row>
 
       <Table
-        dataSource={data}
-        columns={columns}
-        bordered
-        scroll={{ x: 'max-content' }}
-        style={{ marginTop: 24, minWidth: 1200 }}
+        dataSource={models}
+        rowKey="id"
+        columns={modelColumns}
+        expandable={{
+          expandedRowKeys,
+          onExpand: async (expanded, record) => {
+            setExpandedRowKeys([]);
+            if (expanded) {
+              setModelId(record.id);
+              await loadProducts(record.id);
+              setExpandedRowKeys([record.id]);
+            }
+          },
+          expandedRowRender: (record) =>
+            loadingExpandedRow[record.id] ? (
+              <Spin />
+            ) : (
+              <Table
+                dataSource={expandedData[record.id] || []}
+                columns={productColumns}
+                pagination={false}
+                rowKey="id"
+                size="small"
+                expandable={{
+                  expandedRowRender: (product) => (
+                    <ProcessTabs productId={product.id} />
+                  ),
+                }}
+              />
+            ),
+          rowExpandable: () => true,
+        }}
       />
 
-      <Modal
-        title="Thêm dữ liệu sản phẩm mới"
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Lưu"
-        cancelText="Huỷ"
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleAdd}
-          initialValues={{ ngay: dayjs() }}
-        >
-          <Row gutter={16}>
-            {[
-              ['ngay', 'Ngày'],
-              ['nhanSP', 'Nhận SP'],
-              ['thietKe', 'Thiết kế'],
-              ['coPhoiVatTu', 'Đã có phôi và vật tư'],
-              ['giaCong', 'Gia công'],
-              ['lapRap', 'Lắp ráp (Cơ khí & Điện)'],
-              ['thuNghiem', 'Thử nghiệm'],
-              ['banGiao', 'Bàn giao'],
-            ].map(([name, label]) => (
-              <Col span={12} key={name}>
-                <Form.Item
-                  name={name}
-                  label={label}
-                  rules={[{ required: true }]}
-                >
-                  {name === 'ngay' ? (
-                    <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-                  ) : (
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                  )}
-                </Form.Item>
-              </Col>
-            ))}
-          </Row>
-        </Form>
-      </Modal>
+      <CreateNewModelModal
+        open={isCreateNewModelModalOpen}
+        onCancel={() => setIsCreateNewModelModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateNewModelModalOpen(false);
+          fetchModel();
+        }}
+      />
 
-      <h2 style={{ marginTop: 48 }}>Biểu đồ Gantt</h2>
-      <div style={{ border: '1px solid #ccc', padding: 16 }}>
-        <Gantt
-          theme={isDarkMode ? "dark" : "default"} 
-          tasks={convertToGanttTasks(data)}
-          viewMode={ViewMode.Day}
-          listCellWidth="155px"
-          columnWidth={70}
-        />
-      </div>
-    </div>
+      <CreateNewProcessModal
+        open={isCreateNewProcessModalOpen}
+        onCancel={() => setIsCreateNewProcessModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateNewProcessModalOpen(false);
+          fetchModel();
+        }}
+        productId={selectedProductId}
+      />
+    </>
   );
 }
 

@@ -124,7 +124,7 @@ const ElectricalOrderPage = () => {
 
     const handleDownloadPDF = async () => {
         try {
-            const response = await axios.get("http://10.0.5.46:8080/api/exportpdf", {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/exportpdf`, {
                 responseType: "blob",
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
