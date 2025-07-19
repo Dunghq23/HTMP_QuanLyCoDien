@@ -5,11 +5,15 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useTheme } from '~/contexts/ThemeContext';
 import SidebarMenu from './SidebarMenu';
 import HeaderBar from './HeaderBar';
+import { useDynamicTitle } from '~/hook/useDynamicTitle';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
 
 const DefaultLayout = () => {
+  // Hook
+  useDynamicTitle();
+
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const { isDarkMode, toggleTheme, themeAlgorithm } = useTheme();
@@ -19,7 +23,7 @@ const DefaultLayout = () => {
   const textColor = isDarkMode ? '#fff' : '#000';
   const subTextColor = isDarkMode ? '#ccc' : '#666';
   const contentBg = isDarkMode ? '#141414' : '#fff';
-  
+
 
   return (
     <ConfigProvider theme={{ algorithm: themeAlgorithm }}>
