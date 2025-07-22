@@ -52,6 +52,34 @@ class ProcessService {
         }
     }
 
+    async updateProcess({ id, cost }) {
+        try {
+            const response = await axiosClient.patch(
+                `${API_URL}/${id}`,
+                null, // không có request body
+                {
+                    params: { cost },
+                }
+            );
+            return response.data.message;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi không xác định khi cập nhật công đoạn';
+            throw new Error(errorMessage);
+        }
+    }
+
+    async deleteProcess(id) {
+        try {
+            const response = await axiosClient.delete(`${API_URL}/${id}`);
+            return response.data.message;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi không xác định khi xóa công đoạn';
+            throw new Error(errorMessage);
+        }
+    }
+
 }
 
 export default new ProcessService;

@@ -137,4 +137,23 @@ public class ProcessServiceImpl implements ProcessService {
                 }
                 processStageRepository.save(processStage);
         }
+
+        @Override
+        public void updateProcess(Long processId, Double cost) {
+                Process process = processRepository.findById(processId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Không tìm thấy công đoạn với ID: " + processId));
+
+                process.setCost(cost);
+                processRepository.save(process);
+        }
+
+        @Override
+        public void deleteProcess(Long processId) {
+                Process process = processRepository.findById(processId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Không tìm thấy công đoạn với ID: " + processId));
+
+                processRepository.delete(process);
+        }
 }

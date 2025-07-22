@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +50,7 @@ public class ProcessController {
     @GetMapping()
     public ResponseEntity<ApiResponse<List<ProcessDTO>>> getAllProcessByProductId(@RequestParam Long productId) {
         List<ProcessDTO> processDTOs = processService.getAllProcessByProductId(productId);
-        return ResponseUtil.success(processDTOs,"Lấy danh sách công đoạn thành công");
+        return ResponseUtil.success(processDTOs, "Lấy danh sách công đoạn thành công");
     }
 
     @PatchMapping("/stages/{processStageId}")
@@ -67,5 +68,34 @@ public class ProcessController {
             return ResponseUtil.badRequest("Lỗi khi cập nhật công đoạn: " + e.getMessage());
         }
     }
+
+    @PatchMapping("/{processId}")
+    public ResponseEntity<ApiResponse<Void>> updateProcess(
+            @PathVariable Long processId,
+            @RequestParam(required = true) Double cost) {
+
+        try {
+            processService.updateProcess(processId, cost);
+            return ResponseUtil.success(null, "Cập nhật công đoạn thành công");
+        } catch (ResourceNotFoundException e) {
+            return ResponseUtil.notFound(e.getMessage());
+        } catch (Exception e) {
+            return ResponseUtil.badRequest("Lỗi khi cập nhật công đoạn: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{processId}")
+    public ResponseEntity<ApiResponse<Void>> deleteProcess(@PathVariable Long processId) {
+        try {
+            processService.deleteProcess(processId);
+            return ResponseUtil.success(null, "Xóa công đoạn thành công");
+        } catch (ResourceNotFoundException e) {
+            return ResponseUtil.notFound(e.getMessage());
+        } catch (Exception e) {
+            return ResponseUtil.badRequest("Lỗi khi xóa công đoạn: " + e.getMessage());
+        }
+    }
+
+    
 
 }

@@ -11,4 +11,8 @@ public interface ProcessService {
     List<ProcessDTO> getAllProcessByProductId(Long productId);
 
     void updateProcessStage(Long id, LocalDate date, String description);
+
+    void updateProcess(Long processId, Double cost);
+
+    void deleteProcess(Long processId);
 }
