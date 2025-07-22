@@ -51,14 +51,8 @@ public class ModelServiceImpl implements ModelService {
             // Gán quan hệ nếu Product có @ManyToOne Model
             products.forEach(product -> product.setModel(newModel));
 
-            // // ✅ Lưu vào DB
             modelRepository.save(newModel);
-            List<Product> savedProducts = productRepository.saveAll(products);
-
-            // for (Product product : savedProducts) {
-
-            // }
-
+            productRepository.saveAll(products);
         } catch (IOException e) {
             throw new RuntimeException("Lỗi khi đọc file Excel", e);
         }
@@ -126,5 +120,14 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     public void deleteModel(Long id) {
         modelRepository.deleteById(id);
+    }
+
+    @Override
+    public List<NewModelDTO> searchByProductCodeOrMoldCode(String keyword) {
+        List<NewModelDTO> models = modelRepository.findByProductCodeOrMoldCode(keyword);
+        if (models == null || models.isEmpty()) {
+            throw new ResourceNotFoundException("Không tìm thấy model với mã sản phẩm hoặc mã khuôn");
+        }
+        return models;
     }
 }
