@@ -12,4 +12,5 @@ public interface ModelService {
     List<NewModelDTO> findAll();
     List<ProductDTO> getAllProductByModel(Long modelId);
     void deleteModel(Long id);
+    List<NewModelDTO> searchByProductCodeOrMoldCode(String keyword);
 }
