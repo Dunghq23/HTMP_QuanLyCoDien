@@ -3,17 +3,12 @@ package htmp.codien.quanlycodien.controller;
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
 import htmp.codien.quanlycodien.dto.NewModelDTO;
-import htmp.codien.quanlycodien.dto.OrderDTO;
-import htmp.codien.quanlycodien.dto.OrderItemDTO;
-import htmp.codien.quanlycodien.dto.OrderItemUpdateDTO;
 import htmp.codien.quanlycodien.dto.ProductDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.service.ModelService;
-import htmp.codien.quanlycodien.service.OrderService;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.core.io.ClassPathResource;
@@ -42,6 +37,13 @@ public class ModelController {
             @PathVariable("id") Long modelId) {
         List<ProductDTO> orderItemDTOs = modelService.getAllProductByModel(modelId);
         return ResponseUtil.success(orderItemDTOs, "Lấy danh sách sản phẩm thành công");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<NewModelDTO>>> searchByProductCodeOrMoldCode(
+            @RequestParam("keyword") String keyword) {
+        List<NewModelDTO> newModelDTOs = modelService.searchByProductCodeOrMoldCode(keyword);
+        return ResponseUtil.success(newModelDTOs, "Tìm kiếm model thành công");
     }
 
 

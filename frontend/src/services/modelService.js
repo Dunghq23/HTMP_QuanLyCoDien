@@ -16,6 +16,19 @@ class ModelService {
         }
     }
 
+    // Tìm kiếm model theo mã sản phẩm hoặc mã khuôn
+    async searchByProductCodeOrMoldCode(keyword) {
+        try {
+            const response = await axiosClient.get(`${API_URL}/search`, {
+                params: { keyword },
+            });
+            return response.data.data;
+        } catch (error) {
+            const errorMessage =    
+                error?.response?.data?.message || error.message || 'Lỗi không xác định khi tìm kiếm model';
+            throw new Error(errorMessage);
+        }
+    }
 
     // Lấy toàn bộ sản phẩm của model
     async getProductByModelId(modelId) {
