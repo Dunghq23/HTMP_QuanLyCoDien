@@ -1,5 +1,8 @@
 package htmp.codien.quanlycodien.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,4 +22,7 @@ public class Customer {
 
     @Column(name = "name", length = 50, nullable = false)
     String name;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Model> models = new ArrayList<>();
 }

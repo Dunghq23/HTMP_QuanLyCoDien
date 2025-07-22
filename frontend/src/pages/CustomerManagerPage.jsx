@@ -7,9 +7,17 @@ import {
     Modal,
     Form,
     Input,
+    Popconfirm,
+    Typography,
 } from 'antd';
+import {
+    DeleteOutlined,
+    EditOutlined,
+    PlusOutlined,
+} from '@ant-design/icons';
 import customerService from '~/services/customerService';
-import { EditOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
 
 function CustomerManagerPage() {
     const [customers, setCustomers] = useState([]);
@@ -17,6 +25,9 @@ function CustomerManagerPage() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
     const [form] = Form.useForm();
+
+    const isAdmin = localStorage.getItem("role") === 'ROLE_ADMIN';
+    const isManager = localStorage.getItem("role") === 'ROLE_MANAGER';
 
     const fetchCustomers = async () => {
         setLoading(true);
@@ -32,9 +43,7 @@ function CustomerManagerPage() {
     };
 
     useEffect(() => {
-        if (localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') {
-            fetchCustomers();
-        }
+        if (isAdmin || isManager) fetchCustomers();
     }, []);
 
     const handleSave = async () => {
@@ -49,26 +58,31 @@ function CustomerManagerPage() {
                 message.success('Thêm khách hàng thành công');
             }
 
+            form.resetFields();
             setModalVisible(false);
             setEditingCustomer(null);
-            form.resetFields();
             fetchCustomers();
         } catch (err) {
             console.error(err);
-            message.error(err);
+            message.error('Lỗi khi lưu thông tin khách hàng');
         }
     };
 
     const handleEdit = (record) => {
         setEditingCustomer(record);
-        setModalVisible(true);
         form.setFieldsValue(record);
+        setModalVisible(true);
     };
 
-    const handleAdd = () => {
-        setEditingCustomer(null);
-        form.resetFields();
-        setModalVisible(true);
+    const handleDelete = async (id) => {
+        try {
+            await customerService.deleteCustomer(id);
+            message.success('Xóa khách hàng thành công');
+            fetchCustomers();
+        } catch (error) {
+            console.error(error);
+            message.error(error.message || 'Lỗi khi xóa khách hàng');
+        }
     };
 
     const columns = [
@@ -76,14 +90,13 @@ function CustomerManagerPage() {
             title: 'STT',
             key: 'index',
             align: 'center',
-            width: '5%',
+            width: 60,
             render: (_, __, index) => index + 1,
         },
         {
-            title: 'Tên',
+            title: 'Tên khách hàng',
             dataIndex: 'name',
             key: 'name',
-            width: '40%',
             align: 'center',
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -91,40 +104,66 @@ function CustomerManagerPage() {
             title: 'Hành động',
             key: 'action',
             align: 'center',
+            width: 180,
             render: (_, record) => (
                 <Space>
-                    <Button onClick={() => handleEdit(record)}>
-                        <EditOutlined /> Sửa
+                    <Button
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record)}
+                    >
+                        Sửa
                     </Button>
+                    {(isAdmin || isManager) && (
+                        <Popconfirm
+                            title="Xác nhận xóa khách hàng này?"
+                            onConfirm={() => handleDelete(record.id)}
+                            okText="Có"
+                            cancelText="Không"
+                        >
+                            <Button icon={<DeleteOutlined />} danger>
+                                Xóa
+                            </Button>
+                        </Popconfirm>
+                    )}
                 </Space>
             ),
-            width: '15%',
         },
     ];
 
     return (
-        <div>
-            <Space style={{ marginBottom: 16 }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+            <div style={{ textAlign: 'right', marginBottom: 16 }}>
                 <Button
                     type="primary"
-                    onClick={handleAdd}
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        form.resetFields();
+                        setEditingCustomer(null);
+                        setModalVisible(true);
+                    }}
                 >
                     Thêm khách hàng
                 </Button>
-            </Space>
+            </div>
 
             <Table
-                width="100%"
                 rowKey="id"
                 columns={columns}
                 dataSource={customers}
                 loading={loading}
                 bordered
-                scroll={{ x: 'max-content' }}
+                pagination={{
+                    pageSizeOptions: ['5', '10', '20', '50'],
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                    showTotal: (total) => `Tổng cộng ${total} khách hàng`,
+                }}
+                scroll={{ y: 370 }} // Chiều cao cố định, có thể chỉnh theo ý bạn
             />
 
+
             <Modal
-                title={editingCustomer ? 'Sửa khách hàng' : 'Thêm khách hàng'}
+                title={editingCustomer ? 'Cập nhật khách hàng' : 'Thêm khách hàng'}
                 open={modalVisible}
                 onCancel={() => {
                     setModalVisible(false);
@@ -134,16 +173,20 @@ function CustomerManagerPage() {
                 onOk={handleSave}
                 okText="Lưu"
                 cancelText="Hủy"
-                width="100%"
-                style={{ top: 20, maxWidth: 480, margin: '0 auto' }}
+                centered
+                width={400}
             >
-                <Form form={form} layout="vertical">
+                <Form
+                    form={form}
+                    layout="vertical"
+                    initialValues={{ name: '' }}
+                >
                     <Form.Item
                         label="Tên khách hàng"
                         name="name"
-                        rules={[{ required: true, message: 'Vui lòng nhập tên' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập tên khách hàng' }]}
                     >
-                        <Input />
+                        <Input placeholder="Nhập tên khách hàng" />
                     </Form.Item>
                 </Form>
             </Modal>

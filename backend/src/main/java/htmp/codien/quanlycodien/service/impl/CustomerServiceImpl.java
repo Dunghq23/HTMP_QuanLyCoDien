@@ -9,6 +9,7 @@ import htmp.codien.quanlycodien.dto.CustomerDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.repository.CustomerRepository;
+import htmp.codien.quanlycodien.repository.ModelRepository;
 import htmp.codien.quanlycodien.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final ModelRepository modelRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -54,6 +56,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void delete(Long id) {
+        // Kiểm tra khách hàng có dự án nào không
+        if (modelRepository.countByCustomerId(id) > 0) {
+            throw new IllegalStateException("Không thể xóa khách hàng đã có dự án");
+        }
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng để xóa"));
         customerRepository.delete(customer);

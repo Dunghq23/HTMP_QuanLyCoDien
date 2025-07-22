@@ -21,4 +21,6 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
                    OR p.code LIKE CONCAT('%', :keyword, '%')
             """, nativeQuery = true)
     List<NewModelDTO> findByProductCodeOrMoldCode(@Param("keyword") String keyword);
+
+    long countByCustomerId(Long customerId);
 }

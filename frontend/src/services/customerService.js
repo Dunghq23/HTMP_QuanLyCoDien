@@ -48,10 +48,10 @@ class CustomerService {
         }
     }
 
-    async deleteCustomer(customerId, data) {
+    async deleteCustomer(customerId) {
         try {
-            const response = await axiosClient.delete(`${API_URL}/${customerId}`, data);
-            return response.data.data;
+            const response = await axiosClient.delete(`${API_URL}/${customerId}`);
+            return response.data.message;
         } catch (error) {
             const errorMessage =
                 error?.response?.data?.message || "Lỗi không xác định";
