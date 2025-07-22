@@ -10,6 +10,10 @@ import {
   Spin,
   Image,
   Popconfirm,
+  Modal,
+  Form,
+  Input,
+  Upload,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -22,13 +26,14 @@ import modelService from '~/services/modelService';
 import CreateNewModelModal from '~/components/CreateNewModelModal';
 import CreateNewProcessModal from '~/components/CreateNewProcessModal';
 import ProcessTabs from '~/components/ProcessTabs';
-import Search from 'antd/es/transfer/search';
+import Search from 'antd/es/input/Search';
+import productService from '~/services/productService';
 
 const useExpandable = () => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [expandedData, setExpandedData] = useState({});
   const [loadingExpandedRow, setLoadingExpandedRow] = useState({});
-  const [productId, setModelId] = useState(null);
+  const [modelId, setModelId] = useState(null);
 
   const loadProducts = async (id) => {
     setLoadingExpandedRow((prev) => ({ ...prev, [id]: true }));
@@ -49,7 +54,7 @@ const useExpandable = () => {
     loadingExpandedRow,
     loadProducts,
     setModelId,
-    productId,
+    modelId,
   };
 };
 
@@ -59,6 +64,14 @@ function ElectricalNewProductPage() {
   const [isCreateNewProcessModalOpen, setIsCreateNewProcessModalOpen] = useState(false);
   const [models, setModels] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+
+  const [isModalProductEditOpen, setIsModalProductEditOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+
 
   const {
     expandedRowKeys,
@@ -91,9 +104,20 @@ function ElectricalNewProductPage() {
     }
   };
 
+  const fetchProductList = async () => {
+    if (expandedRowKeys.length > 0) {
+      const currentModelId = expandedRowKeys[0]; // vì bạn chỉ expand 1 model một lúc
+      await loadProducts(currentModelId);        // gọi lại API để load lại products
+    }
+  };
+
+
   const handleSearch = async (keyword) => {
-    if (keyword === '') {
-      fetchModel();
+    if (keyword !== '') {
+      console.log(keyword);
+
+      const data = await modelService.searchByProductCodeOrMoldCode(keyword);
+      setModels(data);
     }
   };
 
@@ -108,12 +132,15 @@ function ElectricalNewProductPage() {
       width: '10%',
       render: (status) => <Tag color="blue">{status}</Tag>,
     },
-    {
+  ];
+
+  if (localStorage.getItem("role") !== 'ROLE_EMPLOYEE') {
+    modelColumns.push({
       title: 'Hành động',
       width: '10%',
       render: (_, record) => (
         <Space>
-          {localStorage.getItem('role') === 'ROLE_ADMIN' && (
+          {localStorage.getItem("role") === 'ROLE_ADMIN' && (
             <Popconfirm
               title="Bạn có chắc chắn muốn xóa model này không?"
               description="Hành động này không thể hoàn tác."
@@ -137,9 +164,8 @@ function ElectricalNewProductPage() {
           )}
         </Space>
       ),
-    }
-
-  ];
+    });
+  }
 
   const productColumns = [
     { title: 'Mã sản phẩm', dataIndex: 'code' },
@@ -171,7 +197,12 @@ function ElectricalNewProductPage() {
               setIsCreateNewProcessModalOpen(true);
             }}
           />
-          <Button icon={<EditOutlined />} />
+          <Button icon={<EditOutlined />}
+
+            onClick={() => {
+              setSelectedProduct(record);
+              setIsModalProductEditOpen(true);
+            }} />
         </Space>
       ),
     },
@@ -260,9 +291,77 @@ function ElectricalNewProductPage() {
         onSuccess={() => {
           setIsCreateNewProcessModalOpen(false);
           fetchModel();
+          fetchProductList();
         }}
         productId={selectedProductId}
       />
+
+      {/* Cập nhật thông tin sản phẩm */}
+      <Modal
+        title={`Cập nhật hình ảnh sản phẩm`}
+        open={isModalProductEditOpen}
+        onOk={async () => {
+          if (!selectedImageFile || !selectedProduct?.id) {
+            message.error('Thiếu ảnh hoặc sản phẩm chưa được chọn');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('file', selectedImageFile);
+
+          try {
+            setIsLoading(true);
+            await productService.uploadProductImage(selectedProduct.id, formData);
+            message.success('Cập nhật ảnh thành công');
+            setIsModalProductEditOpen(false);
+            fetchProductList();
+          } catch (error) {
+            message.error(error.message || 'Lỗi khi cập nhật ảnh');
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+        onCancel={() => {
+          setIsModalProductEditOpen(false);
+          setSelectedImageFile(null);
+          setPreviewImage(null);
+        }}
+        confirmLoading={isLoading}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Hình ảnh sản phẩm">
+            <Upload
+              listType="picture-card"
+              showUploadList={false}
+              beforeUpload={(file) => {
+                setSelectedImageFile(file);
+                const reader = new FileReader();
+                reader.onload = () => {
+                  setPreviewImage(reader.result);
+                };
+                reader.readAsDataURL(file);
+                return false; // chặn upload mặc định
+              }}
+            >
+              {previewImage || selectedProduct?.image ? (
+                <img
+                  src={
+                    previewImage
+                      ? previewImage
+                      : `${process.env.REACT_APP_UPLOAD_URL}/${selectedProduct.image}`
+                  }
+                  alt="Ảnh sản phẩm"
+                  style={{ width: '100%' }}
+                />
+              ) : (
+                <div>+ Tải ảnh</div>
+              )}
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+
     </>
   );
 }

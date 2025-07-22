@@ -122,6 +122,32 @@ const ElectricalOrderPage = () => {
         setIsReceiveModalOpen(true);
     };
 
+    // const handleDownloadPDF = async () => {
+    //     try {
+    //         const response = await axios.get(`${process.env.REACT_APP_API_URL}/exportpdf`, {
+    //             responseType: "blob",
+    //             headers: {
+    //                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //             }
+    //         });
+
+
+    //         // Tạo URL từ blob
+    //         const blob = new Blob([response.data], { type: "application/pdf" });
+    //         const url = window.URL.createObjectURL(blob);
+
+    //         // Tạo thẻ <a> để tải
+    //         const link = document.createElement("a");
+    //         link.href = url;
+    //         link.setAttribute("download", "bien_ban_ban_giao.pdf"); // Tên file muốn lưu
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         link.remove();
+    //     } catch (error) {
+    //         console.error("Lỗi khi tải PDF:", error);
+    //     }
+    // };
+
     const handleDownloadPDF = async () => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/exportpdf`, {
@@ -131,22 +157,41 @@ const ElectricalOrderPage = () => {
                 }
             });
 
-
-            // Tạo URL từ blob
             const blob = new Blob([response.data], { type: "application/pdf" });
-            const url = window.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
 
-            // Tạo thẻ <a> để tải
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "bien_ban_ban_giao.pdf"); // Tên file muốn lưu
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+            // Tạo HTML mới có iframe và tự động in
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(`
+            <html>
+              <head>
+                <title>Biên bản bàn giao</title>
+                <style>
+                  html, body { margin: 0; height: 100%; }
+                  iframe { width: 100%; height: 100%; border: none; }
+                </style>
+              </head>
+              <body>
+                <iframe id="pdfFrame" src="${url}">dfsdfasdf</iframe>
+                <script>
+                  const iframe = document.getElementById('pdfFrame');
+                  iframe.onload = () => {
+                    setTimeout(() => {
+                      iframe.contentWindow.focus();
+                      iframe.contentWindow.print();
+                    }, 500); // Chờ PDF load xong
+                  };
+                </script>
+              </body>
+            </html>
+        `);
+            printWindow.document.close();
         } catch (error) {
-            console.error("Lỗi khi tải PDF:", error);
+            console.error("Lỗi khi mở và in PDF:", error);
+            message.error("Không thể mở biên bản để in");
         }
     };
+
 
     return (
         <>
