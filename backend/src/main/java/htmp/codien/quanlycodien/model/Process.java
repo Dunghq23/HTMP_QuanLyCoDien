@@ -1,5 +1,8 @@
 package htmp.codien.quanlycodien.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,4 +36,13 @@ public class Process {
 
     @Column(name = "cost", nullable = true)
     double cost;
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<JigDetail> jigDetails;
+
+    @OneToOne(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
+    JigDetail jigDetail;
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProcessStage> stages = new ArrayList<>();
 }

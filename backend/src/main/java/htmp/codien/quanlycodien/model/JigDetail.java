@@ -17,7 +17,7 @@ public class JigDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_id", nullable = false)
     Process process;
 

@@ -1,5 +1,7 @@
 package htmp.codien.quanlycodien.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -36,4 +38,7 @@ public class Product {
 
     @Column(name = "image", length = 255, nullable = true)
     String image;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Process> processes;
 }
