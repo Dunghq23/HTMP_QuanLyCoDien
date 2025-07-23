@@ -9,7 +9,6 @@ const HomePage = () => {
 
   return (
     <>
-    <h1>Chạy lại YML CI CD bằng Service Lần 7</h1>
     </>
   );
 };
