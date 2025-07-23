@@ -48,36 +48,12 @@ jobs:
           echo "🧹 Cleaning up .env to avoid git conflict..."
           rm .env
 
-
-      - name: Restart Backend and Frontend
+      - name: Restart Backend and Frontend via systemd
         run: |
-          echo "🧹 Stop old backend (port 8081)..."
-          PID_BACKEND=$(lsof -t -i :8081 || true)
-          if [ -n "$PID_BACKEND" ]; then
-            kill "$PID_BACKEND"
-            echo "✅ Killed backend process $PID_BACKEND"
-          else
-            echo "ℹ️ No backend process running on port 8081"
-          fi
+          echo "🔄 Restart backend.service..."
+          sudo systemctl restart quanlycodien_backend
 
-          echo "🚀 Start backend using .env.production..."
-          cd backend
-          nohup java -jar target/quanlycodien-0.0.1-SNAPSHOT.jar > ~/backend.log 2>&1 &
-          cd ..
+          echo "🔄 Restart frontend.service..."
+          sudo systemctl restart quanlycodien_frontend
 
-          echo "🧹 Stop old frontend (port 3001)..."
-          PID_FRONTEND=$(lsof -t -i :3001 || true)
-          if [ -n "$PID_FRONTEND" ]; then
-            kill "$PID_FRONTEND"
-            echo "✅ Killed frontend process $PID_FRONTEND"
-          else
-            echo "ℹ️ No frontend process running on port 3001"
-          fi
-
-          echo "🚀 Serve frontend on port 3001..."
-          cd frontend
-          nohup serve -s build -l 3001 > ~/frontend.log 2>&1 &
-          cd ..
-
-          echo "✅ CI/CD completed. FE should be available at http://apps.htmp.vn:3001"
-
+          echo "✅ CI/CD completed. Check http://codiem.htmp.vn (frontend) or backend port 8081."
