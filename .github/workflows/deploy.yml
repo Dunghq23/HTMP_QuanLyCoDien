@@ -51,9 +51,9 @@ jobs:
       - name: Restart Backend and Frontend via systemd
         run: |
           echo "🔄 Restart backend.service..."
-          sudo systemctl restart quanlycodien_backend
+          sudo /bin/systemctl restart quanlycodien_backend
 
           echo "🔄 Restart frontend.service..."
-          sudo systemctl restart quanlycodien_frontend
+          sudo /bin/systemctl restart quanlycodien_frontend
 
           echo "✅ CI/CD completed. Check http://codiem.htmp.vn (frontend) or backend port 8081."
