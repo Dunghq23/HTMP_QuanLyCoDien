@@ -20,7 +20,7 @@ public class Model {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "code", length = 50, nullable = false)
+    @Column(name = "code", length = 50, nullable = false, unique = true)
     String code;
 
     @Column(name = "name", nullable = false)

@@ -146,7 +146,12 @@ const ProcessTabs = ({ productId }) => {
                             <p>Nhân viên phụ trách: <strong>{process.employeeName}</strong></p>
                         </Col>
                         <Col span={6}>
-                            <p>Chi phí: <strong style={{ color: "green" }}>{process.cost} VNĐ</strong></p>
+                            <p>
+                                Chi phí:{" "}
+                                <strong style={{ color: "green" }}>
+                                    {process.cost ? process.cost.toLocaleString('vi-VN') : '0'} VNĐ
+                                </strong>
+                            </p>
                         </Col>
                         <Col span={6}>
                             {process.type === "JIG" && (

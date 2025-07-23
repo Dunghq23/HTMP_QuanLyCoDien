@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ModelController {
     private final ModelService modelService;
 
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<NewModelDTO>>> getAllModel() {
         List<NewModelDTO> newModelDTOs = modelService.findAll();
@@ -46,20 +45,13 @@ public class ModelController {
         return ResponseUtil.success(newModelDTOs, "Tìm kiếm model thành công");
     }
 
-
     // POST create order from Excel file
     @PostMapping("/create-from-excel")
     public ResponseEntity<ApiResponse<Void>> createOrderFromExcel(
             @RequestParam Long customerId,
             @RequestPart("file") MultipartFile file) {
-        try {
-            modelService.createOrderFromExcel(customerId, file);
-            return ResponseUtil.success(null, "Tạo đơn hàng từ Excel thành công");
-        } catch (ResourceNotFoundException e) {
-            return ResponseUtil.notFound(e.getMessage());
-        } catch (Exception e) {
-            return ResponseUtil.badRequest("Lỗi khi tạo đơn hàng từ Excel: " + e.getMessage());
-        }
+        modelService.createOrderFromExcel(customerId, file);
+        return ResponseUtil.success(null, "Tạo đơn hàng từ Excel thành công");
     }
 
     @GetMapping("/template")
@@ -74,14 +66,8 @@ public class ModelController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteModel(@PathVariable Long id) {
-        try {
-            modelService.deleteModel(id);
-            return ResponseUtil.success(null, "Xóa model thành công");
-        } catch (ResourceNotFoundException e) {
-            return ResponseUtil.notFound(e.getMessage());
-        } catch (Exception e) {
-            return ResponseUtil.badRequest("Lỗi khi xóa model: " + e.getMessage());
-        }
+        modelService.deleteModel(id);
+        return ResponseUtil.success(null, "Xóa model thành công");
     }
 
 }

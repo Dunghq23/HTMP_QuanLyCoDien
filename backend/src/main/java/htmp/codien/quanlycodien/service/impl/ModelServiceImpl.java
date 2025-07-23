@@ -2,6 +2,7 @@ package htmp.codien.quanlycodien.service.impl;
 
 import htmp.codien.quanlycodien.dto.NewModelDTO;
 import htmp.codien.quanlycodien.dto.ProductDTO;
+import htmp.codien.quanlycodien.exception.ConflictException;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.model.Model;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,7 @@ public class ModelServiceImpl implements ModelService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public void createOrderFromExcel(Long customerId, MultipartFile file) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng"));
@@ -45,6 +48,12 @@ public class ModelServiceImpl implements ModelService {
 
             if (products.isEmpty()) {
                 throw new IllegalArgumentException("Không có sản phẩm nào trong file Excel");
+            }
+
+            // ✅ Kiểm tra xem model có code trùng chưa
+            Optional<Model> existing = modelRepository.findByCode(newModel.getCode());
+            if (existing.isPresent()) {
+                throw new ConflictException("Model với mã '" + newModel.getCode() + "' đã tồn tại");
             }
 
             newModel.setCustomer(customer);

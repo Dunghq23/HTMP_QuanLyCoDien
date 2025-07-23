@@ -40,14 +40,15 @@ const CreateNewModelModal = ({ open, onCancel, onSuccess }) => {
             formData.append("customerId", values.customerId);
             formData.append("file", values.excelFile[0].originFileObj);
 
-            await modelService.createOrder(formData);
+            await modelService.createNewModel(formData);
             message.success("Thêm mới New Model thành công");
             onSuccess();
             form.resetFields();
         } catch (error) {
-            if (error?.errorFields) {
-                message.error(error.errorFields.map(f => f.errors[0]).join(", "));
-            }
+            message.error(error?.message || "Lỗi không xác định khi tạo New Model");
+            // if (error?.errorFields) {
+            //     message.error(error.errorFields.map(f => f.errors[0]).join(", "));
+            // }
         } finally {
             setLoading(false);
         }

@@ -1,6 +1,7 @@
 package htmp.codien.quanlycodien.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
     List<NewModelDTO> findByProductCodeOrMoldCode(@Param("keyword") String keyword);
 
     long countByCustomerId(Long customerId);
+
+    Optional<Model> findByCode(String code);
 }

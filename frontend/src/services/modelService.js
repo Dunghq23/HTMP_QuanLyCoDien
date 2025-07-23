@@ -4,7 +4,7 @@ import axiosClient from "~/utils/axiosClient";
 const API_URL = '/models';
 
 class ModelService {
-    // Lấy toàn bộ đơn hàng
+    // Lấy toàn bộ model
     async getAllModel() {
         try {
             const response = await axiosClient.get(API_URL);
@@ -42,7 +42,7 @@ class ModelService {
         }
     }
 
-    async createOrder(formData) {
+    async createNewModel(formData) {
         try {
             const response = await axiosClient.post(`${API_URL}/create-from-excel`, formData, {
                 headers: {
@@ -72,31 +72,6 @@ class ModelService {
         } catch (error) {
             const errorMessage =
                 error?.response?.data?.message || error.message || "Lỗi khi tải file mẫu";
-            throw new Error(errorMessage);
-        }
-    }
-
-    async updateReceivedInfo(orderItemId, data) {
-        try {
-            console.log("OOOOOO");
-
-            const response = await axiosClient.patch(`${API_URL}/items/${orderItemId}`, data);
-            return response.data.message;
-        } catch (error) {
-            const errorMessage =
-                error?.response?.data?.message || error.message || 'Lỗi không xác định khi cập nhật thông tin nhận hàng';
-            throw new Error(errorMessage);
-        }
-    }
-
-    // Tìm kiếm đơn hàng theo mã vật tư
-    async getOrdersByMaterialCode(material_code) {
-        try {
-            const response = await axiosClient.get(`${API_URL}/items/${material_code}`);
-            return response.data.data;
-        } catch (error) {
-            const errorMessage =
-                error?.response?.data?.message || error.message || 'Lỗi không xác định khi lấy danh sách đơn hàng';
             throw new Error(errorMessage);
         }
     }

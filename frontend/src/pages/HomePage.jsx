@@ -9,7 +9,6 @@ const HomePage = () => {
 
   return (
     <>
-      <h1>Test to đùng</h1>
     </>
   );
 };
