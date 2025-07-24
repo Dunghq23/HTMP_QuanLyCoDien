@@ -43,7 +43,7 @@ function CustomerManagerPage() {
     };
 
     useEffect(() => {
-        if (isAdmin || isManager) fetchCustomers();
+        fetchCustomers();
     }, []);
 
     const handleSave = async () => {
