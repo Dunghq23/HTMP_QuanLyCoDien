@@ -66,7 +66,12 @@ const WorkReportFormModal = ({
                 )}
 
                 <Form.Item label="Ngày làm việc">
-                    <DatePicker value={selectedDate} disabled format="DD/MM/YYYY" style={{ width: '100%' }} />
+                    <DatePicker
+                        value={selectedDate}
+                        disabled={localStorage.getItem("role") !== "ROLE_ADMIN"}
+                        format="DD/MM/YYYY"
+                        style={{ width: '100%' }}
+                    />
                 </Form.Item>
 
                 <Row gutter={16}>
