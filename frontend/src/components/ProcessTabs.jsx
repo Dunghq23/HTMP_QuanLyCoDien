@@ -135,12 +135,16 @@ const ProcessTabs = ({ productId }) => {
 
         return {
             key: process.id.toString(),
-            label: `${typeLabel}`,
+            label: (
+                <span style={{ fontSize: 16, fontWeight: "bold", textTransform: "uppercase" }}>
+                    {typeLabel}
+                </span>
+            ),
             children: (
                 <>
                     <Row style={{ marginBottom: 8 }}>
                         <Col span={24}>
-                            <h2>Công đoạn: {process.name}</h2>
+                            <h3>Công đoạn: {process.name}</h3>
                         </Col>
                         <Col span={6}>
                             <p>Nhân viên phụ trách: <strong>{process.employeeName}</strong></p>

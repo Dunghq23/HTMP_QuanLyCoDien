@@ -140,7 +140,7 @@ function ElectricalNewProductPage() {
       width: '10%',
       render: (_, record) => (
         <Space>
-          {localStorage.getItem("role") === 'ROLE_ADMIN' && (
+          {(localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') && (
             <Popconfirm
               title="Bạn có chắc chắn muốn xóa model này không?"
               description="Hành động này không thể hoàn tác."
@@ -185,6 +185,7 @@ function ElectricalNewProductPage() {
           '-'
         ),
     },
+    { title: 'Trạng thái', dataIndex: 'status' },
     {
       title: 'Hành động',
       align: 'center',
