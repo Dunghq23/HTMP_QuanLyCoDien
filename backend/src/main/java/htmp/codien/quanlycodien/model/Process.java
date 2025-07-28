@@ -37,9 +37,6 @@ public class Process {
     @Column(name = "cost", nullable = true)
     double cost;
 
-    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<JigDetail> jigDetails;
-
     @OneToOne(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
     JigDetail jigDetail;
 

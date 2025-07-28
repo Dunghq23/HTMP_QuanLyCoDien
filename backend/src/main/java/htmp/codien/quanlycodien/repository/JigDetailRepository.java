@@ -10,7 +10,5 @@ import htmp.codien.quanlycodien.model.Process;
 
 @Repository
 public interface JigDetailRepository extends JpaRepository<JigDetail, Long> {
-
     Optional<JigDetail> findByProcess(Process process);
-
 }

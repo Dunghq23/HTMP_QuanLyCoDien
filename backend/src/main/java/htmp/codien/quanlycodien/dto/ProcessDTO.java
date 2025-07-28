@@ -2,7 +2,6 @@ package htmp.codien.quanlycodien.dto;
 
 import java.util.List;
 
-import htmp.codien.quanlycodien.model.JigDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -10,6 +10,5 @@ import htmp.codien.quanlycodien.model.Product;
 
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, Long> {
-
     List<Process> findByProduct(Product product);
 }

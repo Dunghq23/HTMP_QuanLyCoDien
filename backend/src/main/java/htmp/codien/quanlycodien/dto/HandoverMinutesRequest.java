@@ -35,5 +35,4 @@ public class HandoverMinutesRequest {
     String jigDetailName; // Tên JIG
     Integer numberOfJigs;
     String note; // Ghi chú
-
 }

@@ -10,7 +10,5 @@ import htmp.codien.quanlycodien.model.ProcessStage;
 
 @Repository
 public interface ProcessStageRepository extends JpaRepository<ProcessStage, Long> {
-
     List<ProcessStage> findAllByProcess(Process process);
-    
 }
