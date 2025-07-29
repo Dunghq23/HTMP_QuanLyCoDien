@@ -27,11 +27,7 @@ axiosClient.interceptors.response.use(
     if (error.response) {
       const { status } = error.response;
       if (status === 401) {
-        console.warn('Chưa đăng nhập hoặc token hết hạn');
         authService.logout();
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
-        }
       } else if (status === 403) {
         console.warn('Không có quyền truy cập');
         authService.logout(); // Đăng xuất nếu cần
