@@ -3,6 +3,7 @@ package htmp.codien.quanlycodien.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import htmp.codien.quanlycodien.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Model {
+public class Model  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

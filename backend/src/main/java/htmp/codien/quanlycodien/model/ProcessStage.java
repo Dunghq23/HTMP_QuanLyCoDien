@@ -2,6 +2,7 @@ package htmp.codien.quanlycodien.model;
 
 import java.time.LocalDate;
 
+import htmp.codien.quanlycodien.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProcessStage {
+public class ProcessStage  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

@@ -2,6 +2,7 @@ package htmp.codien.quanlycodien.model;
 
 import java.time.LocalDateTime;
 
+import htmp.codien.quanlycodien.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Employee {
+public class Employee  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -36,7 +37,4 @@ public class Employee {
 
     @Column(name = "role", length = 50, nullable = false)
     String role;
-
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
 }
