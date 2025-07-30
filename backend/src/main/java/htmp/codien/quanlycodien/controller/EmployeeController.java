@@ -43,8 +43,7 @@ public class EmployeeController {
         return ResponseUtil.success(created, "Tạo nhân viên thành công");
     }
 
-    // PUT update employee
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<EmployeeDTO>> update(@PathVariable Long id, @RequestBody EmployeeDTO dto) {
         employeeService.findById(id)

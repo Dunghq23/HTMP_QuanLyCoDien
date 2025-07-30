@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Form, DatePicker, Row, Col, TimePicker, Input, Upload, Select, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const WorkReportFormModal = ({
     visible,
@@ -65,10 +66,12 @@ const WorkReportFormModal = ({
                     </Form.Item>
                 )}
 
-                <Form.Item label="Ngày làm việc">
+                <Form.Item
+                    name="reportDate"
+                    label="Ngày làm việc"
+                    rules={[{ required: true, message: 'Vui lòng chọn ngày làm việc!' }]}
+                >
                     <DatePicker
-                        value={selectedDate}
-                        disabled={localStorage.getItem("role") !== "ROLE_ADMIN"}
                         format="DD/MM/YYYY"
                         style={{ width: '100%' }}
                     />

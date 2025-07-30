@@ -13,6 +13,6 @@ export const createEmployee = async (employeeData) => {
 };
 
 export const updateEmployee = async (id, employeeData) => {
-  const res = await axiosClient.put(`${API_URL}/${id}`, employeeData);
+  const res = await axiosClient.patch(`${API_URL}/${id}`, employeeData);
   return res.data.data;
 };

@@ -223,6 +223,7 @@ const ElectricalDailyTasksPage = () => {
         setIsModalVisible(true);
         form.setFieldsValue({
             employeeId: record.employeeId, // Thêm dòng này để đặt employeeId cho form khi chỉnh sửa
+            reportDate: dayjs(record.reportDate), // 👈 THÊM DÒNG NÀY
             startTime: dayjs(record.startTime, "HH:mm:ss"),
             endTime: dayjs(record.endTime, "HH:mm:ss"),
             taskDescription: record.taskDescription,
@@ -384,7 +385,7 @@ const ElectricalDailyTasksPage = () => {
 
                                 const payload = {
                                     employeeId: role === 'ROLE_ADMIN' ? values.employeeId : employeeId,
-                                    reportDate: selectedDate.format("YYYY-MM-DD"),
+                                    reportDate: values.reportDate.format("YYYY-MM-DD"), 
                                     startTime: values.startTime.format("HH:mm:ss"),
                                     endTime: values.endTime.format("HH:mm:ss"),
                                     taskDescription: values.taskDescription,

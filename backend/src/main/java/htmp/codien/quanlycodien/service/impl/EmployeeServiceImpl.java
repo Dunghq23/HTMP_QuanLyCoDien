@@ -1,6 +1,7 @@
 package htmp.codien.quanlycodien.service.impl;
 
 import htmp.codien.quanlycodien.dto.EmployeeDTO;
+import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.service.EmployeeService;
@@ -48,6 +49,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Nếu là nhân viên mới (chưa có ID), gán mật khẩu mặc định đã mã hóa
         if (employee.getId() == null) {
             employee.setPassword(passwordEncoder.encode("Htmp1234"));
+        } else {
+            // Cập nhật → giữ mật khẩu cũ nếu không truyền
+            Employee existing = employeeRepository.findById(employee.getId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Employee not found with id: " + employee.getId()));
+
+            if (employee.getPassword() == null) {
+                employee.setPassword(existing.getPassword());
+            }
         }
 
         Employee saved = employeeRepository.save(employee);

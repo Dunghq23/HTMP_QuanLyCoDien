@@ -1,7 +1,5 @@
 package htmp.codien.quanlycodien.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.*;
 
 @Data
@@ -17,5 +15,4 @@ public class EmployeeDTO {
     String position;
     String phone;
     String role;
-    LocalDateTime createdAt;
 }
