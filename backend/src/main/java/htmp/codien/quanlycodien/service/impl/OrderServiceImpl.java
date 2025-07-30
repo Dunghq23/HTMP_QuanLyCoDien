@@ -26,6 +26,7 @@ import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.repository.OrderItemRepository;
 import htmp.codien.quanlycodien.repository.OrderRepository;
 import htmp.codien.quanlycodien.service.OrderService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -157,7 +158,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void updateOrderItem(Long itemId, OrderItemUpdateDTO orderItemUpdateDTO) {
+        // 1. Cập nhật số lượng nhận
         OrderItem item = orderItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy order item"));
 
@@ -170,6 +173,22 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderItemRepository.save(item);
+
+        // 2. Kiểm tra toàn bộ order có còn item nào chưa nhận đủ không
+        long notFullyReceivedCount = orderItemRepository.countItemsNotFullyReceivedByItemId(itemId);
+
+        if (notFullyReceivedCount == 0) {
+            // Tất cả item đã nhận đủ -> Cập nhật order thành DONE
+            Order order = item.getOrder();
+            if (!"DONE".equalsIgnoreCase(order.getStatus())) {
+                order.setStatus("DONE");
+                orderRepository.save(order);
+            }
+        } else {
+            Order order = item.getOrder();
+            order.setStatus("PENDING");
+            orderRepository.save(order);
+        }
     }
 
     @Override
