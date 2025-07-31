@@ -34,24 +34,23 @@ export const getMenuItems = (navigate) => {
             label: 'Trang chủ',
             onClick: () => navigate('/'),
         },
-        ...(role !== 'ROLE_EMPLOYEE'
-            ? [{
-                key: '/employees',
-                icon: <UserOutlined />,
-                label: 'Quản lý nhân viên',
-                onClick: () => navigate('/employees'),
-            }]
-            : []),
+        {
+            key: '/HR',
+            icon: <UserOutlined />,
+            label: "Phòng HCNS",
+            children: [
 
+                ...(role !== 'ROLE_EMPLOYEE'
+                    ? [{
+                        key: '/employees',
+                        icon: <UserOutlined />,
+                        label: 'Quản lý nhân viên',
+                        onClick: () => navigate('/employees'),
+                    }]
+                    : []),
 
-        // ...(role !== 'ROLE_EMPLOYEE'
-        //     ? [{
-        //         key: '/employees',
-        //         icon: <UserOutlined />,
-        //         label: 'Quản lý nhân viên',
-        //         onClick: () => navigate('/employees'),
-        //     }]
-        //     : []),
+            ]
+        },
 
         {
             key: '/customers',

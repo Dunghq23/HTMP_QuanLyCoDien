@@ -6,12 +6,11 @@ import { getMenuItems } from './layoutConfig';
 
 const { Text } = Typography;
 
-const SidebarMenu = ({ collapsed, setCollapsed, isDarkMode, toggleTheme }) => {
+const SidebarMenu = ({ collapsed, isDarkMode }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const theme = isDarkMode ? 'dark' : 'light';
     const textColor = isDarkMode ? '#fff' : '#000';
-    const subTextColor = isDarkMode ? '#ccc' : '#666';
 
     return (
         <div>
@@ -19,7 +18,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, isDarkMode, toggleTheme }) => {
                 <img
                     src="/image/logo.webp"
                     alt="Logo"
-                    style={{ width: collapsed ? '40%' : '60%', maxHeight: 80 }}
+                    style={{ width: collapsed ? '40%' : 'auto', maxHeight: 80 }}
                 />
                 {!collapsed && (
                     <Text strong style={{ color: textColor, fontSize: 20, marginTop: 8, display: 'block' }}>

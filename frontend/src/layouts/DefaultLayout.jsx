@@ -8,13 +8,10 @@ import HeaderBar from './HeaderBar';
 import { useDynamicTitle } from '~/hook/useDynamicTitle';
 
 const { Content, Footer } = Layout;
-const { Text } = Typography;
 
 const DefaultLayout = () => {
-  // Hook
   useDynamicTitle();
-
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const location = useLocation();
   const { isDarkMode, toggleTheme, themeAlgorithm } = useTheme();
 
@@ -24,13 +21,18 @@ const DefaultLayout = () => {
   const subTextColor = isDarkMode ? '#ccc' : '#666';
   const contentBg = isDarkMode ? '#141414' : '#fff';
 
+  // Kích thước sidebar
+  const siderWidth = 250;
+  const siderCollapsedWidth = 80;
 
   return (
     <ConfigProvider theme={{ algorithm: themeAlgorithm }}>
       <Layout style={{ minHeight: '100vh', background: backgroundColor }}>
-        {/* Sidebar đã tách riêng */}
+        
+        {/* Sidebar */}
         <Layout.Sider
-          width={200}
+          width={siderWidth}
+          collapsedWidth={siderCollapsedWidth}
           collapsible
           collapsed={collapsed}
           onCollapse={setCollapsed}
@@ -43,15 +45,17 @@ const DefaultLayout = () => {
             zIndex: 1000,
           }}
         >
-          <SidebarMenu
-            collapsed={collapsed}
-            isDarkMode={isDarkMode}
-
-          />
+          <SidebarMenu collapsed={collapsed} isDarkMode={isDarkMode} />
         </Layout.Sider>
 
-        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
-          {/* Header đã tách riêng */}
+        {/* Phần nội dung luôn chiếm phần còn lại */}
+        <Layout
+          style={{
+            marginLeft: collapsed ? siderCollapsedWidth : siderWidth,
+            transition: 'margin-left 0.3s',
+          }}
+        >
+          {/* Header */}
           <HeaderBar
             collapsed={collapsed}
             backgroundColor={backgroundColor}
@@ -59,9 +63,14 @@ const DefaultLayout = () => {
             subTextColor={subTextColor}
             isDarkMode={isDarkMode}
             toggleTheme={toggleTheme}
-
+            style={{
+              left: collapsed ? siderCollapsedWidth : siderWidth,
+              width: `calc(100% - ${collapsed ? siderCollapsedWidth : siderWidth}px)`,
+              height: 64,
+            }}
           />
 
+          {/* Content */}
           <Content style={{ marginTop: 64, padding: 24 }}>
             <div
               style={{

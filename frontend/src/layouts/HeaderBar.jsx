@@ -8,7 +8,7 @@ import authService from '~/services/authService';
 
 const { Text } = Typography;
 
-const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDarkMode, toggleTheme }) => {
+const HeaderBar = ({ backgroundColor, textColor, isDarkMode, toggleTheme, style = {} }) => {
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter(Boolean);
     const breadcrumbItems = pathnames.map((_, idx) => {
@@ -18,7 +18,6 @@ const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDark
 
     const employeeName = localStorage.getItem('employeeName') || 'Chưa đăng nhập';
     const role = (localStorage.getItem('role') || '').replace('ROLE_', '');
-
 
     const items = [
         {
@@ -37,9 +36,7 @@ const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDark
             ),
             key: '1',
         },
-        {
-            type: 'divider',
-        },
+        { type: 'divider' },
         {
             label: (
                 <Space>
@@ -48,7 +45,6 @@ const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDark
                 </Space>
             ),
             key: '3',
-            disabled: false,
             onClick: () => {
                 authService.logout();
                 window.location.href = '/login';
@@ -61,7 +57,6 @@ const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDark
             style={{
                 position: 'fixed',
                 top: 0,
-                left: collapsed ? 80 : 200,
                 right: 0,
                 height: 64,
                 padding: '0 24px',
@@ -72,22 +67,24 @@ const HeaderBar = ({ collapsed, backgroundColor, textColor, subTextColor, isDark
                 color: textColor,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 zIndex: 100,
+                ...style, // 🔹 Gộp style truyền từ layout
             }}
         >
-            <Text strong style={{ fontSize: 16 }}>{breadcrumbItems.join(' / ') || 'Trang chủ'}</Text>
-            <div style={{ display: 'flex', gap: 12 }}>
-                <Dropdown menu={{ items }} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Flex align="center" gap="small">
-                            <Flex vertical align="end" style={{ lineHeight: 1.2 }}>
-                                <Text strong style={{ fontSize: 14 }}>{employeeName}</Text>
-                                <Text type="secondary" style={{ fontSize: 11 }}>{role}</Text>
-                            </Flex>
-                            <DownOutlined style={{ fontSize: 10 }} />
+            <Text strong style={{ fontSize: 16 }}>
+                {breadcrumbItems.join(' / ') || 'Trang chủ'}
+            </Text>
+
+            <Dropdown menu={{ items }} trigger={['click']}>
+                <a onClick={e => e.preventDefault()}>
+                    <Flex align="center" gap="small">
+                        <Flex vertical align="end" style={{ lineHeight: 1.2 }}>
+                            <Text strong style={{ fontSize: 14 }}>{employeeName}</Text>
+                            <Text type="secondary" style={{ fontSize: 11 }}>{role}</Text>
                         </Flex>
-                    </a>
-                </Dropdown>
-            </div>
+                        <DownOutlined style={{ fontSize: 10 }} />
+                    </Flex>
+                </a>
+            </Dropdown>
         </div>
     );
 };
