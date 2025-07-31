@@ -23,9 +23,9 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import modelService from '~/services/modelService';
-import CreateNewModelModal from '~/components/CreateNewModelModal';
-import CreateNewProcessModal from '~/components/CreateNewProcessModal';
-import ProcessTabs from '~/components/ProcessTabs';
+import CreateNewModelModal from '~/pages/Electrical/ElectricalProjectManagementPage/NewModel/CreateNewModelModal';
+import CreateNewProcessModal from '~/pages/Electrical/ElectricalProjectManagementPage/NewModel/CreateNewProcessModal';
+import ProcessTabs from '~/pages/Electrical/ElectricalProjectManagementPage/NewModel/ProcessTabs';
 import Search from 'antd/es/input/Search';
 import productService from '~/services/productService';
 

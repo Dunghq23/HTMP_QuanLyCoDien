@@ -9,8 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import orderService from "~/services/orderService";
-import CreateOrderModal from "~/components/CreateOrderModal";
-import ReceiveOrderModal from "~/components/ReceiveOrderModal";
+import CreateOrderModal from "~/pages/Electrical/ElectricalOrdersPage/CreateOrderModal";
+import ReceiveOrderModal from "~/pages/Electrical/ElectricalOrdersPage/ReceiveOrderModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 const { Search } = Input;

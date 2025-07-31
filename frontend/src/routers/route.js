@@ -1,16 +1,16 @@
 import HomePage from '~/pages/HomePage';
 import AboutPage from '~/pages/AboutPage';
 import NotFound from '~/pages/NotFound';
-import ElectricalPage from '~/pages/PhongCoDien/ElectricalPage';
+import ElectricalPage from '~/pages/Electrical/ElectricalPage';
 import DefaultLayout from '~/layouts/DefaultLayout';
-import ElectricalProjectManagementPage from '~/pages/PhongCoDien/ElectricalProjectManagementPage';
-import ElectricalNewProductPage from '~/pages/PhongCoDien/ElectricalNewProductPage';
-import EmployeeManagerPage from '~/pages/EmployeeManagerPage';
-import ElectricalDailyTasksPage from '~/pages/PhongCoDien/ElectricalDailyTasksPage';
+import ElectricalProjectManagementPage from '~/pages/Electrical/ElectricalProjectManagementPage';
+import ElectricalNewProductPage from '~/pages/Electrical/ElectricalProjectManagementPage/NewModel/ElectricalNewProductPage';
+import EmployeeManagerPage from '~/pages/HR/Employee';
+import ElectricalDailyTasksPage from '~/pages/Electrical/ElectricalDailyTasksPage';
 import LoginPage from '~/pages/LoginPage';
 import PrivateRoute from '~/components/PrivateRoute';
-import ElectricalOrderPage from '~/pages/PhongCoDien/ElectricalOrdersPage';
-import CustomerManagerPage from '~/pages/CustomerManagerPage';
+import ElectricalOrderPage from '~/pages/Electrical/ElectricalOrdersPage';
+import CustomerManagerPage from '~/pages/Sale/Customer';
 
 const routes = [
   {
@@ -28,7 +28,7 @@ const routes = [
       { path: 'electrical/projects/new-product', element: <ElectricalNewProductPage /> },
       { path: 'electrical/tasks-daily', element: <ElectricalDailyTasksPage /> },
       { path: 'electrical/orders', element: <ElectricalOrderPage /> },
-      { path: 'electrical/materials-equipment', element: <ElectricalOrderPage /> },
+      // { path: 'electrical/materials-equipment', element: <ElectricalOrderPage /> },
       { path: 'about', element: <AboutPage /> },
     ],
   },

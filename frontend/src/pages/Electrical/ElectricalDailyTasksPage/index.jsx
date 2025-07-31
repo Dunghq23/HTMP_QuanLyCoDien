@@ -9,13 +9,13 @@ import dayjs from 'dayjs';
 import { DeleteOutlined, EditOutlined, UploadOutlined } from '@ant-design/icons';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import dailyWorkReportService from '~/services/dailyWorkReportService';
-import CustomTooltip from '~/components/CustomTooltip';
+import CustomTooltip from '~/pages/Electrical/ElectricalDailyTasksPage/CustomTooltip';
 import { getAllEmployees } from '~/services/employeeService';
 
 // Import CSS cho Gantt, nếu chưa có
 import "gantt-task-react/dist/index.css";
 import { useTheme } from '~/contexts/ThemeContext';
-import WorkReportFormModal from '~/components/WorkReportFormModal';
+import WorkReportFormModal from '~/pages/Electrical/ElectricalDailyTasksPage/WorkReportFormModal';
 
 const { Title } = Typography;
 
