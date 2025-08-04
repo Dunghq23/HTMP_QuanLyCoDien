@@ -4,7 +4,7 @@ import TabData from './TabData';
 import TabReport from './TabReport';
 
 function ElectricalNewProductPage() {
-  const [activeKey, setActiveKey] = useState('current');
+  const [activeKey, setActiveKey] = useState('data');
 
   return (
     <Tabs
