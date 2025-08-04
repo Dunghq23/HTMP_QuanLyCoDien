@@ -1,8 +1,12 @@
 package htmp.codien.quanlycodien.service.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +17,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
+import htmp.codien.quanlycodien.dto.ProductStatusDTO;
+import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.Model;
@@ -303,4 +309,71 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    public List<ProductStatusDTO> getProductStatuses() {
+        List<Object[]> rows = productRepository.findProductStatuses();
+        return rows.stream()
+                .map(r -> new ProductStatusDTO(
+                        (String) r[0], // code
+                        (String) r[1], // name
+                        (String) r[2], // moldCode
+                        (String) r[3], // employee
+                        (String) r[4], // type
+                        (String) r[5] // currentStatus
+                ))
+                .toList();
+    }
+
+    @Override
+    public ProductSummaryDTO getProductSummary(LocalDate date, Integer week, Integer month, Integer year) {
+        int currentYear = year != null ? year : LocalDate.now().getYear();
+
+        LocalDate startDate;
+        LocalDate endDate;
+
+        if (date != null) {
+            startDate = endDate = date;
+        } else if (week != null) {
+            startDate = LocalDate.now()
+                    .withYear(currentYear)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                    .with(DayOfWeek.MONDAY);
+            endDate = startDate.plusDays(6);
+        } else if (month != null) {
+            startDate = LocalDate.of(currentYear, month, 1);
+            endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        } else {
+            startDate = LocalDate.now().withDayOfMonth(1);
+            endDate = LocalDate.now();
+        }
+
+        List<Object[]> stats = productRepository.countProductByPhaseAndType(startDate, endDate);
+
+        List<ProductSummaryDTO.PhaseSummaryDTO> tayGa = new ArrayList<>();
+        List<ProductSummaryDTO.PhaseSummaryDTO> banCat = new ArrayList<>();
+        List<ProductSummaryDTO.PhaseSummaryDTO> jig = new ArrayList<>();
+
+        for (Object[] row : stats) {
+            if (row == null || row.length < 3)
+                continue;
+
+            String type = row[0] != null ? row[0].toString().toUpperCase() : "";
+            String phaseName = row[1] != null ? row[1].toString() : "";
+            int count = row[2] instanceof Number num ? num.intValue() : 0;
+
+            ProductSummaryDTO.PhaseSummaryDTO dto = new ProductSummaryDTO.PhaseSummaryDTO(phaseName, count);
+
+            switch (type) {
+                case "TAYGA", "TAY_GA" -> tayGa.add(dto);
+                case "BANCAT", "BAN_CAT" -> banCat.add(dto);
+                case "JIG" -> jig.add(dto);
+            }
+        }
+
+        return ProductSummaryDTO.builder()
+                .tayGa(tayGa)
+                .banCat(banCat)
+                .jig(jig)
+                .build();
+    }
 }

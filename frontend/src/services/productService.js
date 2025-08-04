@@ -40,6 +40,32 @@ class ProductService {
         }
     }
 
+    async getProductStatuses() {
+        try {
+            const response = await axiosClient.get(`${API_URL}/statuses`);
+            return response.data.data;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi không xác định khi tải lên ảnh sản phẩm';
+            throw new Error(errorMessage);
+        }
+    }
+
+    async getProductSummary(params = {}) {
+        try {
+            let url = `${API_URL}/summary`;
+            console.log(params);
+            
+
+            const response = await axiosClient.get(url, { params });
+            return response.data.data; // Trả về summary object
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi khi tải tổng hợp sản phẩm';
+            throw new Error(errorMessage);
+        }
+    }
+
 }
 
 export default new ProductService;
