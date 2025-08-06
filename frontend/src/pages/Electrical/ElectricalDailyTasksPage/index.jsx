@@ -103,13 +103,13 @@ const ElectricalDailyTasksPage = () => {
         }
         return {
             id: `${report.id}`,
-            name: report.taskDescription || `Công việc ${index + 1}`,
+            name: `[${report.startTime?.slice(0, 5)} - ${report.endTime?.slice(0, 5)}] ${report.taskDescription || `Công việc ${index + 1}`}`,
             start,
             end,
             type: 'task',
-            progress: 100, // Hoàn thành 100%
-            project: report.employeeName, // Sử dụng project để nhóm theo nhân viên
-            isDisabled: true, // Không cho phép chỉnh sửa trên Gantt Chart
+            progress: 100,
+            project: report.employeeName,
+            isDisabled: true,
             filePath: report.filePath,
         };
     };
@@ -250,7 +250,7 @@ const ElectricalDailyTasksPage = () => {
 
     return (
         <div>
-            <Space style>
+            <Space style={{ marginBottom: 16 }}>
                 <DatePicker
                     value={selectedDate}
                     format="DD/MM/YYYY"
@@ -302,7 +302,6 @@ const ElectricalDailyTasksPage = () => {
 
             {role === 'ROLE_ADMIN' && (
                 <Table
-                    style={{ marginTop: 16 }}
                     dataSource={reports}
                     columns={columnsAdmin}
                     loading={loading} // Thêm loading cho table admin
@@ -320,9 +319,9 @@ const ElectricalDailyTasksPage = () => {
             {/* Hiển thị Gantt cho ROLE_MANAGER khi đã chọn nhân viên */}
             {role === 'ROLE_MANAGER' && selectedEmployeeId && (
                 <div style={{ minHeight: 400, marginTop: 16 }}>
-                    <Title level={5}>Gantt công việc: {
+                    <h3>Gantt công việc: {
                         groupedData.find(e => e.employeeId === selectedEmployeeId)?.employeeName
-                    }</Title>
+                    }</h3>
                     <Gantt
                         theme={isDarkMode ? "dark" : "default"}
                         tasks={reports
@@ -385,7 +384,7 @@ const ElectricalDailyTasksPage = () => {
 
                                 const payload = {
                                     employeeId: role === 'ROLE_ADMIN' ? values.employeeId : employeeId,
-                                    reportDate: values.reportDate.format("YYYY-MM-DD"), 
+                                    reportDate: values.reportDate.format("YYYY-MM-DD"),
                                     startTime: values.startTime.format("HH:mm:ss"),
                                     endTime: values.endTime.format("HH:mm:ss"),
                                     taskDescription: values.taskDescription,
