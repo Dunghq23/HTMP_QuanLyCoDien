@@ -11,35 +11,50 @@ import LoginPage from '~/pages/LoginPage';
 import PrivateRoute from '~/components/PrivateRoute';
 import ElectricalOrderPage from '~/pages/Electrical/ElectricalOrdersPage';
 import CustomerManagerPage from '~/pages/Sale/Customer';
+import DepartmentManagerPage from '~/pages/HR/Department';
+// import EmployeeSchedule from '~/pages/HR/EmployeeSchedule/EmployeeSchedule';
+// import WorkSchedule from '~/pages/HR/EmployeeSchedule/WorkSchedule';
+// import EmployeeShiftChange from '~/pages/HR/EmployeeSchedule/EmployeeShiftChange';
+// import ManagerShiftApproval from '~/pages/HR/EmployeeSchedule/ManagerShiftApproval';
 
 const routes = [
-  {
-    path: '/',
-    element:
-      <PrivateRoute>
-        <DefaultLayout />
-      </PrivateRoute>,
-    children: [
-      { path: '', element: <HomePage /> },
-      { path: 'employees', element: <EmployeeManagerPage /> },
-      { path: 'customers', element: <CustomerManagerPage /> },
-      { path: 'electrical', element: <ElectricalPage /> },
-      { path: 'electrical/projects', element: <ElectricalProjectManagementPage /> },
-      { path: 'electrical/projects/new-product', element: <ElectricalNewProductPage /> },
-      { path: 'electrical/tasks-daily', element: <ElectricalDailyTasksPage /> },
-      { path: 'electrical/orders', element: <ElectricalOrderPage /> },
-      // { path: 'electrical/materials-equipment', element: <ElectricalOrderPage /> },
-      { path: 'about', element: <AboutPage /> },
-    ],
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+    {
+        path: '/',
+        element:
+            <PrivateRoute>
+                <DefaultLayout />
+            </PrivateRoute>,
+        children: [
+            { path: '', element: <HomePage /> },
+            // Phòng HCNS
+            // { path: 'HR/4', element: <ManagerShiftApproval /> },
+            // { path: 'HR/3', element: <EmployeeShiftChange /> },
+            // { path: 'HR/2', element: <WorkSchedule /> },
+            // { path: 'HR/1', element: <EmployeeSchedule /> },
+            { path: 'HR/employees', element: <EmployeeManagerPage /> },
+            { path: 'HR/departments', element: <DepartmentManagerPage /> },
+
+            // Phòng Sale
+            { path: 'customers', element: <CustomerManagerPage /> },
+
+            // Phòng Cơ điện
+            { path: 'electrical', element: <ElectricalPage /> },
+            { path: 'electrical/projects', element: <ElectricalProjectManagementPage /> },
+            { path: 'electrical/projects/new-product', element: <ElectricalNewProductPage /> },
+            { path: 'electrical/tasks-daily', element: <ElectricalDailyTasksPage /> },
+            { path: 'electrical/orders', element: <ElectricalOrderPage /> },
+            // { path: 'electrical/materials-equipment', element: <ElectricalOrderPage /> },
+            { path: 'about', element: <AboutPage /> },
+        ],
+    },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
+    {
+        path: '*',
+        element: <NotFound />,
+    },
 ];
 
 export default routes;
