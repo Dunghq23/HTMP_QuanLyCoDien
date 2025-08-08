@@ -3,23 +3,24 @@ import {
     Table,
     Button,
     Space,
-    Typography,
     message,
     Modal,
     Form,
     Input,
     Select,
+    Row,
+    Col,
 } from 'antd';
 import {
     getAllEmployees,
     createEmployee,
     updateEmployee,
 } from '~/services/employeeService';
-
-const { Title } = Typography;
+import departmentService from '~/services/departmentService';
 
 function EmployeeManagerPage() {
     const [employees, setEmployees] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState(null);
@@ -38,9 +39,20 @@ function EmployeeManagerPage() {
         }
     };
 
+    const fetchDepartments = async () => {
+        try {
+            const data = await departmentService.getRootDepartments();
+            setDepartments(data || []);
+        } catch (error) {
+            console.error(error);
+            message.error('Lỗi khi tải danh sách phòng ban');
+        }
+    };
+
     useEffect(() => {
         if (localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') {
             fetchEmployees();
+            fetchDepartments();
         }
     }, []);
 
@@ -62,7 +74,7 @@ function EmployeeManagerPage() {
             fetchEmployees();
         } catch (err) {
             console.error(err);
-            message.error(err);
+            message.error('Lưu nhân viên thất bại');
         }
     };
 
@@ -98,7 +110,7 @@ function EmployeeManagerPage() {
             title: 'Tên',
             dataIndex: 'name',
             key: 'name',
-            width: '40%',
+            width: '25%',
             align: 'center',
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -108,7 +120,26 @@ function EmployeeManagerPage() {
             align: 'center',
             key: 'position',
             width: '20%',
-
+        },
+        {
+            title: 'Phòng ban',
+            dataIndex: 'departmentName',
+            align: 'center',
+            key: 'departmentName',
+            width: '20%',
+            filters: Array.from(new Set(departments.map(r => r.name))) // tạo filter duy nhất từ danh sách
+                .map(name => ({ text: name, value: name })),
+            onFilter: (value, record) => record.departmentName === value,
+            render: (text, record) => {
+                return record.departmentName || 'Chưa có phòng ban';
+            }
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'phone',
+            align: 'center',
+            key: 'phone',
+            width: '20%',
         },
         {
             title: 'Hành động',
@@ -124,6 +155,20 @@ function EmployeeManagerPage() {
             width: '15%',
         },
     ];
+
+    // ✅ Render option phòng ban và nhóm
+    const renderDepartmentOptions = () => {
+        return departments.map(dep => [
+            <Select.Option key={`dep-${dep.id}`} value={dep.id}>
+                Phòng {dep.name}
+            </Select.Option>,
+            ...(dep.subDepartments || []).map(sub => (
+                <Select.Option key={`sub-${sub.id}`} value={sub.id}>
+                    └─ Nhóm {sub.name}
+                </Select.Option>
+            ))
+        ]);
+    };
 
     return (
         <div>
@@ -142,7 +187,13 @@ function EmployeeManagerPage() {
                 dataSource={employees}
                 loading={loading}
                 bordered
-                scroll={{ x: 'max-content' }} // ✅ Cho phép kéo ngang trên mobile
+                scroll={{ x: 'max-content' }}
+                pagination={{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '20', '50'],
+                    defaultPageSize: 10,
+                    showTotal: (total, range) => `Hiển thị ${range[0]}-${range[1]} trên tổng ${total} nhân viên`
+                }}
             />
 
             <Modal
@@ -156,57 +207,86 @@ function EmployeeManagerPage() {
                 onOk={handleSave}
                 okText="Lưu"
                 cancelText="Hủy"
-                width="100%" // ✅ Tối đa chiều rộng
-                style={{ top: 20, maxWidth: 480, margin: '0 auto' }} // ✅ Responsive modal
+                width="100%"
+                style={{ maxWidth: 640 }}
             >
                 <Form form={form} layout="vertical">
-                    <Form.Item
-                        label="Mã nhân viên"
-                        name="code"
-                        rules={[{ required: true, message: 'Vui lòng nhập mã' }]}
-                    >
-                        <Input />
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Mã nhân viên"
+                                name="code"
+                                rules={[{ required: true, message: 'Vui lòng nhập mã' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
 
-                    <Form.Item
-                        label="Tên"
-                        name="name"
-                        rules={[{ required: true, message: 'Vui lòng nhập tên' }]}
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Tên"
+                                name="name"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                    <Form.Item
-                        label="Chức vụ"
-                        name="position"
-                        rules={[{ required: true, message: 'Vui lòng nhập chức vụ' }]}
-                    >
-                        <Input />
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Chức vụ"
+                                name="position"
+                                rules={[{ required: true, message: 'Vui lòng nhập chức vụ' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
 
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập số điện thoại' },
-                            { pattern: /^\d{9,11}$/, message: 'Số điện thoại không hợp lệ' },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Số điện thoại"
+                                name="phone"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập số điện thoại' },
+                                    { pattern: /^\d{9,11}$/, message: 'Số điện thoại không hợp lệ' },
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                    <Form.Item
-                        label="Vai trò"
-                        name="role"
-                        rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
-                    >
-                        <Select placeholder="Chọn vai trò">
-                            <Select.Option value="ROLE_ADMIN">Quản trị viên</Select.Option>
-                            <Select.Option value="ROLE_MANAGER">Quản lý</Select.Option>
-                            <Select.Option value="ROLE_EMPLOYEE">Nhân viên</Select.Option>
-                        </Select>
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Vai trò"
+                                name="role"
+                                rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
+                            >
+                                <Select placeholder="Chọn vai trò">
+                                    <Select.Option value="ROLE_ADMIN">Quản trị viên</Select.Option>
+                                    <Select.Option value="ROLE_MANAGER">Quản lý</Select.Option>
+                                    <Select.Option value="ROLE_EMPLOYEE">Nhân viên</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={12}>
+                            <Form.Item
+                                label="Phòng ban / Nhóm"
+                                name="departmentId"
+                                rules={[{ required: true, message: 'Vui lòng chọn phòng ban hoặc nhóm' }]}
+                            >
+                                <Select placeholder="Chọn phòng ban hoặc nhóm">
+                                    {renderDepartmentOptions()}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Form>
+
             </Modal>
         </div>
     );

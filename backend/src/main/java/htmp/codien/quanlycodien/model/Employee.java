@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Employee  extends BaseEntity {
+public class Employee extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -37,4 +37,9 @@ public class Employee  extends BaseEntity {
 
     @Column(name = "role", length = 50, nullable = false)
     String role;
+
+    // Liên kết với phòng ban
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    Department department;
 }

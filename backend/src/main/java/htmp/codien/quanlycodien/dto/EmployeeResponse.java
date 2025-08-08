@@ -8,11 +8,13 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmployeeDTO {
+public class EmployeeResponse {
     Long id;
     String code;
     String name;
     String position;
     String phone;
     String role;
+    Long departmentId;
+    String departmentName;
 }

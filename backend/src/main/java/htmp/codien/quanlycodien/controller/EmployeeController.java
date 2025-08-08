@@ -2,7 +2,8 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.EmployeeDTO;
+import htmp.codien.quanlycodien.dto.EmployeeRequest;
+import htmp.codien.quanlycodien.dto.EmployeeResponse;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +22,16 @@ public class EmployeeController {
 
     // GET all employees
     @GetMapping
-    public ResponseEntity<ApiResponse<List<EmployeeDTO>>> getAll() {
-        List<EmployeeDTO> employees = employeeService.findAll();
+    public ResponseEntity<ApiResponse<List<EmployeeResponse>>> getAll() {
+        List<EmployeeResponse> employees = employeeService.findAll();
         return ResponseUtil.success(employees, "Lấy danh sách nhân viên thành công");
     }
 
     // GET employee by ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ApiResponse<EmployeeDTO>> getById(@PathVariable Long id) {
-        EmployeeDTO employee = employeeService.findById(id)
+    public ResponseEntity<ApiResponse<EmployeeResponse>> getById(@PathVariable Long id) {
+        EmployeeResponse employee = employeeService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         return ResponseUtil.success(employee, "Lấy nhân viên thành công");
     }
@@ -38,18 +39,18 @@ public class EmployeeController {
     // POST create new employee
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ApiResponse<EmployeeDTO>> create(@RequestBody EmployeeDTO dto) {
-        EmployeeDTO created = employeeService.save(dto);
-        return ResponseUtil.success(created, "Tạo nhân viên thành công");
+    public ResponseEntity<ApiResponse<Void>> create(@RequestBody EmployeeRequest dto) {
+        employeeService.save(dto);
+        return ResponseUtil.success(null, "Tạo nhân viên thành công");
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ApiResponse<EmployeeDTO>> update(@PathVariable Long id, @RequestBody EmployeeDTO dto) {
+    public ResponseEntity<ApiResponse<Void>> update(@PathVariable Long id, @RequestBody EmployeeRequest dto) {
         employeeService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         dto.setId(id); // ensure id is set
-        EmployeeDTO updated = employeeService.save(dto);
-        return ResponseUtil.success(updated, "Cập nhật nhân viên thành công");
+        employeeService.save(dto);
+        return ResponseUtil.success(null, "Cập nhật nhân viên thành công");
     }
 }

@@ -1,8 +1,11 @@
 package htmp.codien.quanlycodien.service.impl;
 
-import htmp.codien.quanlycodien.dto.EmployeeDTO;
+import htmp.codien.quanlycodien.dto.EmployeeRequest;
+import htmp.codien.quanlycodien.dto.EmployeeResponse;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
+import htmp.codien.quanlycodien.model.Department;
 import htmp.codien.quanlycodien.model.Employee;
+import htmp.codien.quanlycodien.repository.DepartmentRepository;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -18,33 +21,44 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
+    private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
 
-    private EmployeeDTO toDTO(Employee employee) {
-        return modelMapper.map(employee, EmployeeDTO.class);
+    private EmployeeResponse toResponse(Employee employee) {
+        EmployeeResponse response = modelMapper.map(employee, EmployeeResponse.class);
+        if (employee.getDepartment() != null) {
+            if(employee.getDepartment().getParentDepartment() != null) {
+                response.setDepartmentId(employee.getDepartment().getParentDepartment().getId());
+                response.setDepartmentName(employee.getDepartment().getParentDepartment().getName());
+            } else {
+                response.setDepartmentId(employee.getDepartment().getId());
+                response.setDepartmentName(employee.getDepartment().getName());
+            }
+        }
+        return response;
     }
 
-    private Employee toEntity(EmployeeDTO dto) {
+    private Employee toEntity(EmployeeRequest dto) {
         return modelMapper.map(dto, Employee.class);
     }
 
     @Override
-    public List<EmployeeDTO> findAll() {
+    public List<EmployeeResponse> findAll() {
         return employeeRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<EmployeeDTO> findById(Long id) {
-        return employeeRepository.findById(id).map(this::toDTO);
+    public Optional<EmployeeResponse> findById(Long id) {
+        return employeeRepository.findById(id).map(this::toResponse);
     }
 
     @Override
-    public EmployeeDTO save(EmployeeDTO employeeDTO) {
-        Employee employee = toEntity(employeeDTO);
+    public void save(EmployeeRequest request) {
+        Employee employee = toEntity(request);
 
         // Nếu là nhân viên mới (chưa có ID), gán mật khẩu mặc định đã mã hóa
         if (employee.getId() == null) {
@@ -60,7 +74,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-        Employee saved = employeeRepository.save(employee);
-        return toDTO(saved);
+        if (employee.getDepartment() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Không tìm thấy phòng ban"));
+            employee.setDepartment(department);
+        }
+
+        employeeRepository.save(employee);
     }
 }
