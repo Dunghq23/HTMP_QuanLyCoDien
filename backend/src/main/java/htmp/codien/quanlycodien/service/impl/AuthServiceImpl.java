@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import htmp.codien.quanlycodien.dto.AuthResponseDTO;
-import htmp.codien.quanlycodien.dto.EmployeeDTO;
+import htmp.codien.quanlycodien.dto.EmployeeResponse;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.security.JwtTokenProvider;
@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("Mật khẩu không đúng");
         }
         String token = jwtTokenProvider.generateToken(user.getCode(), user.getRole());
-        EmployeeDTO userDto = modelMapper.map(user, EmployeeDTO.class);
+        EmployeeResponse userDto = modelMapper.map(user, EmployeeResponse.class);
         return new AuthResponseDTO(token, userDto);
     }
 
