@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductTestByEmployeeResponse {
     private String employeeName;
-    private int tayGaCount;
-    private int banCatCount;
-    private int jigCount;
+    private int tayga;
+    private int bancat;
+    private int jig;
 }

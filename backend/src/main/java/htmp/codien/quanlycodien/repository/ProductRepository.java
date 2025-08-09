@@ -181,9 +181,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = """
                 SELECT
                     e.name AS employeeName,
-                    SUM(CASE WHEN p.type = 'TAYGA'  AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS tayGaCount,
-                    SUM(CASE WHEN p.type = 'BANCAT' AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS banCatCount,
-                    SUM(CASE WHEN p.type = 'JIG'    AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS jigCount
+                    SUM(CASE WHEN p.type = 'TAYGA'  AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS tayga,
+                    SUM(CASE WHEN p.type = 'BANCAT' AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS bancat,
+                    SUM(CASE WHEN p.type = 'JIG'    AND thunghiem.completion_date IS NOT NULL THEN 1 ELSE 0 END) AS jig
                 FROM
                     products pd
                     JOIN processes p ON pd.id = p.product_id
