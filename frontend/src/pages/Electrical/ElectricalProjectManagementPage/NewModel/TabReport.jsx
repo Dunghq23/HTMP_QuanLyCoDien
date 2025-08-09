@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, DatePicker, Space, Card, Row, Col, Table, message, Tag } from 'antd';
+import { Tabs, DatePicker, Space, Card, Row, Col, Table, message, Tag, Steps } from 'antd';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import productService from '~/services/productService';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
+    Legend
 } from 'recharts';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import useColumnSearch from '~/hook/useColumnSearch';
+import ModernCard from '~/components/ModernCard';
+import { AntDesignOutlined, ApiOutlined, FileDoneOutlined, ScissorOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 dayjs.extend(isoWeek);
 
 function ReportCard({ title, color, data }) {
@@ -46,25 +50,51 @@ function TabReport() {
 
     const [loading, setLoading] = useState(false);
     const [productData, setProductData] = useState([]);
+    const [productQuantityStageBeingDone, setProductQuantityStageBeingDone] = useState([]);
+    const [productTestSummaryByEmployee, setProductTestSummaryByEmployee] = useState([]);
     const [summary, setSummary] = useState({ tayGa: [], banCat: [], jig: [] });
+
+    const { getColumnSearchProps } = useColumnSearch();
+
     useEffect(() => {
         const fetchSummary = async () => {
             try {
                 setLoading(true);
 
                 let params = {};
+                let startDate, endDate;
+
                 if (activeMode === 'day' && selectedDate) {
                     params.date = selectedDate.format('YYYY-MM-DD');
-                } else if (activeMode === 'week' && selectedWeek) {
-                    params.week = selectedWeek.isoWeek(); // ISO tuần
-                    params.year = selectedWeek.year(); // Gửi kèm năm
-                } else if (activeMode === 'month' && selectedMonth) {
+
+                    startDate = params.date;
+                    endDate = params.date;
+                }
+                else if (activeMode === 'week' && selectedWeek) {
+                    params.week = selectedWeek.isoWeek();
+                    params.year = selectedWeek.year();
+
+                    startDate = selectedWeek.startOf('isoWeek').format('YYYY-MM-DD');
+                    endDate = selectedWeek.endOf('isoWeek').format('YYYY-MM-DD');
+                }
+                else if (activeMode === 'month' && selectedMonth) {
                     params.month = selectedMonth.month() + 1;
                     params.year = selectedMonth.year();
+
+                    startDate = selectedMonth.startOf('month').format('YYYY-MM-DD');
+                    endDate = selectedMonth.endOf('month').format('YYYY-MM-DD');
                 }
 
                 const res = await productService.getProductSummary(params);
                 setSummary(res || { tayGa: [], banCat: [], jig: [] });
+
+                // Chỉ gọi khi mode là tuần hoặc tháng
+                if (activeMode === 'week' || activeMode === 'month') {
+                    const data = await productService.getProductTestSummaryByEmployee(startDate, endDate);
+                    setProductTestSummaryByEmployee(data || []);
+                } else {
+                    setProductTestSummaryByEmployee([]); // clear dữ liệu khi không cần
+                }
             } catch (err) {
                 message.error('Lỗi khi tải báo cáo tổng hợp');
             } finally {
@@ -88,7 +118,19 @@ function TabReport() {
                 setLoading(false);
             }
         };
+        const fetchQuantityByStagesBeingDone = async () => {
+            try {
+                setLoading(true);
+                const data = await productService.getQuantityProductByStagesIsBeingDone();
+                setProductQuantityStageBeingDone(data || []);
+            } catch (err) {
+                message.error('Lỗi khi tải số lượng sản phẩm theo giai đoạn');
+            } finally {
+                setLoading(false);
+            }
+        }
         fetchStatuses();
+        fetchQuantityByStagesBeingDone()
     }, []);
 
     const typeColors = {
@@ -111,7 +153,10 @@ function TabReport() {
         { title: 'Mã sản phẩm', dataIndex: 'code', key: 'code' },
         { title: 'Mã khuôn', dataIndex: 'moldCode', key: 'moldCode' },
         { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name' },
-        { title: 'Nhân viên phụ trách', dataIndex: 'employee', key: 'employee' },
+        {
+            title: 'Nhân viên phụ trách', dataIndex: 'employee', key: 'employee',
+            ...getColumnSearchProps('employee')
+        },
         {
             title: 'Loại',
             dataIndex: 'type',
@@ -140,9 +185,92 @@ function TabReport() {
             },
         },
     ];
+    const data = [
+        { employee: 'Nguyễn Chí Công', 'Tay gá': 4, 'Bàn cắt': 2, JIG: 1 },
+        { employee: 'Cao Việt Tú', 'Tay gá': 1, 'Bàn cắt': 3, JIG: 2 },
+        { employee: 'Nguyễn Minh Hiếu', 'Tay gá': 2, 'Bàn cắt': 1, JIG: 4 },
+        { employee: 'Nguyễn Văn Thắng', 'Tay gá': 3, 'Bàn cắt': 0, JIG: 2 },
+        { employee: 'Phạm Tiến Đạt', 'Tay gá': 2, 'Bàn cắt': 1, JIG: 3 },
+    ];
+
+    const stepStages = [
+        { key: 'Đang thiết kế', data: productQuantityStageBeingDone.designing, icon: <AntDesignOutlined />, status: 'process' },
+        { key: 'Đang mua hàng', data: productQuantityStageBeingDone.purchasing, icon: <ShoppingCartOutlined />, status: 'wait' },
+        { key: 'Đang gia công', data: productQuantityStageBeingDone.processing, icon: <ScissorOutlined />, status: 'wait' },
+        { key: 'Đang lắp ráp', data: productQuantityStageBeingDone.assembling, icon: <ApiOutlined />, status: 'wait' },
+        { key: 'Đang bàn giao', data: productQuantityStageBeingDone.delivering, icon: <FileDoneOutlined />, status: 'wait' },
+    ];
+
+    const stepsItems = stepStages.map(stage => ({
+        title: stage.key,
+        status: 'finish',
+        icon: stage.icon,
+        description: (
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 80,
+                }}
+            >
+                <h1
+                    style={{
+                        fontSize: 30,
+                        fontWeight: 'bold',
+                        margin: 0,
+                        color: '#95827eff',
+                    }}
+                >
+                    {stage.data || 0}
+                </h1>
+            </div>
+        )
+    }));
+
 
     return (
         <div>
+            <Row gutter={16} >
+                <Col xs={12} md={12}>
+                    <ModernCard title="TỔNG HOÀN THÀNH">
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                fontSize: 36,
+                                fontWeight: 'bold',
+                                color: '#41ff16ff',
+                            }}
+                        >
+                            {productQuantityStageBeingDone.completed}
+                        </div>
+                    </ModernCard>
+                </Col>
+
+                <Col xs={12} md={12}>
+                    <ModernCard title="TỔNG TRIỂN KHAI">
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                fontSize: 36,
+                                fontWeight: 'bold',
+                                color: '#ff2216ff',
+                            }}
+                        >
+                            {productQuantityStageBeingDone.isBeing}
+                        </div>
+                    </ModernCard>
+                </Col>
+            </Row>
+
+            <Row gutter={16} style={{ marginTop: 16 }}>
+                <Col span={24}>
+                    <ModernCard title="SẢN PHẨM ĐANG TRIỂN KHAI">
+                        <Steps items={stepsItems} />
+                    </ModernCard>
+                </Col>
+            </Row>
+
             <Tabs
                 activeKey={activeMode}
                 onChange={setActiveMode}
@@ -175,14 +303,50 @@ function TabReport() {
 
                 <Row gutter={[16, 16]}>
                     <Col xs={24} md={8}>
-                        <ReportCard title="Tay gá" color="#1677ff" data={summary.tayGa} />
+                        <ReportCard title="Tay gá" color="#3C7363" data={summary.tayGa} />
                     </Col>
                     <Col xs={24} md={8}>
-                        <ReportCard title="Bàn cắt" color="#52c41a" data={summary.banCat} />
+                        <ReportCard title="Bàn cắt" color="#033859" data={summary.banCat} />
                     </Col>
                     <Col xs={24} md={8}>
-                        <ReportCard title="Jig" color="#fa8c16" data={summary.jig} />
+                        <ReportCard title="Jig" color="#A02C2D" data={summary.jig} />
                     </Col>
+
+                    {activeMode !== 'day' && (
+                        <Col xs={24} md={12}>
+                            <Card
+                                title={<h2 style={{ marginBottom: 0 }}>Thống kê sản phẩm hoàn thành theo nhân viên</h2>}
+                                style={{
+                                    borderTop: `4px solid red`,
+                                    borderRadius: 12,
+                                }}
+                                hoverable
+                                styles={{
+                                    body: { padding: '12px 12px 16px 12px' },
+                                }}
+                            >
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart data={productTestSummaryByEmployee}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="employeeName" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="tayga" stackId="a" fill="#1677ff" >
+                                            <LabelList dataKey="tayga" position="center" />
+                                        </Bar>
+                                        <Bar dataKey="bancat" stackId="a" fill="#52c41a" >
+                                            <LabelList dataKey="bancat" position="center" />
+                                        </Bar>
+                                        <Bar dataKey="jig" stackId="a" fill="#fa8c16" >
+                                            <LabelList dataKey="jig" position="center" />
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </Card>
+                        </Col>
+                    )}
+
                 </Row>
 
                 <div style={{ marginTop: 24, width: '100%' }}>
@@ -196,12 +360,12 @@ function TabReport() {
                             showSizeChanger: true,
                             pageSizeOptions: ['5', '10', '20', '50'],
                             defaultPageSize: 10,
-                            showTotal: (total, range) => `Hiển thị ${range[0]}-${range[1]} trên tổng ${total} bản ghi`
+                            showTotal: (total, range) => `Hiển thị ${range[0]}-${range[1]} trên tổng ${total} sản phẩm`
                         }}
                     />
                 </div>
             </Space>
-        </div>
+        </div >
     );
 }
 

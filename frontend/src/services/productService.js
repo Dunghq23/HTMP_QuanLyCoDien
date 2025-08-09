@@ -54,14 +54,40 @@ class ProductService {
     async getProductSummary(params = {}) {
         try {
             let url = `${API_URL}/summary`;
-            console.log(params);
-            
 
             const response = await axiosClient.get(url, { params });
             return response.data.data; // Trả về summary object
         } catch (error) {
             const errorMessage =
                 error?.response?.data?.message || error.message || 'Lỗi khi tải tổng hợp sản phẩm';
+            throw new Error(errorMessage);
+        }
+    }
+
+    async getQuantityProductByStagesIsBeingDone() {
+        try {
+            const response = await axiosClient.get(`${API_URL}/summary-being-done`);
+            return response.data.data; // Trả về dữ liệu số lượng sản phẩm theo từng giai đoạn
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi khi lấy số lượng sản phẩm theo giai đoạn';
+            throw new Error(errorMessage);
+        }
+    }
+
+    async getProductTestSummaryByEmployee(startDate, endDate) {
+        try {
+            const response = await axiosClient.get(`${API_URL}/test-summary-by-employee`, {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            });
+            return response.data.data; // Trả về dữ liệu tổng hợp thử nghiệm theo nhân viên
+        }
+        catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi khi lấy tổng hợp thử nghiệm theo nhân viên';
             throw new Error(errorMessage);
         }
     }

@@ -19,6 +19,8 @@ import com.lowagie.text.pdf.PdfWriter;
 import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
 import htmp.codien.quanlycodien.dto.ProductStatusDTO;
 import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
+import htmp.codien.quanlycodien.dto.ProductTestByEmployeeResponse;
+import htmp.codien.quanlycodien.dto.StageQuantitySummaryResponse;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.Model;
@@ -375,5 +377,36 @@ public class ProductServiceImpl implements ProductService {
                 .banCat(banCat)
                 .jig(jig)
                 .build();
+    }
+
+    @Override
+    public StageQuantitySummaryResponse getQuantityProductByStagesIsBeingDone() {
+        Object[] result = productRepository.countProductByStages().get(0);
+
+        return new StageQuantitySummaryResponse(
+                ((Number) result[0]).intValue(),
+                ((Number) result[1]).intValue(),
+                ((Number) result[2]).intValue(),
+                ((Number) result[3]).intValue(),
+                ((Number) result[4]).intValue(),
+                ((Number) result[5]).intValue(),
+                ((Number) result[0]).intValue()
+                        + ((Number) result[1]).intValue()
+                        + ((Number) result[2]).intValue()
+                        + ((Number) result[3]).intValue()
+                        + ((Number) result[4]).intValue());
+
+    }
+
+    @Override
+    public List<ProductTestByEmployeeResponse> getProductTestSummaryByEmployee(LocalDate startDate, LocalDate endDate) {
+       List<Object[]> results = productRepository.getProductTestSummaryByEmployee(startDate, endDate);
+        return results.stream()
+                .map(r -> new ProductTestByEmployeeResponse(
+                        (String) r[0],
+                        ((Number) r[1]).intValue(),
+                        ((Number) r[2]).intValue(),
+                        ((Number) r[3]).intValue()))
+                .toList();
     }
 }

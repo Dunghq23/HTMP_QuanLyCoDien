@@ -10,8 +10,6 @@ const cardStyle = {
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     border: '1px solid #1e90ff' // màu xanh
-
-
 };
 
 const iconStyle = {

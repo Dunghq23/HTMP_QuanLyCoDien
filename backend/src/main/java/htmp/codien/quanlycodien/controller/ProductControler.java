@@ -25,6 +25,8 @@ import htmp.codien.quanlycodien.common.ResponseUtil;
 import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
 import htmp.codien.quanlycodien.dto.ProductStatusDTO;
 import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
+import htmp.codien.quanlycodien.dto.ProductTestByEmployeeResponse;
+import htmp.codien.quanlycodien.dto.StageQuantitySummaryResponse;
 import htmp.codien.quanlycodien.service.ProductService;
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +72,24 @@ public class ProductControler {
 
         ProductSummaryDTO summary = productService.getProductSummary(date, week, month, year);
         return ResponseUtil.success(summary, "Lấy báo cáo tổng hợp thành công");
+    }
+
+    @GetMapping("/summary-being-done")
+    public ResponseEntity<ApiResponse<StageQuantitySummaryResponse>> getQuantityProductByStagesIsBeingDone() {
+
+        StageQuantitySummaryResponse summary = productService.getQuantityProductByStagesIsBeingDone();
+        return ResponseUtil.success(summary, "Lấy báo cáo tổng hợp thành công");
+    }
+
+    @GetMapping("/test-summary-by-employee")
+    public ResponseEntity<ApiResponse<List<ProductTestByEmployeeResponse>>> getProductTestSummaryByEmployee(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        List<ProductTestByEmployeeResponse> summary = productService.getProductTestSummaryByEmployee(startDate,
+                endDate);
+
+        return ResponseUtil.success(summary, "Lấy báo cáo thử nghiệm theo nhân viên thành công");
     }
 
 }
