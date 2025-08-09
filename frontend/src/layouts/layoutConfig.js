@@ -8,11 +8,14 @@ import {
     OrderedListOutlined,
     WalletOutlined,
     UsergroupAddOutlined,
+    TeamOutlined,
 } from '@ant-design/icons';
 
 export const breadcrumbMap = {
     '/': 'Trang chủ',
-    '/employees': 'Quản lý nhân viên',
+    '/HR': 'Phòng HCNS',
+    '/HR/employees': 'Quản lý nhân viên',
+    '/HR/departments': 'Quản lý phòng ban',
     '/customers': 'Quản lý khách hàng',
     '/electrical': 'Phòng cơ điện',
     '/electrical/projects': 'Quản lý dự án',
@@ -45,7 +48,15 @@ export const getMenuItems = (navigate) => {
                         key: '/employees',
                         icon: <UserOutlined />,
                         label: 'Quản lý nhân viên',
-                        onClick: () => navigate('/employees'),
+                        onClick: () => navigate('/HR/employees'),
+                    }]
+                    : []),
+                ...(role === 'ROLE_ADMIN'
+                    ? [{
+                        key: '/departments',
+                        icon: <TeamOutlined />,
+                        label: 'Quản lý phòng ban',
+                        onClick: () => navigate('/HR/departments'),
                     }]
                     : []),
 

@@ -7,6 +7,8 @@ import SidebarMenu from './SidebarMenu';
 import HeaderBar from './HeaderBar';
 import { useDynamicTitle } from '~/hook/useDynamicTitle';
 
+import '~/styles/DefaultLayout.css'; // Assuming you have some styles for this layout
+
 const { Content, Footer } = Layout;
 
 const DefaultLayout = () => {
@@ -28,7 +30,7 @@ const DefaultLayout = () => {
   return (
     <ConfigProvider theme={{ algorithm: themeAlgorithm }}>
       <Layout style={{ minHeight: '100vh', background: backgroundColor }}>
-        
+
         {/* Sidebar */}
         <Layout.Sider
           width={siderWidth}
@@ -71,7 +73,7 @@ const DefaultLayout = () => {
           />
 
           {/* Content */}
-          <Content style={{ marginTop: 64, padding: 24 }}>
+          <Content className="layout-content-wrapper" style={{ marginTop: 64, padding: 24 }}>
             <div
               style={{
                 minHeight: 'calc(100vh - 180px)',
