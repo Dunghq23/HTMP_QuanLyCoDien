@@ -23,8 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,26 +43,45 @@ public class ModelServiceImpl implements ModelService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng"));
         try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())) {
-            // Parse model and product list
+            // Parse model và product list từ Excel
             Model newModel = parseModelFromExcel(workbook);
-            List<Product> products = parseProductsFromExcel(workbook);
+            List<Product> productsFromExcel = parseProductsFromExcel(workbook);
 
-            if (products.isEmpty()) {
+            if (productsFromExcel.isEmpty()) {
                 throw new IllegalArgumentException("Không có sản phẩm nào trong file Excel");
             }
 
-            // ✅ Kiểm tra xem model có code trùng chưa
-            Optional<Model> existing = modelRepository.findByCode(newModel.getCode());
-            if (existing.isPresent()) {
-                throw new ConflictException("Model với mã '" + newModel.getCode() + "' đã tồn tại");
+            // ✅ Kiểm tra xem model đã tồn tại chưa
+            Model model = modelRepository.findByCode(newModel.getCode())
+                    .map(existingModel -> {
+                        // Nếu tồn tại → dùng model cũ
+                        return existingModel;
+                    })
+                    .orElseGet(() -> {
+                        // Nếu chưa tồn tại → tạo mới model
+                        newModel.setCustomer(customer);
+                        return modelRepository.save(newModel);
+                    });
+
+            // ✅ Lấy danh sách sản phẩm hiện có của model
+            List<Product> existingProducts = productRepository.findByModel(model);
+            Set<String> existingProductCodes = existingProducts.stream()
+                    .map(Product::getCode)
+                    .collect(Collectors.toSet());
+
+            // ✅ Lọc ra các sản phẩm chưa tồn tại
+            List<Product> newProducts = productsFromExcel.stream()
+                    .filter(product -> !existingProductCodes.contains(product.getCode()))
+                    .peek(product -> product.setModel(model)) // Gán model
+                    .toList();
+
+            if (newProducts.isEmpty()) {
+                throw new ConflictException("Tất cả sản phẩm trong file Excel đều đã tồn tại trong model này");
             }
 
-            newModel.setCustomer(customer);
-            // Gán quan hệ nếu Product có @ManyToOne Model
-            products.forEach(product -> product.setModel(newModel));
+            // ✅ Lưu các sản phẩm mới
+            productRepository.saveAll(newProducts);
 
-            modelRepository.save(newModel);
-            productRepository.saveAll(products);
         } catch (IOException e) {
             throw new RuntimeException("Lỗi khi đọc file Excel", e);
         }
@@ -137,6 +157,10 @@ public class ModelServiceImpl implements ModelService {
         if (models == null || models.isEmpty()) {
             throw new ResourceNotFoundException("Không tìm thấy model với mã sản phẩm hoặc mã khuôn");
         }
-        return models;
+
+        Set<Long> seenIds = new HashSet<>();
+        return models.stream()
+                .filter(dto -> seenIds.add(dto.getId())) // chỉ lấy lần đầu gặp id đó
+                .toList();
     }
 }
