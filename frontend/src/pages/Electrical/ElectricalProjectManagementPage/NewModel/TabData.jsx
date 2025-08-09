@@ -14,6 +14,7 @@ import productService from '~/services/productService';
 import CreateNewModelModal from './CreateNewModelModal';
 import CreateNewProcessModal from './CreateNewProcessModal';
 import ProcessTabs from './ProcessTabs';
+import useColumnSearch from '~/hook/useColumnSearch';
 
 const useExpandable = () => {
     const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -49,6 +50,9 @@ function TabData() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
+
+    const { getColumnSearchProps } = useColumnSearch();
+
 
 
     const {
@@ -146,9 +150,9 @@ function TabData() {
     }
 
     const productColumns = [
-        { title: 'Mã sản phẩm', dataIndex: 'code' },
+        { title: 'Mã sản phẩm', dataIndex: 'code', ...getColumnSearchProps('code') },
         { title: 'Tên sản phẩm', dataIndex: 'name' },
-        { title: 'Mã khuôn', dataIndex: 'moldCode' },
+        { title: 'Mã khuôn', dataIndex: 'moldCode', ...getColumnSearchProps('moldCode')},
         { title: 'Loại gate', dataIndex: 'gateType' },
         {
             title: 'Hình ảnh',
