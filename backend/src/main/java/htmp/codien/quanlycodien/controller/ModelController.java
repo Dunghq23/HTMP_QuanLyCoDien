@@ -2,8 +2,8 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.NewModelDTO;
-import htmp.codien.quanlycodien.dto.ProductDTO;
+import htmp.codien.quanlycodien.dto.newModel.NewModelDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductDTO;
 import htmp.codien.quanlycodien.service.ModelService;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;

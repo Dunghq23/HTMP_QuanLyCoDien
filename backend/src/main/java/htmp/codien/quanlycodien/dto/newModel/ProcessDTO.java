@@ -1,6 +1,6 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +15,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProcessStageDTO {
+public class ProcessDTO {
     Long id;
+    String employeeName;
+    String type;
     String name;
-    LocalDate completionDate;
-    String description;
+    double cost;
+    JigDetailDTO jigDetail;
+    List<ProcessStageDTO> processStageList;
 }

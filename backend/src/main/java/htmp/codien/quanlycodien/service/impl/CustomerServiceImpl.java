@@ -5,7 +5,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import htmp.codien.quanlycodien.dto.CustomerDTO;
+import htmp.codien.quanlycodien.dto.customer.CustomerDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.repository.CustomerRepository;

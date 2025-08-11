@@ -3,7 +3,7 @@ package htmp.codien.quanlycodien.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import htmp.codien.quanlycodien.dto.ProcessDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProcessDTO;
 
 public interface ProcessService {
     void createProcess(Long productId, Long employeeId, String type, String name, String erpCode, String jigName);

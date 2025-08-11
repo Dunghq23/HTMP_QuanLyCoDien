@@ -2,7 +2,7 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.DailyWorkReportDTO;
+import htmp.codien.quanlycodien.dto.dailyTask.DailyWorkReportDTO;
 import htmp.codien.quanlycodien.service.DailyWorkReportService;
 import lombok.AllArgsConstructor;
 

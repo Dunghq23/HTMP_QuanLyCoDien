@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import htmp.codien.quanlycodien.dto.DepartmentRequest;
-import htmp.codien.quanlycodien.dto.DepartmentRootDTO;
+import htmp.codien.quanlycodien.dto.department.DepartmentRequest;
+import htmp.codien.quanlycodien.dto.department.DepartmentRootDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Department;
 import htmp.codien.quanlycodien.repository.DepartmentRepository;

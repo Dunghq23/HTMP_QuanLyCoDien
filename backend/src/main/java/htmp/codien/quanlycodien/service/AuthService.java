@@ -1,6 +1,6 @@
 package htmp.codien.quanlycodien.service;
 
-import htmp.codien.quanlycodien.dto.AuthResponseDTO;
+import htmp.codien.quanlycodien.dto.auth.AuthResponseDTO;
 
 public interface AuthService {
     AuthResponseDTO login(String code, String password);

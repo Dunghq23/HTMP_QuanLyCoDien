@@ -1,23 +1,26 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ProductDTO {
-    Long id;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ProductStatusDTO {
     String code;
     String name;
     String moldCode;
-    String gateType;
-    String image;
+    String employee;
+    String type;
+    String currentStatus;
 }

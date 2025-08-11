@@ -1,4 +1,4 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

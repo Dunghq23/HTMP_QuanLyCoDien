@@ -2,7 +2,7 @@ package htmp.codien.quanlycodien.service;
 
 import java.util.List;
 
-import htmp.codien.quanlycodien.dto.CustomerDTO;
+import htmp.codien.quanlycodien.dto.customer.CustomerDTO;
 
 public interface CustomerService {
     List<CustomerDTO> getAll();

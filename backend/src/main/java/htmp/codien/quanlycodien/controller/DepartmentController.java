@@ -2,8 +2,8 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.DepartmentRequest;
-import htmp.codien.quanlycodien.dto.DepartmentRootDTO;
+import htmp.codien.quanlycodien.dto.department.DepartmentRequest;
+import htmp.codien.quanlycodien.dto.department.DepartmentRootDTO;
 import htmp.codien.quanlycodien.model.Department;
 import htmp.codien.quanlycodien.service.DepartmentService;
 import lombok.RequiredArgsConstructor;

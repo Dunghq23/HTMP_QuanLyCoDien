@@ -1,7 +1,7 @@
 package htmp.codien.quanlycodien.service.impl;
 
-import htmp.codien.quanlycodien.dto.NewModelDTO;
-import htmp.codien.quanlycodien.dto.ProductDTO;
+import htmp.codien.quanlycodien.dto.newModel.NewModelDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductDTO;
 import htmp.codien.quanlycodien.exception.ConflictException;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Customer;

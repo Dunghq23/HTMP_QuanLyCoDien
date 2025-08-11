@@ -2,9 +2,9 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.OrderDTO;
-import htmp.codien.quanlycodien.dto.OrderItemDTO;
-import htmp.codien.quanlycodien.dto.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.newModel.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.order.OrderDTO;
+import htmp.codien.quanlycodien.dto.order.OrderItemDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.service.OrderService;
 import io.jsonwebtoken.io.IOException;

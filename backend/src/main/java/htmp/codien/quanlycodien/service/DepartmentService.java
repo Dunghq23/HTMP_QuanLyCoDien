@@ -2,8 +2,8 @@ package htmp.codien.quanlycodien.service;
 
 import java.util.List;
 
-import htmp.codien.quanlycodien.dto.DepartmentRequest;
-import htmp.codien.quanlycodien.dto.DepartmentRootDTO;
+import htmp.codien.quanlycodien.dto.department.DepartmentRequest;
+import htmp.codien.quanlycodien.dto.department.DepartmentRootDTO;
 import htmp.codien.quanlycodien.model.Department;
 
 public interface DepartmentService {

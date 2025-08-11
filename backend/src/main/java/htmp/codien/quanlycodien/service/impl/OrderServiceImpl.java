@@ -16,9 +16,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import htmp.codien.quanlycodien.dto.OrderDTO;
-import htmp.codien.quanlycodien.dto.OrderItemDTO;
-import htmp.codien.quanlycodien.dto.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.newModel.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.order.OrderDTO;
+import htmp.codien.quanlycodien.dto.order.OrderItemDTO;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.Order;
 import htmp.codien.quanlycodien.model.OrderItem;

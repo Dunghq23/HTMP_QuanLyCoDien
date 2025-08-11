@@ -1,4 +1,4 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,14 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class NewModelDTO {
+@AllArgsConstructor
+@Builder
+public class ProductDTO {
     Long id;
     String code;
     String name;
-    String customerName;
+    String moldCode;
+    String gateType;
+    String image;
 }

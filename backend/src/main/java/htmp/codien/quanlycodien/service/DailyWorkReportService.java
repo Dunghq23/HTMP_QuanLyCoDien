@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import htmp.codien.quanlycodien.dto.DailyWorkReportDTO;
+import htmp.codien.quanlycodien.dto.dailyTask.DailyWorkReportDTO;
 
 public interface DailyWorkReportService {
         List<DailyWorkReportDTO> getAllReports();

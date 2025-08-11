@@ -22,11 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
-import htmp.codien.quanlycodien.dto.ProductStatusDTO;
-import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
-import htmp.codien.quanlycodien.dto.ProductTestByEmployeeResponse;
-import htmp.codien.quanlycodien.dto.StageQuantitySummaryResponse;
+import htmp.codien.quanlycodien.dto.newModel.HandoverMinutesRequest;
+import htmp.codien.quanlycodien.dto.newModel.ProductStatusDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductSummaryDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductTestByEmployeeResponse;
+import htmp.codien.quanlycodien.dto.newModel.StageQuantitySummaryResponse;
 import htmp.codien.quanlycodien.service.ProductService;
 import lombok.RequiredArgsConstructor;
 

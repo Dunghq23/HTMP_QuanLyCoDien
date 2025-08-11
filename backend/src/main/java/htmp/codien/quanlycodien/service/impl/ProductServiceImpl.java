@@ -16,11 +16,11 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
-import htmp.codien.quanlycodien.dto.ProductStatusDTO;
-import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
-import htmp.codien.quanlycodien.dto.ProductTestByEmployeeResponse;
-import htmp.codien.quanlycodien.dto.StageQuantitySummaryResponse;
+import htmp.codien.quanlycodien.dto.newModel.HandoverMinutesRequest;
+import htmp.codien.quanlycodien.dto.newModel.ProductStatusDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductSummaryDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductTestByEmployeeResponse;
+import htmp.codien.quanlycodien.dto.newModel.StageQuantitySummaryResponse;
 import htmp.codien.quanlycodien.model.Customer;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.Model;

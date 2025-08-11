@@ -1,4 +1,4 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.employee;
 
 import lombok.*;
 

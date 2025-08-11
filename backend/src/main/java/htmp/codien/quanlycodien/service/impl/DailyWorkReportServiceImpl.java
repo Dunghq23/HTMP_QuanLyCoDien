@@ -1,6 +1,6 @@
 package htmp.codien.quanlycodien.service.impl;
 
-import htmp.codien.quanlycodien.dto.DailyWorkReportDTO;
+import htmp.codien.quanlycodien.dto.dailyTask.DailyWorkReportDTO;
 import htmp.codien.quanlycodien.model.DailyWorkReport;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.repository.DailyWorkReportRepository;

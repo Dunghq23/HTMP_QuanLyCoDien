@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import htmp.codien.quanlycodien.dto.NewModelDTO;
+import htmp.codien.quanlycodien.dto.newModel.NewModelDTO;
 import htmp.codien.quanlycodien.model.Model;
 
 @Repository

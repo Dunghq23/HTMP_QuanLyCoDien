@@ -2,8 +2,8 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.EmployeeRequest;
-import htmp.codien.quanlycodien.dto.EmployeeResponse;
+import htmp.codien.quanlycodien.dto.employee.EmployeeRequest;
+import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;

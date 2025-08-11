@@ -1,6 +1,4 @@
-package htmp.codien.quanlycodien.dto;
-
-import java.util.List;
+package htmp.codien.quanlycodien.dto.newModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +13,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProcessDTO {
+public class JigDetailDTO {
     Long id;
-    String employeeName;
-    String type;
+    Process process;
     String name;
-    double cost;
-    JigDetailDTO jigDetail;
-    List<ProcessStageDTO> processStageList;
+    String erpCode;
 }

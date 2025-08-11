@@ -1,4 +1,6 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
+
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +15,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JigDetailDTO {
+public class ProcessStageDTO {
     Long id;
-    Process process;
     String name;
-    String erpCode;
+    LocalDate completionDate;
+    String description;
 }

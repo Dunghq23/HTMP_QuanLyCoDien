@@ -2,7 +2,7 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.CustomerDTO;
+import htmp.codien.quanlycodien.dto.customer.CustomerDTO;
 import htmp.codien.quanlycodien.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

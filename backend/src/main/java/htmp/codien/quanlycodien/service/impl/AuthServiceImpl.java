@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import htmp.codien.quanlycodien.dto.AuthResponseDTO;
-import htmp.codien.quanlycodien.dto.EmployeeResponse;
+import htmp.codien.quanlycodien.dto.auth.AuthResponseDTO;
+import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.security.JwtTokenProvider;

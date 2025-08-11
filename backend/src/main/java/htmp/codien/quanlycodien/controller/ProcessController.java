@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.ProcessDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProcessDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.service.ProcessService;
 import lombok.RequiredArgsConstructor;

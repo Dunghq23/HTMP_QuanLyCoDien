@@ -1,5 +1,6 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.auth;
 
+import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

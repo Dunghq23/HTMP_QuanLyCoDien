@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import htmp.codien.quanlycodien.dto.OrderDTO;
-import htmp.codien.quanlycodien.dto.OrderItemDTO;
-import htmp.codien.quanlycodien.dto.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.newModel.OrderItemUpdateDTO;
+import htmp.codien.quanlycodien.dto.order.OrderDTO;
+import htmp.codien.quanlycodien.dto.order.OrderItemDTO;
 
 public interface OrderService {
     List<OrderDTO> findAll();

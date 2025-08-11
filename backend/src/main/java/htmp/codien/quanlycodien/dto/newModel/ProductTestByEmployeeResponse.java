@@ -1,4 +1,4 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.newModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

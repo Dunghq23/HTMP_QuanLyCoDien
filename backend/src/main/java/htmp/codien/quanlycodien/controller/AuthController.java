@@ -2,8 +2,8 @@ package htmp.codien.quanlycodien.controller;
 
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
-import htmp.codien.quanlycodien.dto.AuthRequestDTO;
-import htmp.codien.quanlycodien.dto.AuthResponseDTO;
+import htmp.codien.quanlycodien.dto.auth.AuthRequestDTO;
+import htmp.codien.quanlycodien.dto.auth.AuthResponseDTO;
 import htmp.codien.quanlycodien.service.AuthService;
 import lombok.RequiredArgsConstructor;
 

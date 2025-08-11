@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import htmp.codien.quanlycodien.dto.HandoverMinutesRequest;
-import htmp.codien.quanlycodien.dto.ProductStatusDTO;
-import htmp.codien.quanlycodien.dto.ProductSummaryDTO;
-import htmp.codien.quanlycodien.dto.ProductTestByEmployeeResponse;
-import htmp.codien.quanlycodien.dto.StageQuantitySummaryResponse;
+import htmp.codien.quanlycodien.dto.newModel.HandoverMinutesRequest;
+import htmp.codien.quanlycodien.dto.newModel.ProductStatusDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductSummaryDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProductTestByEmployeeResponse;
+import htmp.codien.quanlycodien.dto.newModel.StageQuantitySummaryResponse;
 
 public interface ProductService {
     void updateProductImage(Long productId, MultipartFile file);

@@ -1,4 +1,4 @@
-package htmp.codien.quanlycodien.dto;
+package htmp.codien.quanlycodien.dto.dailyTask;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

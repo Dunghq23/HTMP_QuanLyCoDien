@@ -7,9 +7,9 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import htmp.codien.quanlycodien.dto.JigDetailDTO;
-import htmp.codien.quanlycodien.dto.ProcessDTO;
-import htmp.codien.quanlycodien.dto.ProcessStageDTO;
+import htmp.codien.quanlycodien.dto.newModel.JigDetailDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProcessDTO;
+import htmp.codien.quanlycodien.dto.newModel.ProcessStageDTO;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.JigDetail;
