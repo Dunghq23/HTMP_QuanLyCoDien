@@ -5,8 +5,10 @@ import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Department;
 import htmp.codien.quanlycodien.model.Employee;
+import htmp.codien.quanlycodien.model.Position;
 import htmp.codien.quanlycodien.repository.DepartmentRepository;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
+import htmp.codien.quanlycodien.repository.PositionRepository;
 import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentRepository departmentRepository;
+    private final PositionRepository positionRepositoty;
     private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
@@ -29,13 +32,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeResponse toResponse(Employee employee) {
         EmployeeResponse response = modelMapper.map(employee, EmployeeResponse.class);
         if (employee.getDepartment() != null) {
-            if(employee.getDepartment().getParentDepartment() != null) {
+            if (employee.getDepartment().getParentDepartment() != null) {
                 response.setDepartmentId(employee.getDepartment().getParentDepartment().getId());
                 response.setDepartmentName(employee.getDepartment().getParentDepartment().getName());
             } else {
                 response.setDepartmentId(employee.getDepartment().getId());
                 response.setDepartmentName(employee.getDepartment().getName());
             }
+        }
+        if (employee.getPosition() != null) {
+            response.setPositionCode(employee.getPosition().getCode());
+            response.setPositionName(employee.getPosition().getName());
         }
         return response;
     }
@@ -80,7 +87,22 @@ public class EmployeeServiceImpl implements EmployeeService {
                             "Không tìm thấy phòng ban"));
             employee.setDepartment(department);
         }
+        if (employee.getPosition() != null) {
+            Position position = positionRepositoty.findById(request.getPositionId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Không tìm thấy chức vụ"));
+            employee.setPosition(position);
+        }
 
         employeeRepository.save(employee);
+    }
+
+    @Override
+    public List<EmployeeResponse> findByDepartment(Long departmentId) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Phòng ban không tồn tại"));
+        return employeeRepository.findByDepartment(department).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 }

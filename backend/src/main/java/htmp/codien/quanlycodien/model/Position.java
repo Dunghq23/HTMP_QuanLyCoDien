@@ -1,8 +1,12 @@
 package htmp.codien.quanlycodien.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import htmp.codien.quanlycodien.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,4 +33,7 @@ public class Position extends BaseEntity {
 
     @Column(name = "level", nullable = false)
     Integer level;
+
+    @OneToMany(mappedBy = "position")
+    List<Employee> employees = new ArrayList<>();
 }

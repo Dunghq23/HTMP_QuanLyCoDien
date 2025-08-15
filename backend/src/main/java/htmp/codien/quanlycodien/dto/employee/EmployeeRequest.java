@@ -16,4 +16,5 @@ public class EmployeeRequest {
     String phone;
     String role;
     Long departmentId;
+    Long positionId;
 }

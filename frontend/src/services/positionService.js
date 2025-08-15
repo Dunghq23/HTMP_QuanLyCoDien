@@ -29,7 +29,7 @@ class PositionService {
     async createPosition(data) {
         try {
             const response = await axiosClient.post(`${API_URL}`, data);
-            return response.data.data;
+            return response.data;
         } catch (error) {
             const errorMessage =
                 error?.response?.data?.message || "Lỗi không xác định";

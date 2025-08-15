@@ -16,6 +16,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DepartmentRootDTO {
     Long id;
+    String code;
     String name;
     Integer subDepartmentCount; // Số lượng phòng ban con
     Integer employeeCount; // Số lượng nhân viên trong phòng ban
@@ -31,6 +32,7 @@ public class DepartmentRootDTO {
     public static class DepartmentSubDTO {
         Long id;
         String name;
+        String code;
         Integer employeeCount;
     }
 }

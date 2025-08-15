@@ -1,7 +1,5 @@
 package htmp.codien.quanlycodien.model;
 
-import java.time.LocalDateTime;
-
 import htmp.codien.quanlycodien.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,9 +24,6 @@ public class Employee extends BaseEntity {
     @Column(name = "name", length = 255, nullable = false)
     String name;
 
-    @Column(name = "position", length = 100, nullable = false)
-    String position;
-
     @Column(name = "phone", length = 20, unique = true, nullable = false)
     String phone;
 
@@ -42,4 +37,9 @@ public class Employee extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     Department department;
+    
+    // Liên kết với chức vụ
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id")
+    Position position;
 }

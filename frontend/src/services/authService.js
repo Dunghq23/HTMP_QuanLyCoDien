@@ -10,12 +10,16 @@ class AuthService {
       const token = response.data.data.token;
       const employee = response.data.data.employee;
 
+      console.log(employee);
+      
+
       localStorage.setItem("accessToken", token);
+      localStorage.setItem("departmentId", employee.departmentId);
       localStorage.setItem("employeeId", employee.id);
       localStorage.setItem("employeeName", employee.name);
       localStorage.setItem("role", employee.role);
 
-      return response.data.data; 
+      return response.data.data;
     } catch (err) {
       const message =
         err?.response?.data?.message || "Đăng nhập thất bại, vui lòng thử lại.";
@@ -29,7 +33,7 @@ class AuthService {
     localStorage.removeItem("employeeId");
     localStorage.removeItem("employeeName");
     localStorage.removeItem("role");
-    
+
   }
 
   // Kiểm tra xem đã đăng nhập chưa

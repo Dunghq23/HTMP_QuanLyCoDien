@@ -34,6 +34,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return rootDepartments.stream()
                 .map(department -> DepartmentRootDTO.builder()
                         .id(department.getId())
+                        .code(department.getCode())
                         .name(department.getName())
                         .subDepartmentCount(department.getSubDepartments().size())
                         .employeeCount(
@@ -45,6 +46,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                                 department.getSubDepartments().stream()
                                         .map(sub -> DepartmentRootDTO.DepartmentSubDTO.builder()
                                                 .id(sub.getId())
+                                                .code(sub.getCode())
                                                 .name(sub.getName())
                                                 .employeeCount(sub.getEmployees().size())
                                                 .build())
@@ -66,6 +68,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void createDepartment(DepartmentRequest request) {
         Department department = new Department();
         department.setName(request.getName());
+        department.setCode(request.getCode());
 
         if (request.getParentDepartmentId() != null) {
             Department parentDepartment = getDepartmentById(request.getParentDepartmentId());
@@ -79,6 +82,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void updateDepartment(Long id, DepartmentRequest request) {
         Department existingDepartment = getDepartmentById(id);
         existingDepartment.setName(request.getName());
+        existingDepartment.setCode(request.getCode());
 
         if (request.getParentDepartmentId() != null) {
             Department parentDepartment = getDepartmentById(request.getParentDepartmentId());

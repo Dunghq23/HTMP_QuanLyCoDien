@@ -17,4 +17,6 @@ public class EmployeeResponse {
     String role;
     Long departmentId;
     String departmentName;
+    String positionCode;
+    String positionName;
 }

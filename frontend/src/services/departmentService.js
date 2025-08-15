@@ -2,7 +2,7 @@ import axiosClient from "~/utils/axiosClient";
 
 const API_URL = '/departments';
 
-class CustomerService {
+class DepartmentService {
     // Lấy toàn bộ khách hàng
     async getDepartmentById(departmentId) {
         try {
@@ -48,9 +48,9 @@ class CustomerService {
         }
     }
 
-    async updateDepartment(customerId, data) {
+    async updateDepartment(departmentId, data) {
         try {
-            const response = await axiosClient.patch(`${API_URL}/${customerId}`, data);
+            const response = await axiosClient.patch(`${API_URL}/${departmentId}`, data);
             return response.data.data;
         } catch (error) {
             const errorMessage =
@@ -59,9 +59,9 @@ class CustomerService {
         }
     }
 
-    async deleteDepartment(customerId) {
+    async deleteDepartment(departmentId) {
         try {
-            const response = await axiosClient.delete(`${API_URL}/${customerId}`);
+            const response = await axiosClient.delete(`${API_URL}/${departmentId}`);
             return response.data.message;
         } catch (error) {
             const errorMessage =
@@ -72,4 +72,4 @@ class CustomerService {
 
 }
 
-export default new CustomerService();
+export default new DepartmentService();

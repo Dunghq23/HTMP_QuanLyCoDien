@@ -30,8 +30,11 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "departments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Department extends BaseEntity {
-    @Column(name = "name", length = 100)
+    @Column(name = "name", length = 100, nullable = false)
     String name;
+
+    @Column(name = "code", length = 20, nullable = false)
+    String code;
 
     // Liên kết đến phòng ban cha (self-references)
     @ManyToOne

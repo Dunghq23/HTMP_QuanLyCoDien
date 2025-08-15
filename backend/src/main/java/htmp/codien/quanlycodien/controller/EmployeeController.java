@@ -36,6 +36,16 @@ public class EmployeeController {
         return ResponseUtil.success(employee, "Lấy nhân viên thành công");
     }
 
+    // GET employees by department ID
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<ApiResponse<List<EmployeeResponse>>> getByDepartment(@PathVariable Long departmentId) {
+        List<EmployeeResponse> employees = employeeService.findByDepartment(departmentId);
+        if (employees.isEmpty()) {
+            throw new ResourceNotFoundException("Không tìm thấy nhân viên trong phòng ban " + departmentId);
+        }
+        return ResponseUtil.success(employees, "Lấy danh sách nhân viên theo phòng ban thành công");
+    }
+
     // POST create new employee
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
