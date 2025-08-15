@@ -8,6 +8,7 @@ import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
 
 public interface EmployeeService {
     List<EmployeeResponse> findAll();
+    List<EmployeeResponse> findByDepartment(Long departmentId);
     Optional<EmployeeResponse> findById(Long id);
     void save(EmployeeRequest request);
 }

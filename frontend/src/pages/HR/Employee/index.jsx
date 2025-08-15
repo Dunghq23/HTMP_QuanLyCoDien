@@ -17,10 +17,12 @@ import {
     updateEmployee,
 } from '~/services/employeeService';
 import departmentService from '~/services/departmentService';
+import positionService from '~/services/positionService';
 
 function EmployeeManagerPage() {
     const [employees, setEmployees] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [positions, setPositions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState(null);
@@ -49,10 +51,21 @@ function EmployeeManagerPage() {
         }
     };
 
+    const fetchPositions = async () => {
+        try {
+            const data = await positionService.getAllPositions();
+            setPositions(data || []);
+        } catch (error) {
+            console.error(error);
+            message.error('Lỗi khi tải danh sách chức vụ');
+        }
+    };
+
     useEffect(() => {
         if (localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') {
             fetchEmployees();
             fetchDepartments();
+            fetchPositions();
         }
     }, []);
 
@@ -116,7 +129,7 @@ function EmployeeManagerPage() {
         },
         {
             title: 'Chức vụ',
-            dataIndex: 'position',
+            dataIndex: 'positionName',
             align: 'center',
             key: 'position',
             width: '20%',
@@ -169,6 +182,14 @@ function EmployeeManagerPage() {
             ))
         ]);
     };
+
+    const renderPositionOptions = () => {
+        return positions.map(pos => [
+            <Select.Option key={`opt-${pos.id}`} value={pos.id}>
+                {pos.name}
+            </Select.Option>
+        ])
+    }
 
     return (
         <div>
@@ -234,15 +255,7 @@ function EmployeeManagerPage() {
                     </Row>
 
                     <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Chức vụ"
-                                name="position"
-                                rules={[{ required: true, message: 'Vui lòng nhập chức vụ' }]}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
+
 
                         <Col span={12}>
                             <Form.Item
@@ -281,6 +294,17 @@ function EmployeeManagerPage() {
                             >
                                 <Select placeholder="Chọn phòng ban hoặc nhóm">
                                     {renderDepartmentOptions()}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Chức vụ"
+                                name="positionId"
+                                rules={[{ required: true, message: 'Vui lòng chọn chức vụ' }]}
+                            >
+                                <Select placeholder="Chọn chức vụ">
+                                    {renderPositionOptions()}
                                 </Select>
                             </Form.Item>
                         </Col>

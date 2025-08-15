@@ -38,11 +38,13 @@ function DepartmentManagerPage() {
                             key: `${dep.id}-${sub.id}`,
                             stt: idx === 0 ? index : '', // STT chỉ hiện ở hàng đầu tiên
                             parentId: dep.id,
+                            parentCode: dep.code,
                             parentName: dep.name,
                             parentEmployeeCount: dep.employeeCount,
                             parentRowSpan: idx === 0 ? subCount : 0,
                             subId: sub.id,
                             subName: sub.name,
+                            subCode: sub.code,
                             subEmployeeCount: sub.employeeCount,
                         });
                     });
@@ -51,6 +53,7 @@ function DepartmentManagerPage() {
                         key: `${dep.id}`,
                         stt: index,
                         parentId: dep.id,
+                        parentCode: dep.code,
                         parentName: dep.name,
                         parentEmployeeCount: dep.employeeCount,
                         parentRowSpan: 1,
@@ -103,13 +106,17 @@ function DepartmentManagerPage() {
     };
 
     const handleEdit = (record) => {
+        console.log(record);
+
         // Nếu click vào nhóm thì record.subId != null, ngược lại là phòng
         setEditingDepartment({
             id: record.subId || record.parentId,
+            code: record.subCode || record.parentCode,
             name: record.subName || record.parentName,
             parentDepartmentId: record.subId ? record.parentId : null,
         });
         form.setFieldsValue({
+            code: record.subCode || record.parentCode,
             name: record.subName || record.parentName,
             parentDepartmentId: record.subId ? record.parentId : null,
         });
@@ -156,6 +163,16 @@ function DepartmentManagerPage() {
             }),
         },
         {
+            title: 'Mã phòng ban',
+            dataIndex: 'parentCode',
+            align: 'center',
+            width: '5%',
+            render: (text, row) => ({
+                children: text,
+                props: { rowSpan: row.parentRowSpan },
+            }),
+        },
+        {
             title: 'Phòng ban',
             dataIndex: 'parentName',
             align: 'center',
@@ -178,6 +195,13 @@ function DepartmentManagerPage() {
         {
             title: 'Nhóm / Bộ phận',
             dataIndex: 'subName',
+            align: 'center',
+            width: '25%',
+            render: (text) => text || <i>—</i>,
+        },
+        {
+            title: 'Mã nhóm',
+            dataIndex: 'subCode',
             align: 'center',
             width: '25%',
             render: (text) => text || <i>—</i>,
@@ -252,6 +276,14 @@ function DepartmentManagerPage() {
                         label="Tên phòng ban"
                         name="name"
                         rules={[{ required: true, message: 'Vui lòng nhập tên phòng ban' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Mã phòng ban"
+                        name="code"
+                        rules={[{ required: true, message: 'Vui lòng nhập mã phòng ban' }]}
                     >
                         <Input />
                     </Form.Item>

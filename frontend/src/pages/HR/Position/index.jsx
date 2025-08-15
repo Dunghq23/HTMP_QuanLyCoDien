@@ -72,12 +72,7 @@ function PositionManagerPage() {
             setIsModalOpen(false);
             fetchData();
         } catch (error) {
-            if (error.errorFields) {
-                // Lỗi validate form
-                return;
-            }
-            console.error(error);
-            message.error("Lưu thất bại!");
+            message.error(error.message);
         } finally {
             setSaving(false);
         }

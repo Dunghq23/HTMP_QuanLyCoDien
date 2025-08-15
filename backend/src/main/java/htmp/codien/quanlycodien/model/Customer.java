@@ -25,5 +25,6 @@ public class Customer extends BaseEntity {
     String name;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Model> models = new ArrayList<>();
 }
