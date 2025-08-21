@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {

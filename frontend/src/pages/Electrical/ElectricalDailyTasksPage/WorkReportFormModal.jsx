@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Form, DatePicker, Row, Col, TimePicker, Input, Upload, Select, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 
 const WorkReportFormModal = ({
     visible,
@@ -13,7 +12,6 @@ const WorkReportFormModal = ({
     selectedDate,
     employees,
     role,
-    employeeId,
 }) => {
 
     const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
@@ -43,8 +41,10 @@ const WorkReportFormModal = ({
             okText="Lưu"
             cancelText="Hủy"
         >
-            <Form layout="vertical" form={form}>
-                {(role === 'ROLE_ADMIN' || (editingRecord && role !== 'ROLE_EMPLOYEE')) && (
+            <Form layout="vertical" form={form} initialValues={{ reportDate: selectedDate }}>
+
+                {/* Chỉ hiển thị Select khi thêm mới */}
+                {!editingRecord && (role === 'ROLE_ADMIN' || role !== 'ROLE_EMPLOYEE') && (
                     <Form.Item
                         label="Nhân viên"
                         name="employeeId"
@@ -57,7 +57,6 @@ const WorkReportFormModal = ({
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            disabled={role === 'ROLE_EMPLOYEE'}
                             options={employees.map(emp => ({
                                 label: `${emp.name} (${emp.code})`,
                                 value: emp.id,
@@ -67,13 +66,14 @@ const WorkReportFormModal = ({
                 )}
 
                 <Form.Item
-                    name="reportDate"
                     label="Ngày làm việc"
+                    name="reportDate"
                     rules={[{ required: true, message: 'Vui lòng chọn ngày làm việc!' }]}
                 >
                     <DatePicker
                         format="DD/MM/YYYY"
                         style={{ width: '100%' }}
+                        disabled={!editingRecord} // Thêm mới thì disable, sửa thì cho chọn
                     />
                 </Form.Item>
 
@@ -98,9 +98,7 @@ const WorkReportFormModal = ({
                                     validator(_, value) {
                                         const start = getFieldValue('startTime');
                                         if (!start || !value) return Promise.resolve();
-                                        if (value.isAfter(start)) {
-                                            return Promise.resolve();
-                                        }
+                                        if (value.isAfter(start)) return Promise.resolve();
                                         return Promise.reject(new Error('Giờ kết thúc phải sau giờ bắt đầu'));
                                     },
                                 }),
@@ -125,12 +123,11 @@ const WorkReportFormModal = ({
                     valuePropName="fileList"
                     normalize={(value) => Array.isArray(value) ? value : value?.fileList}
                 >
-
                     <Upload
                         beforeUpload={handleBeforeUpload}
                         maxCount={1}
                         listType="picture"
-                        accept=".png,.jpg,.jpeg"
+                        accept=".png,.jpg,.jpeg,.pdf"
                         customRequest={({ onSuccess }) => {
                             // Ngăn Upload tự gửi file lên server
                             setTimeout(() => {
@@ -140,7 +137,6 @@ const WorkReportFormModal = ({
                     >
                         <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
-
                 </Form.Item>
             </Form>
         </Modal>

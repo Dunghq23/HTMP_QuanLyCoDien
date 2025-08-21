@@ -1,7 +1,6 @@
 package htmp.codien.quanlycodien.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
@@ -18,20 +17,19 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "daily_work_reports")
 public class DailyWorkReport  extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name = "report_Date")
     private LocalDate reportDate;
 
     @Column(name = "task_description", columnDefinition = "TEXT")
     private String taskDescription;
 
+    @Column(name = "start_time")
     private LocalTime startTime;
 
+    @Column(name = "end_time")
     private LocalTime endTime;
 
+    @Column(name = "file_path")
     private String filePath;
 
     @ManyToOne(fetch = FetchType.LAZY)

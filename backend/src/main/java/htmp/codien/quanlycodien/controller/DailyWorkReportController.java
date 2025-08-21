@@ -3,6 +3,7 @@ package htmp.codien.quanlycodien.controller;
 import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
 import htmp.codien.quanlycodien.dto.dailyTask.DailyWorkReportDTO;
+import htmp.codien.quanlycodien.dto.dailyTask.EmployeeWorkReportDTO;
 import htmp.codien.quanlycodien.service.DailyWorkReportService;
 import lombok.AllArgsConstructor;
 
@@ -24,21 +25,25 @@ public class DailyWorkReportController {
     private final DailyWorkReportService reportService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DailyWorkReportDTO>>> getReports(
+    public ResponseEntity<ApiResponse<List<?>>> getReports(
             @RequestParam(required = false) Long employeeId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
         List<DailyWorkReportDTO> reports;
+        List<EmployeeWorkReportDTO> reports2;
 
         if (employeeId == null && date == null) {
             // Không truyền gì => trả về tất cả
             reports = reportService.getAllReports();
         } else if (employeeId == null && date != null) {
             // Chỉ truyền date => lọc theo ngày
-            reports = reportService.getReportsByDate(date);
+            reports2 = reportService.getReportsByDate(date);
+            return ResponseUtil.success(reports2, "Lấy danh sách công việc thành công");
         } else {
             // Có truyền employeeId và/hoặc date => lọc theo
-            reports = reportService.getReportsByEmployeeIdAndDate(employeeId, date);
+            reports2 = reportService.getReportsByEmployeeIdAndDate(employeeId, date);
+            return ResponseUtil.success(reports2, "Lấy danh sách công việc thành công");
+
         }
 
         return ResponseUtil.success(reports, "Lấy danh sách công việc thành công");

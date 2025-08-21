@@ -7,13 +7,14 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import htmp.codien.quanlycodien.dto.dailyTask.DailyWorkReportDTO;
+import htmp.codien.quanlycodien.dto.dailyTask.EmployeeWorkReportDTO;
 
 public interface DailyWorkReportService {
         List<DailyWorkReportDTO> getAllReports();
 
-        List<DailyWorkReportDTO> getReportsByDate(LocalDate date);
+        List<EmployeeWorkReportDTO> getReportsByDate(LocalDate date);
 
-        List<DailyWorkReportDTO> getReportsByEmployeeIdAndDate(Long employeeId, LocalDate date);
+        List<EmployeeWorkReportDTO> getReportsByEmployeeIdAndDate(Long employeeId, LocalDate date);
 
         void createReport(Long employeeId, LocalDate reportDate, LocalTime startTime, LocalTime endTime,
                         String taskDescription, MultipartFile file);
