@@ -6,9 +6,9 @@ import EmployeeView from './EmployeeView';
 const ElectricalDailyTasksPage = () => {
     const role = localStorage.getItem('role');
 
-    if (role === 'ROLE_ADMIN') return <AdminView />;
-    if (role === 'ROLE_MANAGER') return <ManagerView />;
-    if (role === 'ROLE_EMPLOYEE') return <EmployeeView />;
+    if (role === 'ADMIN') return <AdminView />;
+    if (role === 'MANAGER') return <ManagerView />;
+    if (role === 'EMPLOYEE') return <EmployeeView />;
 
     return <div>Bạn không có quyền truy cập</div>;
 };

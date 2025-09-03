@@ -44,7 +44,7 @@ const WorkReportFormModal = ({
             <Form layout="vertical" form={form} initialValues={{ reportDate: selectedDate }}>
 
                 {/* Chỉ hiển thị Select khi thêm mới */}
-                {!editingRecord && (role === 'ROLE_ADMIN' || role !== 'ROLE_EMPLOYEE') && (
+                {!editingRecord && (role === 'ADMIN' || role !== 'EMPLOYEE') && (
                     <Form.Item
                         label="Nhân viên"
                         name="employeeId"

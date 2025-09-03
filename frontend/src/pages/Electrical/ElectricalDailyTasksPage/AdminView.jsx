@@ -19,21 +19,12 @@ const AdminView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [editingRecord, setEditingRecord] = useState(null);
-    const [employeeIdEditing, setEmployeeIdEditing] = useState(null);
-    const [expandedRowKeys, setExpandedRowKeys] = useState([]);   // quản lý row mở
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
     const [form] = Form.useForm();
     const [rowViewModes, setRowViewModes] = useState({});
+    const [employeeIdEditing, setEmployeeIdEditing] = useState([]);
 
     /** API */
-    const fetchEmployees = async () => {
-        try {
-            const data = await getAllEmployees();
-            setEmployees(data);
-        } catch (err) {
-            message.error('Lỗi khi tải danh sách nhân viên');
-        }
-    };
-
     const fetchReports = async (dateParam) => {
         setLoading(true);
         try {
@@ -47,12 +38,21 @@ const AdminView = () => {
         }
     };
 
-    // useEffect chỉ chạy khi selectedDate đổi
     useEffect(() => {
         fetchReports(selectedDate.format("YYYY-MM-DD"));
     }, [selectedDate]);
 
-    useEffect(() => fetchEmployees(), []);
+    useEffect(() => {
+        const fetchEmployees = async () => {
+            try {
+                const data = await getAllEmployees();
+                setEmployees(data);
+            } catch (err) {
+                message.error('Lỗi khi tải danh sách nhân viên');
+            }
+        };
+        fetchEmployees();
+    }, []);
 
     const handleRowViewModeChange = (employeeId, mode) => {
         setRowViewModes(prev => ({ ...prev, [employeeId]: mode }));
@@ -61,17 +61,24 @@ const AdminView = () => {
     /** Thêm mới */
     const handleAdd = () => {
         setEditingRecord(null);
-        setEmployeeIdEditing(null);
         form.resetFields();
+        form.setFieldsValue({
+            reportDate: selectedDate,
+        });
         setIsModalVisible(true);
     };
 
     /** Sửa */
     const handleEdit = (record) => {
+        if (!employeeIdEditing) {
+            message.error("Không tìm thấy employeeId cho bản ghi này!");
+            return;
+        }
         setEditingRecord(record);
         setIsModalVisible(true);
+        console.log("ID sửa: " + employeeIdEditing);
         form.setFieldsValue({
-            employeeId: record.employeeId,
+            employeeId: employeeIdEditing,
             reportDate: record.reportDate ? dayjs(record.reportDate, "YYYY-MM-DD") : null,
             startTime: record.startTime ? dayjs(record.startTime, "HH:mm:ss") : null,
             endTime: record.endTime ? dayjs(record.endTime, "HH:mm:ss") : null,
@@ -123,7 +130,6 @@ const AdminView = () => {
                         align: 'center',
                         render: (value) => <Progress percent={parseInt(value, 10)} />
                     }
-
                 ]}
                 dataSource={reports}
                 loading={loading}
@@ -132,8 +138,8 @@ const AdminView = () => {
                     expandedRowKeys,
                     onExpand: (expanded, record) => {
                         if (expanded) {
-                            setExpandedRowKeys([record.employeeId]);   // chỉ mở 1
                             setEmployeeIdEditing(record.employeeId);
+                            setExpandedRowKeys([record.employeeId]);
                         } else {
                             setExpandedRowKeys([]);
                             setEmployeeIdEditing(null);
@@ -231,13 +237,15 @@ const AdminView = () => {
                                 const file = firstFile?.originFileObj || null;
 
                                 let existingFilePath = null;
-                                if (!file && firstFile?.url) {
+                                if (editingRecord && editingRecord.filePath) {
+                                    existingFilePath = editingRecord.filePath;
+                                } else if (!file && firstFile?.url) {
                                     const urlParts = firstFile.url.split('/');
-                                    existingFilePath = urlParts[urlParts.length - 1];
+                                    existingFilePath = urlParts.slice(urlParts.length - 2).join('/');
                                 }
 
                                 const payload = {
-                                    employeeId: employeeIdEditing || values.employeeId,
+                                    employeeId: editingRecord ? employeeIdEditing : values.employeeId,
                                     reportDate: values.reportDate.format("YYYY-MM-DD"),
                                     startTime: values.startTime.format("HH:mm:ss"),
                                     endTime: values.endTime.format("HH:mm:ss"),
