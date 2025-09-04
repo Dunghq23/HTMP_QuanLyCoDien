@@ -62,7 +62,7 @@ public class ModelController {
                 .body(resource);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteModel(@PathVariable Long id) {
         modelService.deleteModel(id);

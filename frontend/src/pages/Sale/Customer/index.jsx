@@ -26,8 +26,8 @@ function CustomerManagerPage() {
     const [editingCustomer, setEditingCustomer] = useState(null);
     const [form] = Form.useForm();
 
-    const isAdmin = localStorage.getItem("role") === 'ROLE_ADMIN';
-    const isManager = localStorage.getItem("role") === 'ROLE_MANAGER';
+    const isAdmin = localStorage.getItem("role") === 'ADMIN';
+    const isManager = localStorage.getItem("role") === 'MANAGER';
 
     const fetchCustomers = async () => {
         setLoading(true);

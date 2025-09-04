@@ -75,8 +75,8 @@ function DepartmentManagerPage() {
 
     useEffect(() => {
         if (
-            localStorage.getItem("role") === 'ROLE_ADMIN' ||
-            localStorage.getItem("role") === 'ROLE_MANAGER'
+            localStorage.getItem("role") === 'ADMIN' ||
+            localStorage.getItem("role") === 'MANAGER'
         ) {
             fetchDepartments();
         }
@@ -157,9 +157,8 @@ function DepartmentManagerPage() {
             dataIndex: 'stt',
             align: 'center',
             width: '5%',
-            render: (text, row) => ({
-                children: text,
-                props: { rowSpan: row.parentRowSpan },
+            onCell: (row) => ({
+                rowSpan: row.parentRowSpan,
             }),
         },
         {
@@ -167,9 +166,8 @@ function DepartmentManagerPage() {
             dataIndex: 'parentCode',
             align: 'center',
             width: '5%',
-            render: (text, row) => ({
-                children: text,
-                props: { rowSpan: row.parentRowSpan },
+            onCell: (row) => ({
+                rowSpan: row.parentRowSpan,
             }),
         },
         {
@@ -177,9 +175,8 @@ function DepartmentManagerPage() {
             dataIndex: 'parentName',
             align: 'center',
             width: '20%',
-            render: (text, row) => ({
-                children: text,
-                props: { rowSpan: row.parentRowSpan },
+            onCell: (row) => ({
+                rowSpan: row.parentRowSpan,
             }),
         },
         {
@@ -187,9 +184,8 @@ function DepartmentManagerPage() {
             dataIndex: 'parentEmployeeCount',
             align: 'center',
             width: '10%',
-            render: (text, row) => ({
-                children: text,
-                props: { rowSpan: row.parentRowSpan },
+            onCell: (row) => ({
+                rowSpan: row.parentRowSpan,
             }),
         },
         {

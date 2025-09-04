@@ -173,7 +173,7 @@ const ProcessTabs = ({ productId }) => {
                                 <Button onClick={() => openUpdateModalProcess(process)}>
                                     <EditTwoTone />
                                 </Button>
-                                {(localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') && (
+                                {(localStorage.getItem("role") === 'ADMIN' || localStorage.getItem("role") === 'MANAGER') && (
                                     <Popconfirm
                                         title="Bạn có chắc chắn muốn xóa?"
                                         description="Hành động này không thể hoàn tác."

@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Mật khẩu không đúng");
         }
-        String token = jwtTokenProvider.generateToken(user.getCode(), user.getRole());
+        String token = jwtTokenProvider.generateToken(user.getCode(), user.getRole().toString());
         EmployeeResponse userDto = modelMapper.map(user, EmployeeResponse.class);
         return new AuthResponseDTO(token, userDto);
     }

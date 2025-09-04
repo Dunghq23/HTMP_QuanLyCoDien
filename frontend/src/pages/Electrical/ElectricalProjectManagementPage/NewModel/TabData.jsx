@@ -116,13 +116,13 @@ function TabData() {
         },
     ];
 
-    if (localStorage.getItem("role") !== 'ROLE_EMPLOYEE') {
+    if (localStorage.getItem("role") !== 'EMPLOYEE') {
         modelColumns.push({
             title: 'Hành động',
             width: '10%',
             render: (_, record) => (
                 <Space>
-                    {(localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') && (
+                    {(localStorage.getItem("role") === 'ADMIN' || localStorage.getItem("role") === 'MANAGER') && (
                         <Popconfirm
                             title="Bạn có chắc chắn muốn xóa model này không?"
                             description="Hành động này không thể hoàn tác."

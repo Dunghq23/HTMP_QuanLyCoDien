@@ -1,6 +1,7 @@
 package htmp.codien.quanlycodien.model;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
+import htmp.codien.quanlycodien.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,14 +31,15 @@ public class Employee extends BaseEntity {
     @Column(name = "password", length = 255, nullable = false)
     String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 50, nullable = false)
-    String role;
+    Role role;
 
     // Liên kết với phòng ban
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     Department department;
-    
+
     // Liên kết với chức vụ
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id")

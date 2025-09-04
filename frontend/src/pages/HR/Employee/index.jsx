@@ -62,7 +62,7 @@ function EmployeeManagerPage() {
     };
 
     useEffect(() => {
-        if (localStorage.getItem("role") === 'ROLE_ADMIN' || localStorage.getItem("role") === 'ROLE_MANAGER') {
+        if (localStorage.getItem("role") === 'ADMIN' || localStorage.getItem("role") === 'MANAGER') {
             fetchEmployees();
             fetchDepartments();
             fetchPositions();
@@ -263,7 +263,7 @@ function EmployeeManagerPage() {
                                 name="phone"
                                 rules={[
                                     { required: true, message: 'Vui lòng nhập số điện thoại' },
-                                    { pattern: /^\d{9,11}$/, message: 'Số điện thoại không hợp lệ' },
+                                    { pattern: /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/, message: 'Số điện thoại không hợp lệ' },
                                 ]}
                             >
                                 <Input />
@@ -279,9 +279,9 @@ function EmployeeManagerPage() {
                                 rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
                             >
                                 <Select placeholder="Chọn vai trò">
-                                    <Select.Option value="ROLE_ADMIN">Quản trị viên</Select.Option>
-                                    <Select.Option value="ROLE_MANAGER">Quản lý</Select.Option>
-                                    <Select.Option value="ROLE_EMPLOYEE">Nhân viên</Select.Option>
+                                    <Select.Option value="ADMIN">Quản trị viên</Select.Option>
+                                    <Select.Option value="MANAGER">Quản lý</Select.Option>
+                                    <Select.Option value="EMPLOYEE">Nhân viên</Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>

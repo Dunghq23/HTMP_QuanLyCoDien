@@ -53,7 +53,7 @@ public class SecurityUtils {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities != null && !authorities.isEmpty()) {
             // Lấy role đầu tiên (nếu có nhiều role, có thể chỉnh thành List)
-            return authorities.iterator().next().getAuthority(); // ví dụ: "ADMIN" hoặc "ROLE_ADMIN"
+            return authorities.iterator().next().getAuthority(); // ví dụ: "ADMIN" hoặc "ADMIN"
         }
         return null;
     }
