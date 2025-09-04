@@ -2,10 +2,8 @@ package htmp.codien.quanlycodien.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
-import htmp.codien.quanlycodien.model.enums.Role;
 import htmp.codien.quanlycodien.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;

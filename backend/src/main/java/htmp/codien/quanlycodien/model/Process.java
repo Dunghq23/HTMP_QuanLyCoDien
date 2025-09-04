@@ -42,5 +42,6 @@ public class Process extends BaseEntity {
     JigDetail jigDetail;
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     List<ProcessStage> stages = new ArrayList<>();
 }

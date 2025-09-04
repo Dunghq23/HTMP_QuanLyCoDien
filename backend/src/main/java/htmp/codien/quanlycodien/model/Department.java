@@ -45,8 +45,10 @@ public class Department extends BaseEntity {
     // Liên kết đến danh sách phòng ban con
     @OneToMany(mappedBy = "parentDepartment")
     @JsonManagedReference // Quản lý serialize JSON ngược lại
+    @Builder.Default
     List<Department> subDepartments = new ArrayList<>();
 
     @OneToMany(mappedBy = "department")
+    @Builder.Default
     List<Employee> employees = new ArrayList<>();
 }

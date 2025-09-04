@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Model  extends BaseEntity {
+public class Model extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -34,5 +34,6 @@ public class Model  extends BaseEntity {
 
     // Liên kết một-nhiều với Product
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Product> products = new ArrayList<>();
 }

@@ -48,9 +48,9 @@ public class ShiftChangeRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(name = "status", nullable = false, length = 20)
-    String status = Status.PENDING_HEAD;
+    Status status = Status.PENDING_HEAD;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Builder.Default
-    List<Employee> employees = new ArrayList<>();
+    @JoinColumn(name = "employee_id", nullable = false)
+    Employee employee; 
 }
