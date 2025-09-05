@@ -1,23 +1,6 @@
 import axiosClient from "~/utils/axiosClient";
 
 const API_URL = '/employees';
-
-export const getAllEmployees = async () => {
-  const res = await axiosClient.get(API_URL);
-  return res.data.data;
-};
-
-export const createEmployee = async (employeeData) => {
-  const res = await axiosClient.post(API_URL, employeeData);
-  return res.data.data;
-};
-
-export const updateEmployee = async (id, employeeData) => {
-  const res = await axiosClient.patch(`${API_URL}/${id}`, employeeData);
-  return res.data.data;
-};
-
-
 class EmployeeService {
   async getAllEmployees() {
     const res = await axiosClient.get(API_URL);
@@ -79,6 +62,16 @@ class EmployeeService {
     }
   }
 
+  async getAllEmployeeStatuses() {
+        try {
+            const response = await axiosClient.get(`${API_URL}/status`);
+            return response.data.data;
+        } catch (error) {
+            const errorMessage =
+                error?.response?.data?.message || error.message || 'Lỗi không xác định';
+            throw new Error(errorMessage);
+        }
+    }
 }
 
 export default new EmployeeService();

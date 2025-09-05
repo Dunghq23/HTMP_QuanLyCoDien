@@ -1,6 +1,7 @@
 package htmp.codien.quanlycodien.model;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
+import htmp.codien.quanlycodien.model.enums.EmployeeStatus;
 import htmp.codien.quanlycodien.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,4 +45,8 @@ public class Employee extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id")
     Position position;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20, nullable = false)
+    EmployeeStatus status;
 }

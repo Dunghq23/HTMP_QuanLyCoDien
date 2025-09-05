@@ -6,6 +6,7 @@ import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
 import htmp.codien.quanlycodien.model.Department;
 import htmp.codien.quanlycodien.model.Employee;
 import htmp.codien.quanlycodien.model.Position;
+import htmp.codien.quanlycodien.model.enums.EmployeeStatus;
 import htmp.codien.quanlycodien.repository.DepartmentRepository;
 import htmp.codien.quanlycodien.repository.EmployeeRepository;
 import htmp.codien.quanlycodien.repository.PositionRepository;
@@ -31,19 +32,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeResponse toResponse(Employee employee) {
         EmployeeResponse response = modelMapper.map(employee, EmployeeResponse.class);
+
         if (employee.getDepartment() != null) {
-            if (employee.getDepartment().getParentDepartment() != null) {
-                response.setDepartmentId(employee.getDepartment().getParentDepartment().getId());
-                response.setDepartmentName(employee.getDepartment().getParentDepartment().getName());
+            Department dep = employee.getDepartment();
+
+            response.setDepartmentId(dep.getId());
+            response.setDepartmentName(dep.getName());
+            if (dep.getParentDepartment() != null) {
+                response.setParentDepartmentId(dep.getParentDepartment().getId());
+                response.setDisplayDepartment(dep.getParentDepartment().getName());
             } else {
-                response.setDepartmentId(employee.getDepartment().getId());
-                response.setDepartmentName(employee.getDepartment().getName());
+                response.setDisplayDepartment(dep.getName());
             }
+
         }
+
         if (employee.getPosition() != null) {
-            response.setPositionCode(employee.getPosition().getCode());
+            response.setPositionId(employee.getPosition().getId());
             response.setPositionName(employee.getPosition().getName());
         }
+
         return response;
     }
 
@@ -102,7 +110,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Phòng ban không tồn tại"));
         return employeeRepository.findByDepartment(department).stream()
+                .filter(e -> e.getStatus() != EmployeeStatus.INACTIVE) // loại bỏ đã nghỉ việc
                 .map(this::toResponse)
                 .collect(Collectors.toList());
+
     }
 }

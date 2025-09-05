@@ -4,8 +4,8 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { getAllEmployees } from "~/services/employeeService";
 import processService from "~/services/processService";
+import employeeService from "~/services/employeeService";
 
 const CreateNewProcessModal = ({ open, onCancel, onSuccess, productId }) => {
     const [form] = Form.useForm();
@@ -16,7 +16,7 @@ const CreateNewProcessModal = ({ open, onCancel, onSuccess, productId }) => {
     const fetchEmployees = async () => {
         setLoading(true);
         try {
-            const data = await getAllEmployees();
+            const data = await employeeService.getAllEmployees();
             setEmployees(data);
         } catch (error) {
             console.error(error);

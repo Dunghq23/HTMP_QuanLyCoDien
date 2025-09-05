@@ -4,14 +4,18 @@ import htmp.codien.quanlycodien.common.ApiResponse;
 import htmp.codien.quanlycodien.common.ResponseUtil;
 import htmp.codien.quanlycodien.dto.employee.EmployeeRequest;
 import htmp.codien.quanlycodien.dto.employee.EmployeeResponse;
+import htmp.codien.quanlycodien.dto.employee.EmployeeStatusResponse;
 import htmp.codien.quanlycodien.exception.ResourceNotFoundException;
+import htmp.codien.quanlycodien.model.enums.EmployeeStatus;
 import htmp.codien.quanlycodien.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -62,5 +66,13 @@ public class EmployeeController {
         dto.setId(id); // ensure id is set
         employeeService.save(dto);
         return ResponseUtil.success(null, "Cập nhật nhân viên thành công");
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<EmployeeStatusResponse>>> getAllEmployeeStatus() {
+        List<EmployeeStatusResponse> roleList = Arrays.stream(EmployeeStatus.values())
+                .map(role -> new EmployeeStatusResponse(role.name(), role.getDescription()))
+                .collect(Collectors.toList());
+        return ResponseUtil.success(roleList, "Lấy danh sách vai trò thành công");
     }
 }

@@ -1,5 +1,7 @@
 package htmp.codien.quanlycodien.dto.employee;
 
+import htmp.codien.quanlycodien.model.enums.EmployeeStatus;
+import htmp.codien.quanlycodien.model.enums.Role;
 import lombok.*;
 
 @Data
@@ -12,11 +14,13 @@ public class EmployeeResponse {
     Long id;
     String code;
     String name;
-    String position;
     String phone;
-    String role;
+    Role role;
+    Long parentDepartmentId;
+    String displayDepartment;
     Long departmentId;
     String departmentName;
-    String positionCode;
+    Long positionId;
     String positionName;
+    EmployeeStatus status;
 }

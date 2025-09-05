@@ -10,14 +10,13 @@ import {
     Select,
     Row,
     Col,
+    Tag,
 } from 'antd';
-import {
-    getAllEmployees,
-    createEmployee,
-    updateEmployee,
-} from '~/services/employeeService';
+import employeeService from '~/services/employeeService';
 import departmentService from '~/services/departmentService';
 import positionService from '~/services/positionService';
+import roleService from '~/services/roleService';
+import { EditOutlined } from '@ant-design/icons';
 
 function EmployeeManagerPage() {
     const [employees, setEmployees] = useState([]);
@@ -27,11 +26,39 @@ function EmployeeManagerPage() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [form] = Form.useForm();
+    const [roles, setRoles] = useState([]);
+    const [employeeStatuses, setEmployeeStatuses] = useState([]);
+
+    const fetchRoles = async () => {
+        setLoading(true);
+        try {
+            const data = await roleService.getAllRoles();
+            setRoles(data);
+        } catch (error) {
+            console.error(error);
+            message.error('Lỗi khi tải danh sách vai trò');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchEmployeeStatuses = async () => {
+        setLoading(true);
+        try {
+            const data = await employeeService.getAllEmployeeStatuses();
+            setEmployeeStatuses(data);
+        } catch (error) {
+            console.error(error);
+            message.error('Lỗi khi tải danh sách vai trò');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const fetchEmployees = async () => {
         setLoading(true);
         try {
-            const data = await getAllEmployees();
+            const data = await employeeService.getAllEmployees();
             setEmployees(data);
         } catch (error) {
             console.error(error);
@@ -66,21 +93,21 @@ function EmployeeManagerPage() {
             fetchEmployees();
             fetchDepartments();
             fetchPositions();
+            fetchRoles();
+            fetchEmployeeStatuses();
         }
     }, []);
 
     const handleSave = async () => {
         try {
             const values = await form.validateFields();
-
             if (editingEmployee) {
-                await updateEmployee(editingEmployee.id, values);
+                await employeeService.updateEmployee(editingEmployee.id, values);
                 message.success('Cập nhật nhân viên thành công');
             } else {
-                await createEmployee(values);
+                await employeeService.createEmployee(values);
                 message.success('Thêm nhân viên thành công');
             }
-
             setModalVisible(false);
             setEditingEmployee(null);
             form.resetFields();
@@ -94,13 +121,33 @@ function EmployeeManagerPage() {
     const handleEdit = (record) => {
         setEditingEmployee(record);
         setModalVisible(true);
+
         form.setFieldsValue(record);
     };
+
 
     const handleAdd = () => {
         setEditingEmployee(null);
         form.resetFields();
         setModalVisible(true);
+    };
+
+    const roleColors = {
+        SUPERADMIN: "red",
+        ADMIN: "volcano",
+        MANAGER: "blue",
+        HEAD: "geekblue",
+        DIRECTOR: "purple",
+        LEADER: "cyan",
+        HR: "green",
+        EMPLOYEE: "default",
+    };
+
+    const statusColors = {
+        ACTIVE: "green",
+        INACTIVE: "red",
+        PROBATION: "orange",
+        RESIGNED: "default",
     };
 
     const columns = [
@@ -115,7 +162,7 @@ function EmployeeManagerPage() {
             title: 'Mã nhân viên',
             dataIndex: 'code',
             key: 'code',
-            width: '20%',
+            width: '5%',
             align: 'center',
             sorter: (a, b) => a.code.localeCompare(b.code),
         },
@@ -123,7 +170,7 @@ function EmployeeManagerPage() {
             title: 'Tên',
             dataIndex: 'name',
             key: 'name',
-            width: '25%',
+            width: '15%',
             align: 'center',
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -132,19 +179,19 @@ function EmployeeManagerPage() {
             dataIndex: 'positionName',
             align: 'center',
             key: 'position',
-            width: '20%',
+            width: '15%',
         },
         {
             title: 'Phòng ban',
-            dataIndex: 'departmentName',
+            dataIndex: 'displayDepartment',
             align: 'center',
-            key: 'departmentName',
-            width: '20%',
+            key: 'displayDepartment',
+            width: '15%',
             filters: Array.from(new Set(departments.map(r => r.name))) // tạo filter duy nhất từ danh sách
                 .map(name => ({ text: name, value: name })),
-            onFilter: (value, record) => record.departmentName === value,
+            onFilter: (value, record) => record.displayDepartment === value,
             render: (text, record) => {
-                return record.departmentName || 'Chưa có phòng ban';
+                return record.displayDepartment || 'Chưa có phòng ban';
             }
         },
         {
@@ -152,21 +199,58 @@ function EmployeeManagerPage() {
             dataIndex: 'phone',
             align: 'center',
             key: 'phone',
-            width: '20%',
+            width: '10%',
         },
         {
-            title: 'Hành động',
-            key: 'action',
+            title: 'Tình trạng',
+            dataIndex: 'status',
             align: 'center',
-            render: (_, record) => (
-                <Space>
-                    <Button type="link" onClick={() => handleEdit(record)}>
-                        Sửa
-                    </Button>
-                </Space>
-            ),
-            width: '15%',
+            key: 'status',
+            width: '10%',
+            filters: employeeStatuses.map(s => ({
+                text: s.description,
+                value: s.code
+            })),
+            onFilter: (value, record) => record.status === value,
+            render: (status) => {
+                const statusObj = employeeStatuses.find(s => s.code === status);
+                return (
+                    <Tag color={statusColors[status] || "default"}>
+                        {statusObj ? statusObj.description : status}
+                    </Tag>
+                );
+            },
         },
+        ...(localStorage.getItem("role") === "ADMIN"
+            ? [
+                {
+                    title: 'Vai trò',
+                    dataIndex: 'role',
+                    align: 'center',
+                    key: 'role',
+                    width: '20%',
+                    render: (role) => (
+                        <Tag color={roleColors[role] || "default"}>
+                            {role}
+                        </Tag>
+                    ),
+                },
+                {
+                    title: 'Hành động',
+                    key: 'action',
+                    align: 'center',
+                    render: (_, record) => (
+                        <Space>
+                            <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+                                Sửa
+                            </Button>
+                        </Space>
+                    ),
+                    width: '15%',
+                },
+            ]
+            : []),
+
     ];
 
     // ✅ Render option phòng ban và nhóm
@@ -189,6 +273,22 @@ function EmployeeManagerPage() {
                 {pos.name}
             </Select.Option>
         ])
+    }
+
+    const renderRoleOptions = () => {
+        return roles.map((role) => (
+            <Select.Option key={`role-${role.code}`} value={role.code}>
+                {role.description}
+            </Select.Option>
+        ))
+    }
+
+    const renderEmployeeStatusOptions = () => {
+        return employeeStatuses.map((empStatus) => (
+            <Select.Option key={`empStatus-${empStatus.code}`} value={empStatus.code}>
+                {empStatus.description}
+            </Select.Option>
+        ))
     }
 
     return (
@@ -279,9 +379,7 @@ function EmployeeManagerPage() {
                                 rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
                             >
                                 <Select placeholder="Chọn vai trò">
-                                    <Select.Option value="ADMIN">Quản trị viên</Select.Option>
-                                    <Select.Option value="MANAGER">Quản lý</Select.Option>
-                                    <Select.Option value="EMPLOYEE">Nhân viên</Select.Option>
+                                    {renderRoleOptions()}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -297,6 +395,7 @@ function EmployeeManagerPage() {
                                 </Select>
                             </Form.Item>
                         </Col>
+
                         <Col span={12}>
                             <Form.Item
                                 label="Chức vụ"
@@ -305,6 +404,18 @@ function EmployeeManagerPage() {
                             >
                                 <Select placeholder="Chọn chức vụ">
                                     {renderPositionOptions()}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={12}>
+                            <Form.Item
+                                label="Tình trạng"
+                                name="status"
+                                rules={[{ required: true, message: 'Vui lòng chọn tình trạng' }]}
+                            >
+                                <Select placeholder="Chọn tình trạng">
+                                    {renderEmployeeStatusOptions()}
                                 </Select>
                             </Form.Item>
                         </Col>
