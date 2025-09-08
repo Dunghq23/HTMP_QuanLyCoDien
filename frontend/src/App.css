@@ -1,11 +1,18 @@
-/* Ẩn scrollbar trên Chrome, Edge */
-::-webkit-scrollbar {
-    display: none;
+/* Chỉ ẩn scrollbar dọc trên Chrome, Edge */
+::-webkit-scrollbar:vertical {
+    width: 0; /* hoặc display:none, nhưng width=0 thì giữ cuộn */
 }
 
-/* Ẩn trên Firefox */
+/* Scrollbar ngang nhỏ hơn trên Chrome, Edge */
+::-webkit-scrollbar:horizontal {
+    height: 6px; /* Chiều cao thanh cuộn ngang */
+}
+::-webkit-scrollbar-thumb:horizontal {
+    background: rgba(97, 97, 97, 0.3); /* Màu thanh cuộn ngang */
+    border-radius: 3px;
+}
+
+/* Trên Firefox: giữ thanh ngang, ẩn thanh dọc */
 * {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    /* IE 10+ */
+    scrollbar-width: thin; /* không ẩn hoàn toàn để giữ thanh ngang */
 }

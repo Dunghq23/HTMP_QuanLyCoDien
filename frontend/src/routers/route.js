@@ -12,10 +12,12 @@ import PrivateRoute from '~/components/PrivateRoute';
 import ElectricalOrderPage from '~/pages/Electrical/ElectricalOrdersPage';
 import CustomerManagerPage from '~/pages/Sale/Customer';
 import DepartmentManagerPage from '~/pages/HR/Department';
-// import EmployeeSchedule from '~/pages/HR/EmployeeSchedule/EmployeeSchedule';
-// import WorkSchedule from '~/pages/HR/EmployeeSchedule/WorkSchedule';
-// import EmployeeShiftChange from '~/pages/HR/EmployeeSchedule/EmployeeShiftChange';
-// import ManagerShiftApproval from '~/pages/HR/EmployeeSchedule/ManagerShiftApproval';
+import EmployeeSchedule from '~/pages/HR/EmployeeSchedule/EmployeeSchedule';
+import WorkSchedule from '~/pages/HR/EmployeeSchedule/WorkSchedule';
+import EmployeeShiftChange from '~/pages/HR/EmployeeSchedule/EmployeeShiftChange';
+import ManagerShiftApproval from '~/pages/HR/EmployeeSchedule/ManagerShiftApproval';
+import PositionManagerPage from '~/pages/HR/Position';
+import Test from '~/pages/Test';
 
 const routes = [
     {
@@ -25,12 +27,14 @@ const routes = [
                 <DefaultLayout />
             </PrivateRoute>,
         children: [
+            { path: 'test', element: <Test /> },
             { path: '', element: <HomePage /> },
             // Phòng HCNS
-            // { path: 'HR/4', element: <ManagerShiftApproval /> },
-            // { path: 'HR/3', element: <EmployeeShiftChange /> },
-            // { path: 'HR/2', element: <WorkSchedule /> },
-            // { path: 'HR/1', element: <EmployeeSchedule /> },
+            { path: 'HR/positions', element: <PositionManagerPage /> },
+            { path: 'HR/schedules', element: <EmployeeSchedule /> },
+            { path: 'HR/schedules/work-schedule', element: <WorkSchedule /> },
+            { path: 'HR/3', element: <EmployeeShiftChange /> },
+            { path: 'HR/4', element: <ManagerShiftApproval /> },
             { path: 'HR/employees', element: <EmployeeManagerPage /> },
             { path: 'HR/departments', element: <DepartmentManagerPage /> },
 
