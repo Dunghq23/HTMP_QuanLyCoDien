@@ -27,7 +27,7 @@ const routes = [
                 <DefaultLayout />
             </PrivateRoute>,
         children: [
-            { path: 'test', element: <Test /> },
+            // { path: 'test', element: <Test /> },
             { path: '', element: <HomePage /> },
             // Phòng HCNS
             { path: 'HR/positions', element: <PositionManagerPage /> },
