@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
 import htmp.codien.quanlycodien.model.enums.Role;
-import htmp.codien.quanlycodien.model.enums.Status;
+import htmp.codien.quanlycodien.model.enums.WorkRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,7 +32,7 @@ public class OvertimeApproval extends BaseEntity {
 
     @Column(name = "action", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    Status action;
+    WorkRequestStatus action;
 
     @Column(name = "action_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     LocalDate actionDate;

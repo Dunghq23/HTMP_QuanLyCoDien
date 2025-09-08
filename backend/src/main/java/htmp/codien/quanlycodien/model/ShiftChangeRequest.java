@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
-import htmp.codien.quanlycodien.model.enums.Status;
+import htmp.codien.quanlycodien.model.enums.WorkRequestStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -48,9 +48,9 @@ public class ShiftChangeRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(name = "status", nullable = false, length = 20)
-    Status status = Status.PENDING_HEAD;
+    WorkRequestStatus status = WorkRequestStatus.PENDING_HEAD;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
-    Employee employee; 
+    Employee employee;
 }

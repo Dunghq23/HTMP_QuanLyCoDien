@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import htmp.codien.quanlycodien.common.BaseEntity;
-import htmp.codien.quanlycodien.model.enums.Status;
+import htmp.codien.quanlycodien.model.enums.WorkRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -37,5 +37,5 @@ public class OvertimeRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(nullable = false)
-    Status status = Status.PENDING_HEAD;
+    WorkRequestStatus status = WorkRequestStatus.PENDING_HEAD;
 }
