@@ -17,7 +17,7 @@ import WorkSchedule from '~/pages/HR/EmployeeSchedule/WorkSchedule';
 import EmployeeShiftChange from '~/pages/HR/EmployeeSchedule/EmployeeShiftChange';
 import ManagerShiftApproval from '~/pages/HR/EmployeeSchedule/ManagerShiftApproval';
 import PositionManagerPage from '~/pages/HR/Position';
-import Test from '~/pages/Test';
+// import Test from '~/pages/Test';
 
 const routes = [
     {
