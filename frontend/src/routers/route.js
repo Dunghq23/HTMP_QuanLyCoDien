@@ -12,11 +12,11 @@ import PrivateRoute from '~/components/PrivateRoute';
 import ElectricalOrderPage from '~/pages/Electrical/ElectricalOrdersPage';
 import CustomerManagerPage from '~/pages/Sale/Customer';
 import DepartmentManagerPage from '~/pages/HR/Department';
-import EmployeeSchedule from '~/pages/HR/EmployeeSchedule/EmployeeSchedule';
 import WorkSchedule from '~/pages/HR/EmployeeSchedule/WorkSchedule';
 import EmployeeShiftChange from '~/pages/HR/EmployeeSchedule/EmployeeShiftChange';
 import ManagerShiftApproval from '~/pages/HR/EmployeeSchedule/ManagerShiftApproval';
 import PositionManagerPage from '~/pages/HR/Position';
+import EmployeeSchedule from '~/pages/HR/EmployeeSchedule';
 // import Test from '~/pages/Test';
 
 const routes = [
