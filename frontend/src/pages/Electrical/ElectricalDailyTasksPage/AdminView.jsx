@@ -6,7 +6,7 @@ import { Gantt, ViewMode } from 'gantt-task-react';
 import "gantt-task-react/dist/index.css";
 
 import dailyWorkReportService from '~/services/dailyWorkReportService';
-import { getAllEmployees } from '~/services/employeeService';
+import employeeService, { getAllEmployees } from '~/services/employeeService';
 import WorkReportFormModal from './WorkReportFormModal';
 import CustomTooltip from './CustomTooltip';
 import { mapToGanttTask } from './gantt';
@@ -45,7 +45,7 @@ const AdminView = () => {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const data = await getAllEmployees();
+                const data = await employeeService.getAllEmployees();
                 setEmployees(data);
             } catch (err) {
                 message.error('Lỗi khi tải danh sách nhân viên');

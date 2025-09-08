@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Steps, Tabs, message, Button, Space, Modal, Input, DatePicker, Row, Col, Switch, Popconfirm } from "antd";
 import processService from "~/services/processService";
-import { ArrowDownOutlined, ArrowRightOutlined, DeleteOutlined, DeleteTwoTone, EditOutlined, EditTwoTone, FileSyncOutlined, SolutionOutlined } from "@ant-design/icons";
+import { ArrowDownOutlined, ArrowRightOutlined, DeleteTwoTone, EditTwoTone, FileSyncOutlined, SolutionOutlined } from "@ant-design/icons";
 import HandoverMinutesFormModal from "./HandoverMinutesFormModal";
-import ProcessSteps from "./ProcessSteps";
 import productService from "~/services/productService";
 
 const ProcessTabs = ({ productId }) => {
@@ -53,6 +52,10 @@ const ProcessTabs = ({ productId }) => {
 
 
     const handleModalStageOk = async () => {
+        const formattedDate = completionDate
+            ? completionDate.hour(12).minute(0).second(0).toDate()
+            : null;
+
         if (completionDate) {
             Modal.confirm({
                 title: 'Xác nhận cập nhật',
@@ -61,7 +64,7 @@ const ProcessTabs = ({ productId }) => {
                     try {
                         await processService.updateStage({
                             id: selectedStage.id,
-                            completionDate,
+                            completionDate: formattedDate,
                             description,
                         });
                         message.success("Cập nhật công đoạn thành công");
@@ -77,7 +80,7 @@ const ProcessTabs = ({ productId }) => {
             try {
                 await processService.updateStage({
                     id: selectedStage.id,
-                    completionDate,
+                    completionDate: formattedDate,
                     description,
                 });
                 message.success("Cập nhật công đoạn thành công");
