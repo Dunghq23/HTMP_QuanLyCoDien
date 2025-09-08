@@ -1,7 +1,7 @@
 // layouts/HeaderBar.jsx
 import React from 'react';
 import { Dropdown, Flex, Space, Switch, Typography } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { breadcrumbMap } from './layoutConfig';
 import { DownOutlined, LogoutOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
 import authService from '~/services/authService';
@@ -15,6 +15,7 @@ const HeaderBar = ({ backgroundColor, textColor, isDarkMode, toggleTheme, style 
         const url = '/' + pathnames.slice(0, idx + 1).join('/');
         return breadcrumbMap[url] || url;
     });
+    const navigate = useNavigate();
 
     const employeeName = localStorage.getItem('employeeName') || 'Chưa đăng nhập';
     const role = (localStorage.getItem('role') || '').replace('ROLE_', '');
@@ -36,6 +37,22 @@ const HeaderBar = ({ backgroundColor, textColor, isDarkMode, toggleTheme, style 
             ),
             key: '1',
         },
+        {
+            label: (
+                <div onClick={() => navigate("/HR/3")}>
+                    <Text>Lịch làm việc</Text>
+                </div>
+            ),
+            key: '2',
+        },
+        {
+            label: (
+                <div onClick={() => navigate("/HR/3")}>
+                    <Text>Yêu cầu tăng ca</Text>
+                </div>
+            ),
+            key: '3',
+        },
         { type: 'divider' },
         {
             label: (
@@ -44,7 +61,7 @@ const HeaderBar = ({ backgroundColor, textColor, isDarkMode, toggleTheme, style 
                     <Text>Đăng xuất</Text>
                 </Space>
             ),
-            key: '3',
+            key: '20',
             onClick: () => {
                 authService.logout();
                 window.location.href = '/login';
