@@ -26,7 +26,6 @@ const EmployeeView = () => {
             const date = selectedDate ? selectedDate.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
             const res = await dailyWorkReportService.getByEmployeeAndDate(employeeId, date);
 
-            // ✅ lấy đúng mảng reports bên trong
             const employeeData = res?.data?.[0];
             setReports(employeeData?.reports || []);
         } catch (err) {
@@ -35,7 +34,6 @@ const EmployeeView = () => {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         fetchReports();
@@ -124,13 +122,19 @@ const EmployeeView = () => {
                     setEditingRecord(null);
                     form.resetFields();
                 }}
-                onSubmit={handleSubmit}
+                onSubmit={() => {
+                    form.validateFields()
+                        .then((values) => handleSubmit(values))
+                        .catch(() => {
+                            message.warning("Vui lòng nhập đầy đủ thông tin trước khi lưu.");
+                        });
+                }}
                 form={form}
-                editingRecord={editingRecord || {}}  // ✅ luôn truyền object
+                editingRecord={editingRecord}
                 selectedDate={selectedDate}
                 employeeId={employeeId}
             />
-
+            
         </div>
     );
 };

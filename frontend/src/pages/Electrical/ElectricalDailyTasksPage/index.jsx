@@ -7,7 +7,7 @@ const ElectricalDailyTasksPage = () => {
     const role = localStorage.getItem('role');
 
     if (role === 'ADMIN') return <AdminView />;
-    if (role === 'MANAGER') return <ManagerView />;
+    if (role === 'MANAGER' || role === 'HEAD') return <ManagerView />;
     if (role === 'EMPLOYEE') return <EmployeeView />;
 
     return <div>Bạn không có quyền truy cập</div>;

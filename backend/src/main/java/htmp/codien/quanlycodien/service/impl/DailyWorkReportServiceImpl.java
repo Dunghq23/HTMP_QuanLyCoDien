@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,18 +76,18 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
 
     @Override
     public List<EmployeeWorkReportDTO> getReportsByDate(LocalDate date) {
-
         Long employeeId = SecurityUtils.getCurrentEmployeeId();
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Nhân viên không tồn tại"));
 
-        // ---------------------------------------------------
         List<Employee> employees;
         Role role = employee.getRole();
         if ("MANAGER".equals(role.name())) {
             employees = employeeRepository.findByDepartment_Id(employee.getDepartment().getId());
         } else if ("ADMIN".equals(role.name())) {
             employees = employeeRepository.findAll();
+        } else if ("HEAD".equals(role.name())) {
+            employees = employeeRepository.findEmployeesInDepartmentAndSubDepartments(employee.getDepartment().getId());
         } else {
             employees = List.of(employee);
         }
@@ -148,18 +149,43 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
                     .map(this::toItemDTO)
                     .toList();
 
-            LocalTime startTime = null;
-            LocalTime endTime = null;
+            // ===================== FIX START/END TIME =====================
+            LocalDateTime shiftStartDT = LocalDateTime.of(startDate, shiftStart);
+            LocalDateTime shiftEndDT = LocalDateTime.of(endDate, shiftEnd);
+
+            LocalDateTime startTimeDT = null;
+            LocalDateTime endTimeDT = null;
+
             for (DailyWorkReportItemDTO item : items) {
-                if (item.getStartTime() != null && (startTime == null ||
-                        item.getStartTime().isBefore(startTime))) {
-                    startTime = item.getStartTime();
+                if (item.getStartTime() != null) {
+                    LocalDateTime itemStart = LocalDateTime.of(item.getReportDate(), item.getStartTime());
+                    if (!itemStart.isBefore(shiftStartDT) && !itemStart.isAfter(shiftEndDT)) {
+                        if (startTimeDT == null || itemStart.isBefore(startTimeDT)) {
+                            startTimeDT = itemStart;
+                        }
+                    }
                 }
-                if (item.getEndTime() != null && (endTime == null ||
-                        item.getEndTime().isAfter(endTime))) {
-                    endTime = item.getEndTime();
+
+                if (item.getEndTime() != null) {
+                    LocalDateTime itemEnd = LocalDateTime.of(item.getReportDate(), item.getEndTime());
+                    // nếu endTime < startTime thì cộng thêm 1 ngày (qua ngày)
+                    if (item.getStartTime() != null) {
+                        LocalDateTime itemStart = LocalDateTime.of(item.getReportDate(), item.getStartTime());
+                        if (itemEnd.isBefore(itemStart)) {
+                            itemEnd = itemEnd.plusDays(1);
+                        }
+                    }
+                    if (!itemEnd.isBefore(shiftStartDT) && !itemEnd.isAfter(shiftEndDT)) {
+                        if (endTimeDT == null || itemEnd.isAfter(endTimeDT)) {
+                            endTimeDT = itemEnd;
+                        }
+                    }
                 }
             }
+
+            LocalTime startTime = startTimeDT != null ? startTimeDT.toLocalTime() : null;
+            LocalTime endTime = endTimeDT != null ? endTimeDT.toLocalTime() : null;
+            // =============================================================
 
             if (!shiftTimes.isEmpty()) {
                 Object[] shiftTimeEmployee = shiftTimes.get(0);
@@ -170,7 +196,6 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
             // Nếu shift null thì dùng thời gian thực tế, còn nếu kết thúc công việc muộn
             // hơn shiftEnd thì lấy giờ kết thúc công việc
             LocalTime plannedStart = shiftStart != null ? shiftStart : startTime;
-
             LocalTime plannedEnd = shiftEnd;
 
             Set<String> excludedShiftCodes = Set.of("KD", "KD150", "KD200", "C3");
@@ -215,7 +240,6 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
                     .build();
 
             result.add(empDTO);
-
         }
 
         return result;
@@ -223,28 +247,43 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
 
     @Override
     public List<EmployeeWorkReportDTO> getReportsByEmployeeIdAndDate(Long employeeId, LocalDate date) {
-        List<DailyWorkReport> reports = reportRepository.findByEmployeeIdAndReportDate(employeeId, date);
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Nhân viên không tồn tại"));
 
-        return reports.stream()
-                .collect(Collectors.groupingBy(DailyWorkReport::getEmployee)) // group theo employee
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    Employee emp = entry.getKey();
-                    List<DailyWorkReportItemDTO> items = entry.getValue()
-                            .stream()
-                            .map(this::toItemDTO)
-                            .collect(Collectors.toList());
+        // Lấy ca làm việc của nhân viên
+        List<Object[]> shiftTimes = workScheduleRepository.findShiftTimesByEmployeeAndDate(employeeId, date);
 
-                    return EmployeeWorkReportDTO.builder()
-                            .employeeId(emp.getId())
-                            .employeeName(emp.getName())
-                            .departmentName(emp.getDepartment() != null ? emp.getDepartment().getName() : null)
-                            .positionName(emp.getPosition() != null ? emp.getPosition().getName() : null)
-                            .reports(items)
-                            .build();
-                })
+        List<DailyWorkReport> reports;
+        if (!shiftTimes.isEmpty()) {
+            Object[] shift = shiftTimes.get(0);
+            LocalTime shiftStart = shift[0] != null ? ((java.sql.Time) shift[0]).toLocalTime() : LocalTime.MIN;
+            LocalTime shiftEnd = shift[1] != null ? ((java.sql.Time) shift[1]).toLocalTime() : LocalTime.MAX;
+
+            LocalDate startDate = date;
+            LocalDate endDate = date;
+
+            if (shiftEnd.isBefore(shiftStart)) {
+                endDate = date.plusDays(1); // ca đêm
+            }
+
+            reports = reportRepository.findReportsByEmployeeAndTimeRange(
+                    employeeId, startDate, shiftStart, endDate, shiftEnd);
+        } else {
+            // fallback: lấy trong ngày
+            reports = reportRepository.findByEmployeeIdAndReportDate(employeeId, date);
+        }
+
+        List<DailyWorkReportItemDTO> items = reports.stream()
+                .map(this::toItemDTO)
                 .collect(Collectors.toList());
+
+        return List.of(EmployeeWorkReportDTO.builder()
+                .employeeId(employee.getId())
+                .employeeName(employee.getName())
+                .departmentName(employee.getDepartment() != null ? employee.getDepartment().getName() : null)
+                .positionName(employee.getPosition() != null ? employee.getPosition().getName() : null)
+                .reports(items)
+                .build());
     }
 
     @Override
