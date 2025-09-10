@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -250,29 +251,50 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Nhân viên không tồn tại"));
 
-        // Lấy ca làm việc của nhân viên
+        // 1. Lấy thông tin ca làm việc trong ngày
         List<Object[]> shiftTimes = workScheduleRepository.findShiftTimesByEmployeeAndDate(employeeId, date);
+        LocalDate startDate = date;
+        LocalDate endDate = date;
+        LocalTime shiftStart = LocalTime.MIN;
+        LocalTime shiftEnd = LocalTime.MAX;
+        Long shiftId = 0L;
 
-        List<DailyWorkReport> reports;
         if (!shiftTimes.isEmpty()) {
             Object[] shift = shiftTimes.get(0);
-            LocalTime shiftStart = shift[0] != null ? ((java.sql.Time) shift[0]).toLocalTime() : LocalTime.MIN;
-            LocalTime shiftEnd = shift[1] != null ? ((java.sql.Time) shift[1]).toLocalTime() : LocalTime.MAX;
+            shiftStart = shift[0] != null ? ((java.sql.Time) shift[0]).toLocalTime() : LocalTime.MIN;
+            shiftEnd = shift[1] != null ? ((java.sql.Time) shift[1]).toLocalTime() : LocalTime.MAX;
+            shiftId = shift[2] != null ? (Long) shift[2] : 0L;
 
-            LocalDate startDate = date;
-            LocalDate endDate = date;
-
+            // Nếu ca đêm → mở rộng sang ngày hôm sau
             if (shiftEnd.isBefore(shiftStart)) {
-                endDate = date.plusDays(1); // ca đêm
+                endDate = date.plusDays(1);
             }
 
+            // Đệm ca ±6 tiếng
+            shiftStart = shiftStart.minusHours(6);
+            if (shiftStart.isBefore(LocalTime.MIN))
+                shiftStart = LocalTime.MIN;
+
+            shiftEnd = shiftEnd.plusHours(6);
+            if (shiftEnd.isAfter(LocalTime.MAX))
+                shiftEnd = LocalTime.MAX;
+        }
+
+        // 2. Lấy dữ liệu báo cáo
+        List<DailyWorkReport> reports;
+        if (!shiftTimes.isEmpty()) {
             reports = reportRepository.findReportsByEmployeeAndTimeRange(
                     employeeId, startDate, shiftStart, endDate, shiftEnd);
         } else {
-            // fallback: lấy trong ngày
+            // fallback nếu không có lịch ca
             reports = reportRepository.findByEmployeeIdAndReportDate(employeeId, date);
         }
 
+        if (reports.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 3. Map sang DTO
         List<DailyWorkReportItemDTO> items = reports.stream()
                 .map(this::toItemDTO)
                 .collect(Collectors.toList());
