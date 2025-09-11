@@ -258,26 +258,33 @@ public class DailyWorkReportServiceImpl implements DailyWorkReportService {
         LocalTime shiftStart = LocalTime.MIN;
         LocalTime shiftEnd = LocalTime.MAX;
         Long shiftId = 0L;
+        String shiftCode = "";
 
         if (!shiftTimes.isEmpty()) {
             Object[] shift = shiftTimes.get(0);
             shiftStart = shift[0] != null ? ((java.sql.Time) shift[0]).toLocalTime() : LocalTime.MIN;
             shiftEnd = shift[1] != null ? ((java.sql.Time) shift[1]).toLocalTime() : LocalTime.MAX;
-            shiftId = shift[2] != null ? (Long) shift[2] : 0L;
+            shiftId = shift[2] != null ? (Long) shift[2] : 0;
+            shiftCode = shift[3] != null ? ((String) shift[3]) : "";
 
-            // Nếu ca đêm → mở rộng sang ngày hôm sau
+            // =================== XỬ LÝ CA ĐÊM + ĐỆM ===================
+            LocalDateTime shiftStartDT = LocalDateTime.of(date, shiftStart);
+            LocalDateTime shiftEndDT = LocalDateTime.of(date, shiftEnd);
+
+            // Nếu là ca đêm (kết thúc < bắt đầu) thì cộng thêm 1 ngày cho shiftEnd
             if (shiftEnd.isBefore(shiftStart)) {
-                endDate = date.plusDays(1);
+                shiftEndDT = shiftEndDT.plusDays(1);
             }
 
-            // Đệm ca ±6 tiếng
-            shiftStart = shiftStart.minusHours(6);
-            if (shiftStart.isBefore(LocalTime.MIN))
-                shiftStart = LocalTime.MIN;
+            // Đệm trước & sau 6 tiếng
+            shiftStartDT = shiftStartDT.minusHours(6);
+            shiftEndDT = shiftEndDT.plusHours(6);
 
-            shiftEnd = shiftEnd.plusHours(6);
-            if (shiftEnd.isAfter(LocalTime.MAX))
-                shiftEnd = LocalTime.MAX;
+            // Gán lại startDate, endDate, shiftStart, shiftEnd sau khi tính
+            startDate = shiftStartDT.toLocalDate();
+            endDate = shiftEndDT.toLocalDate();
+            shiftStart = shiftStartDT.toLocalTime();
+            shiftEnd = shiftEndDT.toLocalTime();
         }
 
         // 2. Lấy dữ liệu báo cáo
